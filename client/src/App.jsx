@@ -3,7 +3,7 @@ import './App.css';
 import Account from './pages/Account'
 import HomePage from './pages/HomePage'
 import LibrarianPage from './pages/LibrarianPage'
-import Login from './pages/LoginPage'
+import Login from './pages/login/LoginPage'
 import OutputPage from './pages/OutputPage'
 import UserPage from './pages/UserPage'
 
@@ -13,12 +13,18 @@ import UserPage from './pages/UserPage'
 function App() {
   return (
     <Routes>
+
+      {/* Available after logging in */}
+
         <Route path="/" element={<HomePage/>} />
-        <Route path="/login" element={<Login/>} />
         <Route path="/account" element={<Account/>} />
         <Route path="/user" element={<UserPage/>} />
         <Route path="/output" element={<OutputPage/>} />
         <Route path="/librarian" element={<LibrarianPage/>} />
+
+      {/* when log in take to home or librarian page */}
+        <Route path="/login" element={<Login/>} />
+
     </Routes>
   );
 }

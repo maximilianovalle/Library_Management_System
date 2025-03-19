@@ -1,0 +1,12 @@
+.login{
+    text-align: center;
+    padding: 10rem;
+}
+.input{
+    padding: 4rem;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20px;
+}
+.input_row{
+    padding: 1rem;
+}
