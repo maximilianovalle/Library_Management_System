@@ -2,13 +2,13 @@ var http = require('http');
 const pool = require("./database.js");   
 const cors = require('cors');
 const login = require("./login_function/login.js");
-const { log } = require('console');
 
 const app = http.createServer( async (req, res) => {                                // create the server
     
+    // FOR CORS : Cross-Origin Resource Sharing, allow methods and headers, and set the content type
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     
     if (req.method === 'OPTIONS') {
       res.writeHead(204);
@@ -17,18 +17,15 @@ const app = http.createServer( async (req, res) => {                            
     }
     
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ message: 'backend' }));
+    res.end(JSON.stringify('send/recieve data' ));
 
-    if(req.url === '/login' && req.method === 'POST') {
-        login(req, res);
+    if(req.url === 'http://localhost:8000/login' && req.method === 'POST') {
+        login(req, res)
+        res.send(JSON.stringify('Login successful'));
     }
     res.end();
 }).listen(8000, console.log('Server is running on port 8000'));
 
-
-// app.post("/login", (req,res) => {
-//     login(req,res);
-// })
 // async function getLibrarianInfo() {
 //     const [rows] = await pool.query('SELECT * FROM librarian');
 //     return rows;

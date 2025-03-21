@@ -1,25 +1,43 @@
 import React from "react";
 import './LoginPage.css';
-import {useState, useEffect} from 'react';
+import {useState} from 'react';
 import axios from 'axios';
+// import {Link} from  'react-router-dom';
 
 
 const Login = () => {
+    // let axiosConfig = {
+    //     headers: {
+    //         'Content-Type': 'application/json;charset=UTF-8',
+    //         "Access-Control-Allow-Origin": "*",
+    //     }
+    //   };
     const [userID, setUserID] = useState('');
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState('');
 
 
     const handleSubmit = async () => {
+        const data = {
+            userID : userID,
+            password : password
+        }
         try {
-            const response =
-            await axios.post('http://localhost:8000/login', { userID, password }).then((response) => {
-                console.log(response);
-            }
-            );
-            if (response.status === 200) {
-                setMessage('Login successful');
-            }
+            await axios.post('http://localhost:8000/login', data
+            ).then((response) => {
+                if(response.status === 200){
+                    setMessage(response.message);
+                    if(response.message === 'Login successful'){
+                        window.location.href = '/home';
+                    }  
+                }
+            });
+            // const response =
+            // await axios.post('http://localhost:8000/login', { userID, password }, axiosConfig)
+            // if (response.status === 200) {
+            //     setMessage(response.message);
+            //     <Link to = "/home"/>
+            // }
         }
         catch (error) {
             console.log(error);
