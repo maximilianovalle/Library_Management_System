@@ -1,4 +1,6 @@
-import "./Header.css";
+import "./Header.css"; 
+import { Link } from 'react-router-dom'
+
 const Header = () => {
     return (
         <header className="header">
@@ -17,7 +19,7 @@ const Header = () => {
                                 {item}
                             </a>
                         ))}
-                        <button className="button">Log in</button>
+                        <Link className="button" to="/login">Log in</Link>
                     </div>
                 </nav>
             </div>
