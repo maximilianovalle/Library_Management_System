@@ -2,7 +2,7 @@ import { Routes, Route} from 'react-router-dom';
 import './App.css';
 import Account from './pages/account/Account'
 import HomePage from './pages/HomePage'
-import LibrarianPage from './pages/LibrarianPage'
+import LibrarianPage from './pages/librarian/LibrarianPage'
 import Login from './pages/login/LoginPage'
 import OutputPage from './pages/OutputPage'
 import UserPage from './pages/UserPage'
