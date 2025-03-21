@@ -2,7 +2,7 @@ import React from "react";
 import './LoginPage.css';
 import {useState} from 'react';
 import axios from 'axios';
-// import {Link} from  'react-router-dom';
+import {useNavigate} from  'react-router-dom';
 
 
 const Login = () => {
@@ -15,23 +15,38 @@ const Login = () => {
     const [userID, setUserID] = useState('');
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
 
-    const handleSubmit = async () => {
+    const handleSubmit =  async(event) => {
+        event.preventDefault();
         const data = {
-            userID : userID,
-            password : password
-        }
+            User_ID: userID,
+            Password: password
+        };
+
         try {
-            await axios.post('http://localhost:8000/login', data
-            ).then((response) => {
-                if(response.status === 200){
-                    setMessage(response.message);
-                    if(response.message === 'Login successful'){
-                        window.location.href = '/home';
-                    }  
-                }
+            const res = await axios.post('http://localhost:8000/login', data, {
+                headers: { 'Content-Type': 'application/json' },
             });
+            
+            if (res.status === 200) {
+                setMessage(res.data.message)
+                navigate('/user');
+            }
+            else {
+                setMessage("login failed");
+            }
+
+
+            // e.preventDefault();
+            // axios.get('http://localhost:8000/login')
+            // .then((res) => {
+            //     console.log(res.message);
+            //     <Link to = "/home"/>
+            // }).catch((err) => {
+            //     console.log(err);
+            // })
             // const response =
             // await axios.post('http://localhost:8000/login', { userID, password }, axiosConfig)
             // if (response.status === 200) {
@@ -47,33 +62,35 @@ const Login = () => {
     return(
         <div className="login">
             <h1>Welcome to Cougar Public Library</h1>
-            <form>
+            <form id = "login_form">
                 <div className="input">
                     <div className = "input_row">
-                        <label>Username: </label>
+                        <label>Username: {" "} 
                         <input 
-                            type = "user ID" 
+                            type = "text" 
                             placeholder= "Enter Username ..."
                             value = {userID} 
                             minLength={7}
                             maxLength={7}
                             onChange ={(e) => setUserID(e.target.value)}
                             required
-                        />
+                            />
+                        </label>
                     </div>
                     <div className = "input_row">
-                        <label>Password: </label>
-                        <input 
-                            type = "Password" 
-                            placeholder= "Enter Password ..."
-                            value = {password}
-                            maxLength={20}
-                            minLength={7}
-                            onChange = {(e) => setPassword(e.target.value)}
-                            required
-                        />
+                        <label> Password: {" "} 
+                            <input 
+                                type = "text" 
+                                placeholder= "Enter Password ..."
+                                value = {password}
+                                maxLength={20}
+                                minLength={7}
+                                onChange = {(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </label>
                     </div>
-                    <button className= "login_button" onClick= {handleSubmit}>Login</button>
+                    <button type= "submit" className= "login_button" onClick= {handleSubmit}>Login</button>
                     {message && <p>{message}</p>}
                     
                 </div>
