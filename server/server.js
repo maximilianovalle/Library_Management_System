@@ -9,18 +9,18 @@ const app = http.createServer( async (req, res) => {                            
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin');
-
-
     if (req.method === 'OPTIONS') {
       res.writeHead(204);
       res.end();
       return;
     }
     
-    if(req.url === '/login' && req.method === 'POST') {
-        return login.login(req, res);
+    else if(req.url === '/login' && req.method === 'POST') {
+      login(req, res);
+      return;
     }
     res.end();
+    
 }).listen(8000, console.log('Server is running on port 8000'));
 
 // async function getLibrarianInfo() {

@@ -1,9 +1,8 @@
 const pool = require('../database.js')
-const bcrypt = require('bcrypt');
 
 
 
-async function getUser(userID) {
+async function getUser(userID, body) {
     try{
     const [rows] = await pool.query('SELECT * FROM user WHERE User_ID = ?', [userID]);
     if (rows.length === 0) {
@@ -11,7 +10,6 @@ async function getUser(userID) {
     }
     return rows[0];
 }catch (error) {
-        console.error("DB error: ", error);
         throw error
     }
 }
@@ -19,39 +17,53 @@ async function getUser(userID) {
 // getUser('7000001').then(user => console.log(user));
 
 
-async function login(req, res) {
+
+module.exports = async function login(req, res) {
     try {
-        if (!req.body || !req.body.userID || !req.body.password) {
-            return res.status(400).json({ message: 'Missing userID or password' });
-        }
+        let body = '';
+        req.on('data', (chunk) => {
+            body += chunk;
+        });
+        req.on('end', async () => {
+            try {
+                const { userID, password } = JSON.parse(body);
+                console.log(userID)
+                console.log(password)
 
-        const { userID, password } = req.body;
-        const user = await getUser(userID);
+                if (!userID || !password) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: 'Missing User ID or Password' }));
+                    return;
+                }
 
-        if (!user) {
-            return res.status(401).json({ message: 'Invalid user ID' });
-        }
+                const user = await getUser(userID, body);
+                console.log(user)
+                console.log(user
+                    .Password)
 
-        const isPasswordValid = await bcrypt.compare(password, user.Password);
-        if (!isPasswordValid) {
-            return res.status(401).json({ message: 'Invalid password' });
-        }
-        if(user.Role === 1){
-            return res.status(200).json({ message: 'Login successful', User: 'User' });
-        }
-        if(user.Role === 2){
-            return res.status(200).json({ message: 'Login successful', User: 'Librarian' });
-        }
-        if(user.Role === 3){
-            return res.status(200).json({ message: 'Login successful', User: 'Admin' });
-        }
-        const fullName = `${user.First_Name} ${user.Last_Name}`;
-        res.status(200).json({ message: 'Login successful', User: fullName });
+                if (!user) {
+                    res.writeHead(401, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: 'Invalid User ID' }));
+                    return;
+                }
+                if (user.Password !== password) {
+                    res.writeHead(401, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: 'Invalid Password' }));
+                    return;
+                }
 
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                let user_name = user.First_Name + ' ' + user.Last_Name;
+                res.end(JSON.stringify({ message: 'Login successful', User: user_name }));
+            } catch (error) {
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: 'Internal Server Error' }));
+                return;
+            }
+        });
     } catch (error) {
-        console.error("Login error:", error);
-        res.status(500).json({ message: 'Internal Server Error' });
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: 'Internal Server Error' }));
+        return;
     }
-}
-
-module.exports = { login };                                                 // Export the pool so it can be used in other files
+};
