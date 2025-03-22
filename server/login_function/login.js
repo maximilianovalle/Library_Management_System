@@ -38,8 +38,7 @@ module.exports = async function login(req, res) {
 
                 const user = await getUser(userID, body);
                 console.log(user)
-                console.log(user
-                    .Password)
+                console.log(user.Password)
 
                 if (!user) {
                     res.writeHead(401, { 'Content-Type': 'application/json' });

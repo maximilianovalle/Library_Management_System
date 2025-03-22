@@ -8,7 +8,7 @@ import {useNavigate} from  'react-router-dom';
 const Login = () => {
 
     const [userID, setUserID] = useState('');
-    const [password, setPassword] = useState("");
+    const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
@@ -26,7 +26,7 @@ const Login = () => {
             const res = await axios.post('http://localhost:8000/login', data);
             
             if (res.status === 200) {
-                setMessage(res.data.message);
+                alert(res.data.message);
                 navigate('/user');
             } 
             else {
