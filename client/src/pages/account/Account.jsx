@@ -2,13 +2,17 @@ import React from "react";
 import './Account.css';
 import { useState } from 'react'; // allows us to track data or properties that need tracking in a function component
 
-// show user info, currently checked out books/devices for 'Recent Activity'
+// The (React) frontend - this page! - sends a request to the (NodeJS) backend using "axios.post()"/"axios.get()"/etc. The backend processes the request and returns a response that is then displayed on the frontend.
+
+// Ex: LoginPage.jsx (frontend) -> server.js (processes request and calls login() function) -> login.js
+
+// GET request: display data when the database loads.
 
 const Account = () => {
 
     // [current state, function that updates the state] = set to empty string
-    const [search, submitSearch] = useState("");
-    const [email, updateEmail] = useState(""); 
+    // const [search, submitSearch] = useState("");
+    // const [email, updateEmail] = useState(""); 
 
     return( // HTML -----
 
@@ -37,7 +41,7 @@ const Account = () => {
                 </div>
             </header>
 
-            {/* main content */}
+            {/* main content - my code ----- */}
             <div id="main">
 
             </div>

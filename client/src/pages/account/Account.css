@@ -1,13 +1,4 @@
-#body {
-    padding: 0px;
-    margin: 0px;
-
-    min-height: 80vh;
-    max-width: 90vw;
-    margin: 0px auto;
-
-    /* background-color: blue; */
-}
+/* header code credit to @ alan "atonyit" */
 
 #header {
     height: 6vh;
@@ -25,7 +16,7 @@
 }
 
 #main {
-    /* background-color: green; */
+    background-color: green;
 }
 
 .header {
@@ -74,7 +65,6 @@
     color: #2563eb;
 }
 
-/* Login/Signup Button */
 .button {
     padding: 12px 16px;
     font-size: 16px;
@@ -89,4 +79,17 @@
 
 .button:hover {
     background-color: #1d4ed8;
+}
+
+/* my code ----- */
+
+#body {
+    padding: 0px;
+    margin: 0px;
+
+    min-height: 80vh;
+    max-width: 90vw;
+    margin: 0px auto;
+
+    /* background-color: blue; */
 }
