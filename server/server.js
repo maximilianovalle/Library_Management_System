@@ -18,13 +18,15 @@ const app = http.createServer( async (req, res) => {  // creates HTTP server and
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // specifies which HTTP methods are allowed from the client
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin'); // specifies which headers the client can send in the request
 
-    if (req.method === 'OPTIONS') { // if ( the browser sends OPTIONS request to check what methods + headers are allowed by the server )
+     // if ( the browser sends OPTIONS request to check what methods + headers are allowed by the server )
+    if (req.method === 'OPTIONS') {
       res.writeHead(204); // send 204 response to browser (204: request successful but no content to return)
       res.end();  // end the response
       return;
     }
     
-    else if(req.url === '/login' && req.method === 'POST') {  // if ( the browser sends POST request to "/login" )
+    // else if ( the browser sends POST request to "/login" )
+    else if(req.url === '/login' && req.method === 'POST') {
       login(req, res);  // call login() function imported above
       return;
     }
