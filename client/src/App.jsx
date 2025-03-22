@@ -5,7 +5,7 @@ import HomePage from './pages/HomePage'
 import LibrarianPage from './pages/librarian/LibrarianPage'
 import Login from './pages/login/LoginPage'
 import OutputPage from './pages/OutputPage'
-import UserPage from './pages/UserPage'
+import UserPage from './pages/user/UserPage'
 
 
 
