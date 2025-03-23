@@ -1,11 +1,11 @@
 const pool = require('../database.js');
 
 // getUserName() function, handles HTTP request and response
-module.exports = async function getUserName(req, res) {
+module.exports = async function getUserName(req, res, userID) {
     try {
 
         // TEMPORARY USER ID FOR TESTING
-        const TEMP_USER = 7000001;
+        const TEMP_USER = userID;
         
         const [[userInfo], [fineInfo], [pastBooksRows], [pastDevicesRows]] = await Promise.all([
             pool.query("SELECT First_Name, Last_Name, Email, Created_At FROM user WHERE User_ID = ?", [TEMP_USER]), // queries database for user info of specific User_ID
