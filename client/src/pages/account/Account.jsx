@@ -6,7 +6,12 @@ import './Account.css';
 
 const Account = () => {
 
-    const [userName, setUserName] = useState("");
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
+    const [email, setEmail] = useState("");
+    const [createdAt, setCreatedAt] = useState("");
+    const [fineAmntDue, setFineAmnt] = useState("");
+
     const [error, setError] = useState("");
 
     // triggered once when the page loads
@@ -15,7 +20,17 @@ const Account = () => {
 
             try {
                 const res = await axios.get("http://localhost:8000/account");   // sends a GET request to /account
-                setUserName(res.data.userName);
+
+                setFirstName(res.data.firstName);
+                setLastName(res.data.lastName);
+                setEmail(res.data.email);
+                setCreatedAt(new Date(res.data.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                }));    // saves date as January 1, 2025 instead of 2025-01-01
+                setFineAmnt(res.data.fineAmntDue);
+
             } catch (error) {
                 console.error("Error fetching account data:", error);
                 setError("Failed to load account data.");
@@ -56,7 +71,30 @@ const Account = () => {
             {/* main content - my code ----- */}
             <div id="main">
 
-                {userName && <h1>{userName}</h1>}
+                {/* {userName && <h1>{userName}</h1>} */}
+
+                {/* user info */}
+                <div id="userInfo">
+
+                    <div>
+                        {lastName && firstName && <h1>{lastName}, {firstName}</h1>}
+                        {email && <p>{email}</p>}
+                    </div>
+
+                    {createdAt && <p id="dateJoined">Joined {createdAt}</p>}
+                    <h2 id="finesDue">Fines Due</h2>
+                    <p id="amountDue">-${fineAmntDue}</p>
+
+                </div>
+
+                {/* recent activity */}
+                <div id="recentActivity">
+
+                    <h1>Recent Activity</h1>
+
+
+
+                </div>
 
             </div>
 

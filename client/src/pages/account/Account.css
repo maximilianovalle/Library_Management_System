@@ -84,12 +84,70 @@
     margin: 0px;
 
     min-height: 80vh;
-    max-width: 90vw;
-    margin: 0px auto;
+    /* max-width: 75vw; */
+    /* margin: 0px auto; */
 
     /* background-color: blue; */
 }
 
 #main {
-    /* background-color: green; */
+    max-width: 60vw;
+    margin: 0px auto;
+}
+
+#userInfo {
+    /* width: 80%;
+    margin: 0px auto; */
+
+    padding: 16px 48px;
+    border-radius: 16px;
+    box-sizing: border-box;
+
+    background-color: #f0f0f0;
+}
+
+#userInfo > div {
+    padding: 0px;
+    margin: 0px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+#userInfo > div > h1, #userInfo > div > p {
+    padding: 0px;
+    margin: 0px;
+}
+
+#dateJoined {
+    margin: 0px;
+    padding: 0px;
+
+    color: #6b6b6b;
+}
+
+#finesDue {
+    padding: 0px;
+    margin: 0px;
+    margin-top: 22px;
+    padding-top: 22px;
+
+    text-align: center;
+    font-size: 1.75rem;
+    text-decoration: underline 1px solid #6b6b6b;
+}
+
+#amountDue {
+    padding: 0px;
+    margin: 0px;
+
+    text-align: center;
+    font-size: 2rem;
+}
+
+#recentActivity > h1 {
+    padding-bottom: 0px;
+    border-bottom: 1px solid;
+    margin-bottom: 16px;
 }
