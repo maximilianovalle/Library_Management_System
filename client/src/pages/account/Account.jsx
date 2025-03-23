@@ -4,6 +4,15 @@ import './Account.css';
 
 // The (React) frontend sends a GET, POST, DELETE, etc. request to the (NodeJS) backend. The backend server.js file processes the request and returns a response that is then displayed on the frontend.
 
+
+const items = [
+    {title: "My Books", link: "/mybooks"},
+    {title: "Browse Books", link: "/browsebooks"},
+    {title: "Browse Devices",link: "/browsedevices"},
+    {title: "Account", link: "/account"},
+
+]
+
 const Account = () => {
 
     const [firstName, setFirstName] = useState("");
@@ -11,6 +20,8 @@ const Account = () => {
     const [email, setEmail] = useState("");
     const [createdAt, setCreatedAt] = useState("");
     const [fineAmntDue, setFineAmnt] = useState("");
+    const [pastBooksArray, setPastBooks] = useState("");
+    const [pastDevicesArray, setPastDevices] = useState("");
 
     const [error, setError] = useState("");
 
@@ -21,6 +32,7 @@ const Account = () => {
             try {
                 const res = await axios.get("http://localhost:8000/account");   // sends a GET request to /account
 
+                // receive JSON from account.js
                 setFirstName(res.data.firstName);
                 setLastName(res.data.lastName);
                 setEmail(res.data.email);
@@ -30,6 +42,8 @@ const Account = () => {
                     day: "numeric",
                 }));    // saves date as January 1, 2025 instead of 2025-01-01
                 setFineAmnt(res.data.fineAmntDue);
+                setPastBooks(res.data.pastBooksArray);
+                setPastDevices(res.data.pastDevicesArray);
 
             } catch (error) {
                 console.error("Error fetching account data:", error);
@@ -38,7 +52,7 @@ const Account = () => {
 
         }
 
-        fetchName();    // need to explicitly call fetchName to run it
+        fetchName();    // need to explicitly call fetchName to run
     }, []);
 
     return( // HTML -----
@@ -49,7 +63,7 @@ const Account = () => {
 
             <header className="header">
                 <div className="container">
-                    <nav className="nav">
+                <nav className="nav">
                         <div className="logo">
                             <a href="/">
                                 <img src="/logo.png" alt="Logo" />
@@ -58,11 +72,12 @@ const Account = () => {
                         </div>
 
                         <div className={`nav-links`}>
-                            {["My Books", "Browse Books", "Browse Devices"].map((item) => (
-                                <a key={item} href="/" className="link">
-                                    {item}
+                            {items.map((item) => (
+                                <a key={item.title} href={item.link} className="link">
+                                    {item.title}
                                 </a>
                             ))}
+                            <button onClick={() => {localStorage.clear(); window.location.href = '/login';}} className = "logout_button">Logout</button>
                         </div>
                     </nav>
                 </div>
@@ -92,7 +107,41 @@ const Account = () => {
 
                     <h1>Recent Activity</h1>
 
+                    {/* past books */}
+                    <h2>Past Books</h2>
 
+                    {pastBooksArray.length > 0 ? (  // if user has past checked out books
+                        <ul id="pastBooksList">
+                            {pastBooksArray.map((book, i) => (
+                                <li key={i}>
+                                    {book.title}, {book.author} <br />
+                                    {book.checkoutDate} - {book.returnedDate}
+                                    <p></p>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (   // if user has no past checked out books
+                        <p>No books to display! Try returning a checked out book...</p>
+                    )
+                    }
+
+                    {/* past devices */}
+                    <h2>Past Devices</h2>
+
+                    {pastBooksArray.length > 0 ? (  // if user has past checked out devices
+                        <ul id="pastDevicesList">
+                            {pastDevicesArray.map((device, i) => (
+                                <li key={i}>
+                                    {device.category}, {device.model} <br />
+                                    {device.checkoutDate} - {device.returnedDate}
+                                    <p></p>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (   // if user has no past checked out books
+                        <p>No devices to show! Try returning a checked out device...</p>
+                    )
+                    }
 
                 </div>
 
