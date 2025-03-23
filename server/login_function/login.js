@@ -16,7 +16,6 @@ async function getUser(userID, body) {
 
 // getUser('7000001').then(user => console.log(user));
 
-// login() function, handles HTTP request and response
 module.exports = async function login(req, res) {
     try {
         
@@ -45,32 +44,32 @@ module.exports = async function login(req, res) {
 
                 // if ( user == NULL )
                 if (!user) {
-                    res.writeHead(401, { 'Content-Type': 'application/json' }); // HTTP 401: Unauthorizes
+                    res.writeHead(401, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ message: 'Invalid User ID' }));
                     return;
                 }
 
                 // if ( stored password != inputted password)
                 if (user.Password !== password) {
-                    res.writeHead(401, { 'Content-Type': 'application/json' }); // HTTP 401: unauthorized
+                    res.writeHead(401, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ message: 'Invalid Password' }));
                     return;
                 }
 
                 // else 
-                res.writeHead(200, { 'Content-Type': 'application/json' }); // HTTP 200: Success
+                res.writeHead(200, { 'Content-Type': 'application/json' });
                 let user_name = user.First_Name + ' ' + user.Last_Name;
                 res.end(JSON.stringify({ message: 'Login successful', User: user_name }));
 
             } catch (error) {
-                res.writeHead(500, { 'Content-Type': 'application/json' }); // HTTP 500: Internal Server Error
+                res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ message: 'Internal Server Error' }));
                 return;
             }
         });
 
     } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' }); // HTTP 500: Internal Server Error
+        res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: 'Internal Server Error' }));
         return;
     }
