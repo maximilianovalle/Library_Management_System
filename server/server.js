@@ -2,7 +2,10 @@ var http = require('http');
 const pool = require("./database.js");  // imports database pool from database.js
 const cors = require('cors');
 
-const login = require("./login_function/login.js"); // imports login() function defined in login_function/login.js
+const login = require("./login_function/login.js"); // login()
+const getUserName = require("./account_info/account.js"); // getUserName()
+
+
 
 const app = http.createServer( async (req, res) => {  // creates HTTP server and listens for incoming requests
 
@@ -28,6 +31,12 @@ const app = http.createServer( async (req, res) => {  // creates HTTP server and
     // else if ( the browser sends POST request to "/login" )
     else if(req.url === '/login' && req.method === 'POST') {
       login(req, res);  // call login() function imported above
+      return;
+    }
+
+    // else if ( the browser sends a GET request to "/account" )
+    else if (req.url === '/account' && req.method === 'GET') {
+      getUserName(req, res);  // call getUserName() function imported above
       return;
     }
 

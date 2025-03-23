@@ -11,7 +11,6 @@ const pool = mysql.createPool({                                         // Creat
     database: process.env.DB_DATABASE,
     port: process.env.DB_PORT,
     waitForConnections: true,
-    require_secure_transport: false,
     ssl: {
         ca: fs.readFileSync('../server/DigiCertGlobalRootCA.crt.pem'),  // for authorization adding the CA file provided to us
     }

@@ -1,18 +1,30 @@
-import React from "react";
+import React, { useState, useEffect, use } from "react";
+import axios from "axios";  // used for making HTTP requests
 import './Account.css';
-import { useState } from 'react'; // allows us to track data or properties that need tracking in a function component
 
-// The (React) frontend - this page! - sends a request to the (NodeJS) backend using "axios.post()"/"axios.get()"/etc. The backend processes the request and returns a response that is then displayed on the frontend.
-
-// Ex: LoginPage.jsx (frontend) -> server.js (processes request and calls login() function) -> login.js
-
-// GET request: display data when the database loads.
+// The (React) frontend sends a GET, POST, DELETE, etc. request to the (NodeJS) backend. The backend server.js file processes the request and returns a response that is then displayed on the frontend.
 
 const Account = () => {
 
-    // [current state, function that updates the state] = set to empty string
-    // const [search, submitSearch] = useState("");
-    // const [email, updateEmail] = useState(""); 
+    const [userName, setUserName] = useState("");
+    const [error, setError] = useState("");
+
+    // triggered once when the page loads
+    useEffect(() => {
+        const fetchName = async () => {
+
+            try {
+                const res = await axios.get("http://localhost:8000/account");   // sends a GET request to /account
+                setUserName(res.data.userName);
+            } catch (error) {
+                console.error("Error fetching account data:", error);
+                setError("Failed to load account data.");
+            }
+
+        }
+
+        fetchName();    // need to explicitly call fetchName to run it
+    }, []);
 
     return( // HTML -----
 
@@ -43,6 +55,8 @@ const Account = () => {
 
             {/* main content - my code ----- */}
             <div id="main">
+
+                {userName && <h1>{userName}</h1>}
 
             </div>
 
