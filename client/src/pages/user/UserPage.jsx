@@ -1,16 +1,20 @@
 import React from "react";
 import { useState } from 'react';
 import './UserPage.css';
+import { useParams } from 'react-router-dom'; //for router change
+
+const UserPage = () => {
+const { userId } = useParams();
 
 const items = [
-    {title: "My Books", link: "/mybooks"},
+    {title: "My Books", link: `/mybooks/${userId}`},
     {title: "Browse Books", link: "/browsebooks"},
     {title: "Browse Devices",link: "/browsedevices"},
     {title: "Account", link: "/account"},
+    // {title: "Account", link: `/account/${userId}`}, i think we should change this for account too
 
 ]
 
-const UserPage = () => {
 const [search, setSearch] = useState("");
 console.log(search);
     return(
@@ -54,7 +58,7 @@ console.log(search);
                
                     <div className ="container">
                         <div className="user">
-                            <h2>Welcome User</h2>
+                            <h2>Welcome User #{userId}</h2>
                         </div>
 
 

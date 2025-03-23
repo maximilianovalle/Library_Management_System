@@ -3,6 +3,7 @@ import './App.css';
 import Account from './pages/account/Account'
 import HomePage from './pages/HomePage'
 import LibrarianPage from './pages/librarian/LibrarianPage'
+import MyBooksPage from './pages/mybooks/mybooks';
 import Login from './pages/login/LoginPage'
 import OutputPage from './pages/OutputPage'
 import UserPage from './pages/user/UserPage'
@@ -18,10 +19,10 @@ function App() {
 
         <Route path="/" element={<HomePage/>} />
         <Route path="/account" element={<Account/>} />
-        <Route path="/user" element={<UserPage/>} />
+        <Route path="/user/:userId" element={<UserPage />} /> {/* changed route to include specific ID */}
         <Route path="/output" element={<OutputPage/>} />
         <Route path="/librarian" element={<LibrarianPage/>} />
-
+        <Route path="/mybooks/:userId" element={<MyBooksPage/>} />
       {/* when log in take to home or librarian page */}
         <Route path="/login" element={<Login/>} />
 
