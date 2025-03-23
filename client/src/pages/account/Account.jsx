@@ -1,4 +1,4 @@
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";  // used for making HTTP requests
 import './Account.css';
 
@@ -23,14 +23,26 @@ const Account = () => {
     const [pastBooksArray, setPastBooks] = useState("");
     const [pastDevicesArray, setPastDevices] = useState("");
 
-    const [error, setError] = useState("");
-
     // triggered once when the page loads
     useEffect(() => {
         const fetchName = async () => {
 
             try {
-                const res = await axios.get("http://localhost:8000/account");   // sends a GET request to /account
+                const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
+
+                // if ( no token )
+                if (!token) {
+                    console.error("No token found. Redirecting to login...");
+                    window.location.href = "/login";
+                    return;
+                }
+
+                // sends a GET request to /account including token
+                const res = await axios.get("http://localhost:8000/account", {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
 
                 // receive JSON from account.js
                 setFirstName(res.data.firstName);
@@ -47,7 +59,6 @@ const Account = () => {
 
             } catch (error) {
                 console.error("Error fetching account data:", error);
-                setError("Failed to load account data.");
             }
 
         }
@@ -64,6 +75,7 @@ const Account = () => {
             <header className="header">
                 <div className="container">
                 <nav className="nav">
+
                         <div className="logo">
                             <a href="/">
                                 <img src="/logo.png" alt="Logo" />
@@ -77,8 +89,32 @@ const Account = () => {
                                     {item.title}
                                 </a>
                             ))}
-                            <button onClick={() => {localStorage.clear(); window.location.href = '/login';}} className = "logout_button">Logout</button>
+
+                            {/* log out button clears token from frontend localStorage and backend currSessions */}
+                            <button onClick={
+                                async () => {
+                                    const token = localStorage.getItem("token");    // retrieve token
+
+                                    if (token) {    // if ( token exists )
+                                        try {
+                                            await fetch("https://localhost:8000/logout", {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    "Content-Type": "application/json",
+                                                    "Authorization": `Bearer ${token}`    // authorization in quotes???
+                                                },
+                                            });
+                                        } catch (error) {
+                                            console.error("Error logging out: ", error);
+                                        }
+                                    }
+
+                                    localStorage.clear();
+                                    window.location.href = '/login';
+                                }
+                                } className = "logout_button">Logout</button>
                         </div>
+
                     </nav>
                 </div>
             </header>
