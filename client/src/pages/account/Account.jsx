@@ -114,7 +114,7 @@ const Account = () => {
                         <ul id="pastBooksList">
                             {pastBooksArray.map((book, i) => (
                                 <li key={i}>
-                                    {book.title}, {book.author} <br />
+                                    <strong>{book.title}</strong>, {book.author} <br />
                                     {book.checkoutDate} - {book.returnedDate}
                                     <p></p>
                                 </li>
@@ -132,7 +132,7 @@ const Account = () => {
                         <ul id="pastDevicesList">
                             {pastDevicesArray.map((device, i) => (
                                 <li key={i}>
-                                    {device.category}, {device.model} <br />
+                                    <strong>{device.model}</strong>, {device.category} <br />
                                     {device.checkoutDate} - {device.returnedDate}
                                     <p></p>
                                 </li>
