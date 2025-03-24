@@ -7,6 +7,8 @@ const { currSessions } = require("./login_function/login.js");
 const login = require("./login_function/login.js"); // login()
 const getUserName = require("./account_info/account.js"); // getUserName()
 const getBookInfo = require("./book_info/books.js")
+const getDevices = require("./device_info/devices.js"); // getDevices()
+
 
 
 // creates HTTP server and listens for incoming requests
@@ -69,6 +71,13 @@ const app = http.createServer( async (req, res) => {
     if(req.url === '/books' && req.method === 'GET' && token){
       getBookInfo(req, res, userID);
     }
+
+    // if ( browser sends a GET request to "/devices" with valid token )
+    if (req.url.startsWith('/devices') && req.method === 'GET' && token) {
+      getDevices(req, res);  // call getDevices() to search devices
+      return;
+}
+
     res.end();  // if request does not match any of the defined routes, ends response w/ no data
     
 }).listen(8000, console.log('Server is running on port 8000')); // server is listening on port 8000 for incoming HTTP requests
