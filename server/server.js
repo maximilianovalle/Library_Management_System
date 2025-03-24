@@ -60,7 +60,7 @@ const app = http.createServer( async (req, res) => {
     // retrieve userID from currSessions
     const userID = currSessions.get(token);
 
-    // if ( the browser sends a GET request to "/account" and a token exists)
+    // if ( the browser sends a GET request to "/account" and a token exists )
     if (req.url === '/account' && req.method === 'GET' && token) {
       getUserName(req, res, userID);  // call getUserName() function imported above
       return;
