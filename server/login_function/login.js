@@ -80,7 +80,8 @@ module.exports = async function login(req, res) {
                     user: user_name,
                     token: sessionToken
                 }));    // send message, user, token as JSON to LoginPage.jsx
-
+                console.log("Session token:", sessionToken);
+                console.log("currSessions map:", currSessions);
             } catch (error) {
                 console.log("Login error 2: ", error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
