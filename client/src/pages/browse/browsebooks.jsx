@@ -30,23 +30,32 @@ const BrowseBooks = () => {
     const data = {
         search_value,
         search_by
-    }
+    };
 
-    console.log(data.search_value)
-    console.log(data.search_by)
+    console.log(data.search_value);
+    console.log(data.search_by);
+
+    const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
+
+    // if ( no token )
+    if (!token) {
+        console.error("No token found. Redirecting to login...");
+        window.location.href = "/login";
+        return;
+    }
 
     const fetchBook = async (e) => {
         e.preventDefault(); //prevents page reload on submit
 
         try {
-        const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
+        // const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
 
-        // if ( no token )
-            if (!token) {
-                console.error("No token found. Redirecting to login...");
-                window.location.href = "/login";
-                return;
-            }
+        // // if ( no token )
+        //     if (!token) {
+        //         console.error("No token found. Redirecting to login...");
+        //         window.location.href = "/login";
+        //         return;
+        //     }
 
             const response = await axios.get("http://localhost:8000/books", {
                 headers: {
