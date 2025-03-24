@@ -28,7 +28,7 @@ const Login = () => {
             if (res.data.token) {   // if token received
                 localStorage.setItem("token", res.data.token);  // store token in frontend localStorage
                 alert(res.data.message);
-                window.location.href = "/account";
+                window.location.href = `/account/${userID}`;
             }
 
             // if (res.status === 200) {   // if ( login successful )
