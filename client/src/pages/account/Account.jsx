@@ -1,20 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";  // used for making HTTP requests
 import './Account.css';
-
+import HeaderAfter from '../../components/header/HeaderAfter';
 // The (React) frontend sends a GET, POST, DELETE, etc. request to the (NodeJS) backend. The backend server.js file processes the request and returns a response that is then displayed on the frontend.
 
 
-const items = [
-    {title: "My Books", link: "/mybooks"},
-    {title: "Browse Books", link: "/browsebooks"},
-    {title: "Browse Devices",link: "/browsedevices"},
-    {title: "Account", link: "/account"},
-
-]
 
 const Account = () => {
-
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -72,52 +64,7 @@ const Account = () => {
 
             {/* header code credit to @ alan "atonyit" */}
 
-            <header className="header">
-                <div className="container">
-                <nav className="nav">
-
-                        <div className="logo">
-                            <a href="/">
-                                <img src="/logo.png" alt="Logo" />
-                            </a>
-                            <h1>Cougar Public Library</h1>
-                        </div>
-
-                        <div className={`nav-links`}>
-                            {items.map((item) => (
-                                <a key={item.title} href={item.link} className="link">
-                                    {item.title}
-                                </a>
-                            ))}
-
-                            {/* log out button clears token from frontend localStorage and backend currSessions */}
-                            <button onClick={
-                                async () => {
-                                    const token = localStorage.getItem("token");    // retrieve token
-
-                                    if (token) {    // if ( token exists )
-                                        try {
-                                            await fetch("https://localhost:8000/logout", {
-                                                method: 'DELETE',
-                                                headers: {
-                                                    "Content-Type": "application/json",
-                                                    "Authorization": `Bearer ${token}`    // authorization in quotes???
-                                                },
-                                            });
-                                        } catch (error) {
-                                            console.error("Error logging out: ", error);
-                                        }
-                                    }
-
-                                    localStorage.clear();
-                                    window.location.href = '/login';
-                                }
-                                } className = "logout_button">Logout</button>
-                        </div>
-
-                    </nav>
-                </div>
-            </header>
+            <HeaderAfter />
 
             {/* main content - my code ----- */}
             <div id="main">
