@@ -25,7 +25,7 @@ module.exports = async function login(req, res) {
         
         let body = '';
         req.on('data', (chunk) => { // listens for incoming data
-            body += chunk;  // adds data chunk to body
+        body += chunk;  // adds data chunk to body
         });
         
         // triggered when all data is received

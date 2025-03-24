@@ -1,10 +1,12 @@
 import React from "react";
 import axios from "axios";
-import { useState, useEffect} from 'react';
+import { useState} from 'react';
 import './browsebooks.css';
-import { useParams } from 'react-router-dom'; //for router change
+import DropDown from './components/drop_down';
+
 // import Header_after from "../../components/header/Header_after";
 
+// THIS IS ONLY FOR HEADERS
 const items = [
     {title: "My Books", link: "/mybooks"},
     {title: "Browse Books", link: "/browsebooks"},
@@ -13,21 +15,42 @@ const items = [
     // {title: "Account", link: `/account/${userId}`}, i think we should change this for account too
 
 ]
+// THIS IS FOR THE DROP DOWN MENU
+const browse_by =["Title","ISBN", "Author","Genre"]
+
+// THIS IS FOR THE DIFFERENT TYPES OF GENRES THE USER CAN SELECT FROM
+// const genres = [
+//     {genre : "Accounting" }, {genre : "Adventure"}, {genre : "History"}, {genre : "Arts"}, {genre : "Biomaterials"}, {genre : "Cardiology"}, {genre : "Child research"}, {genre : "Classic"},
+//     {genre : "Computer science"}, {genre: "Economics"}, {genre: "Educational"}, {genre: "Educational"}, {genre: "Fiction"}, {genre: "Genetics"}, {genre: "Geography"}, {genre: "Geometry"},
+//     {genre: ""}, {genre: ""}, {genre: ""}, {genre: ""}, {genre: ""},
+// ]
 
 const BrowseBooks = () => {
-const { userId } = useParams();
 
+// THIS IS TO SET THE VALUES FOR THE BOOK INFORMATION
 const [search_value, setSearchValue] = useState("");
-const [ISBN, setISBN] = useState("");
-const [tile, setTitle] = useState("");
-const [genre, setGenre] = useState("");
-const [year, setYear] = useState("");
-const [author, setAuthor] = useState("");
-const [image, setImage] = useState("");
-const [similar_book_array, setSimilar_books] = useState("");
+const [search_by, setSearchBy] = useState("");
+// const [ISBN, setISBN] = useState("");
+// const [tile, setTitle] = useState("");
+// const [genre, setGenre] = useState("");
+// const [year, setYear] = useState("");
+// const [author, setAuthor] = useState("");
+// const [image, setImage] = useState("");
+// const [similar_book_array, setSimilar_books] = useState("");
 
+const handleSelect = (selectedOption) => {
+    setSearchBy(selectedOption);
+}
+  
+const data = {
+    search_value,
+    search_by
+}
+console.log(search_value)
+console.log(search_by)
+// THIS IS TO FETCH THE BOOK INFORMATION FROM THE BACK END
 const fetchBook = async () => {
-
+ 
     try {
         const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
 
@@ -39,7 +62,7 @@ const fetchBook = async () => {
         }
 
         // sends a GET request to /account including token
-        const res = await axios.get("http://localhost:8000/books", {
+        await axios.get("http://localhost:8000/books", data, {
             headers: {
                 "Authorization": `Bearer ${token}`,
             },
@@ -79,28 +102,30 @@ const fetchBook = async () => {
 
 
                 {/* WE SHOULD PROBABLY ADD THE HEADER WITHOUT LOG IN AS ITS OWN FUNCTION AND CALL THAT FUNCTION INTO THE PAGES THAT NEED IT*/}
-                <div className="search">
-                    {/* <button className="search_button">Browse By</button> */}
-                    {/* Need to add a browse by butt*/}
-        
-                    <input
-                        className="search_bar"
-                        type="text"
-                        label="Search"
-                        placeholder="Search"
-                        variant="outlined"
-                        value={search_value}
-                        onChange={(e) => setSearchValue(e.target.value)}
-                    />
-                    <button type="submit" style={{cursor: "pointer"}} className = "search_button" onClick={fetchBook()}>Search</button>
-                </div>
-            
-                <div className ="container">
-                    <div className="user">
-                        <h2>Welcome</h2>
+                
+                <div>
+                    <form className="search" onSubmit={fetchBook()}>
+                        
+                        <input
+                            className="search_bar"
+                            type="text"
+                            label="Search"
+                            placeholder="Search ..." 
+                            variant="outlined"
+                            value={search_value}
+                            onChange={(e) => setSearchValue(e.target.value)}
+                        />
+                        <button className= "search_button" type="submit" value="Send">Search</button>
+                    </form>
+                    <div className="search">
+                        <DropDown options={browse_by} onSelect={handleSelect}/>
+                            {/*ILL FIX THE DROP DOWN BUTTON POSITION LATER TT*/}
                     </div>
-                    
-            </div>
+                </div>
+
+                <div className="Display_container">
+                    {/* THIS IS WHERE THE CODE TO DISPLAY THE RETRIEVED ITEMS WILL GO */}
+                </div>
         </div>
     );
 }
