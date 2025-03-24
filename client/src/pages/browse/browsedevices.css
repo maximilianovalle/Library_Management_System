@@ -1,0 +1,78 @@
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.search {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1rem;
+}
+
+.search_bar {
+    padding: 0.5rem 1rem;
+    width: 300px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+.search_button {
+    padding: 0.5rem 1rem;
+    background-color: #0077cc;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.search_button:hover {
+    background-color: #005fa3;
+}
+
+.device_list {
+    list-style: none;
+    padding: 0;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.device_card {
+    background-color: #ffffff;
+    padding: 1rem 1.5rem;
+    margin: 0.75rem 0;
+    border-radius: 10px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.1);
+    border-left: 5px solid #0077cc;
+    transition: transform 0.2s;
+}
+
+.device_card:hover {
+    transform: translateY(-2px);
+}
+
+.status {
+    font-weight: bold;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    text-transform: capitalize;
+}
+
+.status.available {
+    color: green;
+}
+
+.status.checked-out {
+    color: red;
+}
+
+.status.on-hold {
+    color: orange;
+}
+
+.status.maintenance {
+    color: gray;
+}
