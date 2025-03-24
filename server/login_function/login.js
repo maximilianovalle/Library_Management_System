@@ -19,6 +19,20 @@ async function getUser(userID) {
     }
 }
 
+async function getAdmin(userID) {
+    try{
+        const [rows] = await pool.query('SELECT * FROM librarian WHERE Librarian_ID = ?', [userID]);  // queries database for user w/ userID
+
+        if (rows.length === 0) {    // if no user found
+            return null;    // return null
+        }
+        return rows[0]; // else return the user
+
+    } catch (error) {
+        throw error
+    }
+}
+
 
 module.exports = async function login(req, res) {
     try {
@@ -32,7 +46,7 @@ module.exports = async function login(req, res) {
         req.on('end', async () => {
             try {
                 const { userID, password } = JSON.parse(body);  // request body is turned into javascript object, userID and password is extracted
-                console.log("UserID:", userID);
+                console.log("\nUserID:", userID);
                 console.log("Password:", password);
 
                 // if ( userID or password do not exist )
@@ -42,10 +56,16 @@ module.exports = async function login(req, res) {
                     return;
                 }
 
-                const user = await getUser(userID, body);   // calls above getUser() function to fetch user details
-                console.log(user)
+                let user = await getUser(userID, body);   // calls above getUser() function to fetch user details
+                let role = 2;   // USER ROLE = 2
 
-                // if ( user == NULL )
+                // if ( user does not exist )
+                if (!user) {
+                    user = await getAdmin(userID, body);    // check if admin
+                    role = 1;   // ADMIN ROLE = 1
+                }
+
+                // if ( user still does not exist )
                 if (!user) {
                     res.writeHead(401, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ message: 'Invalid User ID' }));
@@ -61,27 +81,45 @@ module.exports = async function login(req, res) {
 
                 // generate session token
                 const sessionToken = randomUUID();
-                // store session token + User_ID to currSessions
-                currSessions.set(sessionToken, user.User_ID);
+
+                // if USER role, store session token + User_ID +  to currSessions
+                if (role == 2) {
+                    currSessions.set(sessionToken, {
+                        userID: user.User_ID,
+                        role: role,
+                    });
+
+                    console.log(" - User stored in memory.");
+                }
+
+                // if LIBRARIAN role, store session token + Librarian_ID +  to currSessions
+                else {
+                    currSessions.set(sessionToken, {
+                        userID: user.Librarian_ID,
+                        role: role,
+                    });
+
+                    console.log(" - Librarian stored in memory.");
+                }
                 
-                console.log(user)
-                console.log("Session token: ", sessionToken);
+                console.log("\n", user)
+                console.log("\nSession token: ", sessionToken);
+                console.log("currSessions map:", currSessions);
 
                 // else 
                 res.writeHead(200, {
                     'Content-Type': 'application/json',
                     'Set-Cookie': `token=${sessionToken}; HttpOnly; Path=/; SameSite=Strict`
                 });
-                // let user_name = user.First_Name + ' ' + user.Last_Name;
-                // res.end(JSON.stringify({ message: 'Login successful', User: user_name }));
+
                 let user_name = `${user.First_Name} ${user.Last_Name}`;
                 res.end(JSON.stringify({
-                    message: "Login successful",
+                    message: `Hi ${user_name}!`,
                     user: user_name,
-                    token: sessionToken
-                }));    // send message, user, token as JSON to LoginPage.jsx
-                console.log("Session token:", sessionToken);
-                console.log("currSessions map:", currSessions);
+                    token: sessionToken,
+                    role: role,
+                }));    // send message, user, token, and role as JSON to LoginPage.jsx
+                
             } catch (error) {
                 console.log("Login error 2: ", error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });

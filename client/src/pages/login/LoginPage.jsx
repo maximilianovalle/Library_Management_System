@@ -25,18 +25,20 @@ const Login = () => {
         try {
             const res = await axios.post('http://localhost:8000/login', data);  // sends a POST request to /login w/ userID and password
 
-            if (res.data.token) {   // if token received
+            // if token received and USER role
+            if (res.data.token && res.data.role === 2) {
                 localStorage.setItem("token", res.data.token);  // store token in frontend localStorage
                 alert(res.data.message);
                 window.location.href = `/account/${userID}`;
             }
 
-            // if (res.status === 200) {   // if ( login successful )
-            //     alert(res.data.message);
-            //     navigate(`/user/${data.userID}`);  // redirect to /user page *added routing to id num*
-            // } else {
-            //     setMessage(res.data.message || 'Login failed');
-            // }
+            // if token received and LIBRARIAN role
+            else if (res.data.token && res.data.role === 1) {
+                localStorage.setItem("token", res.data.token);  // store token in frontend localStorage
+                alert(res.data.message);
+                window.location.href = `/librarian`;
+            }
+
         } catch (error) {
             console.log(error);
 
