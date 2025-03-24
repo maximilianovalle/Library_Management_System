@@ -5,7 +5,7 @@ const pool = require('../database.js');  // database connection
 const currSessions = new Map();
 
 
-async function getUser(userID, body) {
+async function getUser(userID) {
     try{
         const [rows] = await pool.query('SELECT * FROM user WHERE User_ID = ?', [userID]);  // queries database for user w/ userID
 
@@ -43,6 +43,7 @@ module.exports = async function login(req, res) {
                 }
 
                 const user = await getUser(userID, body);   // calls above getUser() function to fetch user details
+                console.log(user)
 
                 // if ( user == NULL )
                 if (!user) {

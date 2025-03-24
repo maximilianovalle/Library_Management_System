@@ -7,6 +7,8 @@ import MyBooksPage from './pages/mybooks/mybooks';
 import Login from './pages/login/LoginPage'
 import OutputPage from './pages/OutputPage'
 import UserPage from './pages/user/UserPage'
+import BrowseBooks from './pages/browse/browsebooks';
+
 
 
 
@@ -20,9 +22,10 @@ function App() {
         <Route path="/" element={<HomePage/>} />
         <Route path="/account" element={<Account/>} />
         <Route path="/user/:userId" element={<UserPage />} /> {/* changed route to include specific ID */}
+        <Route path="/browsebooks" element={<BrowseBooks />} />
         <Route path="/output" element={<OutputPage/>} />
         <Route path="/librarian" element={<LibrarianPage/>} />
-        <Route path="/mybooks/:userId" element={<MyBooksPage/>} />
+        <Route path="/mybooks" element={<MyBooksPage/>} />
       {/* when log in take to home or librarian page */}
         <Route path="/login" element={<Login/>} />
 

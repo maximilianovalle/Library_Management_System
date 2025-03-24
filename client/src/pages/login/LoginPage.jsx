@@ -2,14 +2,14 @@ import React from "react";
 import './LoginPage.css';
 import { useState } from 'react'; // manages form inputs (ex: userID, password, message)
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
     
     const [userID, setUserID] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     // triggered when user submits the login form
     const handleSubmit =  async(event) => {

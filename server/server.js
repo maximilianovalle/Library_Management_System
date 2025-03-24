@@ -1,12 +1,12 @@
 var http = require('http');
 const pool = require("./database.js");  // database connection
 const cors = require('cors');
-
 // import session tokens
 const { currSessions } = require("./login_function/login.js");
 
 const login = require("./login_function/login.js"); // login()
 const getUserName = require("./account_info/account.js"); // getUserName()
+const getBookInfo = require("./book_info/books.js")
 
 
 // creates HTTP server and listens for incoming requests
@@ -66,6 +66,9 @@ const app = http.createServer( async (req, res) => {
       return;
     }
 
+    if(req.url === '/books' && req.method === 'GET' && token){
+      getBookInfo(req, res, userID);
+    }
     res.end();  // if request does not match any of the defined routes, ends response w/ no data
     
 }).listen(8000, console.log('Server is running on port 8000')); // server is listening on port 8000 for incoming HTTP requests
