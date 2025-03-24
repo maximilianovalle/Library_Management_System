@@ -1,15 +1,21 @@
 import "./Header.css";
+import React from 'react'
 import { Link, useParams } from 'react-router-dom';
+
 
 const Header = () => {
     const { userId } = useParams();
 
-    const loggedInItems = [
+    const items = [
+        // {title: "My Books", link: "/mybooks"},
+        // {title: "Browse Books", link: "/browsebooks"},
+        // {title: "Browse Devices",link: "/browsedevices"},
+        // {title: "Account", link: "/account"},  
         { title: "My Books", link: `/mybooks/${userId}` },
-        { title: "Browse Books", link: "/browsebooks" },
-        { title: "Browse Devices", link: "/browsedevices" },
-        { title: "Account", link: `/account` }
-    ];
+        { title: "Browse Books", link: `/browsebooks/${userId}` },
+        { title: "Browse Devices", link: `/browsedevices/${userId}` },
+        { title: "Account", link: `/account/${userId}` }  
+    ]
 
     const guestItems = ["My Books", "Browse Books", "Browse Devices"];
 
@@ -28,7 +34,7 @@ const Header = () => {
                     <div className="nav-links">
                         {userId ? (
                             <>
-                                {loggedInItems.map((item) => (
+                                {items.map((item) => (
                                     <Link key={item.title} to={item.link} className="link">
                                         {item.title}
                                     </Link>
