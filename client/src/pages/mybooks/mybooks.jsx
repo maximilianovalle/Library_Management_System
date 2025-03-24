@@ -1,90 +1,66 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import axios from "axios";
-import './mybooks.css';
-
-const items = [
-    {title: "My Books", link: "/mybooks"},
-    {title: "Browse Books", link: "/browsebooks"},
-    {title: "Browse Devices",link: "/browsedevices"},
-    {title: "Account", link: "/account"},
-    // {title: "Account", link: `/account/${userId}`}, i think we should change this for account too
-
-]
+import HeaderAfter from "../../components/header/HeaderAfter";
+import "./mybooks.css";
 
 const MyBooksPage = () => {
-    
-    const { userId } = useParams();
-    const [books, setBooks] = useState([]);
-    const [error, setError] = useState("");
+    const [pastBooks, setPastBooks] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get("http://localhost:8000/account")
-            .then((res) => {
-                setBooks(res.data.pastBooksArray || []);
+        const fetchBooks = async () => {
+            try {
+                const token = localStorage.getItem("token");
+
+                if (!token) {
+                    console.error("No token found. Redirecting to login...");
+                    window.location.href = "/login";
+                    return;
+                }
+
+                console.log("Token sent to server:", token);
+
+                const res = await axios.get("http://localhost:8000/account", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+
+                setPastBooks(res.data.pastBooksArray);
                 setLoading(false);
-            })
-            .catch((err) => {
-                console.error(err);
-                setError("Failed to load borrowed books.");
-                setLoading(false);
-            });
-    }, [userId]);
+            } catch (error) {
+                console.error("Error fetching books:", error);
+            }
+        };
+
+        fetchBooks();
+    }, []);
 
     return (
         <div id="body">
+            <HeaderAfter />
 
-        {/* header code credit to @ alan "atonyit" */}
-            <header className="header">
-                <div className="container">
-                    <nav className="nav">
-                        <div className="logo">
-                            <a href="/">
-                                <img src="/logo.png" alt="Logo" />
-                            </a>
-                            <h1>Cougar Public Library</h1>
-                        </div>
+            <div className="mybooks-container">
+                <h1 className="title">My Borrowed Books</h1>
 
-                        <div className={`nav-links`}>
-                            {items.map((item) => (
-                                <a key={item.title} href={item.link} className="link">
-                                    {item.title}
-                                </a>
-                            ))}
-                            <button onClick={() => {localStorage.clear(); window.location.href = '/login';}} className = "logout_button">Logout</button>
-                        </div>
-                    </nav>
-                        <div className="mybooks-container">
-
-                            <h1 className="title">My Borrowed Books</h1>
-
-                            {loading && <p>Loading...</p>}
-                            {error && <p style={{ color: "red" }}>{error}</p>}
-
-                            {!loading && !error && (
-                                <div>
-                                    {books.length === 0 ? (
-                                            // if theres no books
-                                        <p>No borrowed books to display.</p> 
-                                    ) : (
-                                        <ul className="book-list">
-                                            {books.map((book, i) => (
-                                                <li key={i} className="book-item">
-                                                    <h3>{book.title}</h3>
-                                                    <p><strong>Author:</strong> {book.author}</p>
-                                                    <p><strong>Checked Out:</strong> {book.checkoutDate}</p>
-                                                    <p><strong>Returned:</strong> {book.returnedDate}</p>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </div>
-                            )}
-                        </div> 
-                    </div>
-                </header>
-         </div>
+                {loading ? (
+                    <p>Loading...</p>
+                ) : pastBooks.length === 0 ? (
+                    <p>You haven't borrowed any books yet.</p>
+                ) : (
+                    <ul className="book-list">
+                        {pastBooks.map((book, index) => (
+                            <li key={index} className="book-item">
+                                <h3>{book.title}</h3>
+                                <p><strong>Author:</strong> {book.author}</p>
+                                <p><strong>Checked out:</strong> {book.checkoutDate}</p>
+                                <p><strong>Returned:</strong> {book.returnedDate}</p>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+        </div>
     );
 };
 
