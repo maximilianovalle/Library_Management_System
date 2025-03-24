@@ -1,4 +1,3 @@
-/* Search & Dropdown container */
 .search-container {
     display: flex;
     flex-direction: column;
@@ -38,7 +37,6 @@
     background-color: #005fa3;
 }
 
-/* Chip Styling */
 .filters {
     text-align: center;
     margin-top: 10px;
@@ -59,7 +57,6 @@
     color: white;
 }
 
-/* Sort Dropdown */
 .sort-container {
     margin-top: 15px;
 }
@@ -73,7 +70,6 @@
     font-size: 1rem;
 }
 
-/* Device List */
 .device_list {
     list-style: none;
     padding: 0;
@@ -95,7 +91,6 @@
     transform: translateY(-3px);
 }
 
-/* Status Styling */
 .status.available {
     color: green;
     font-weight: bold;
@@ -105,20 +100,4 @@
 .status.maintenance {
     color: red;
     font-weight: bold;
-}
-
-/* Mobile Responsive */
-@media (max-width: 600px) {
-    .search {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .search_bar {
-        width: 90%;
-    }
-
-    .device_card {
-        padding: 12px;
-    }
 }
