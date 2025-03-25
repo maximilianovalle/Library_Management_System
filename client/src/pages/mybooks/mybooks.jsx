@@ -20,7 +20,7 @@ const MyBooksPage = () => {
 
                 console.log("Token sent to server:", token);
 
-                const res = await axios.get("http://localhost:8000/account", {
+                const res = await axios.get("https://library-management-system-gf9d.onrender.com/account", {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }

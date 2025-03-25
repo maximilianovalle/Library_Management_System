@@ -57,7 +57,7 @@ const BrowseBooks = () => {
         //         return;
         //     }
 
-            const response = await axios.get("http://localhost:8000/books", {
+            const response = await axios.get("https://library-management-system-gf9d.onrender.com/books", {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 },

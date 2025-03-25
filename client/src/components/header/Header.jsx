@@ -33,14 +33,13 @@ const Header = () => {
                                     </Link>
                                 ))}
                                 <button
-                                    className="logout_button"
+                                    className="button"
                                     onClick={() => {
-                                        localStorage.clear();
                                         // sends to login page
                                         window.location.href = "/login";
                                     }}
                                 >
-                                    Logout
+                                    Login
                                 </button>
                             </>
                         

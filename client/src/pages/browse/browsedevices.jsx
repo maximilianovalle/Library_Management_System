@@ -24,7 +24,7 @@ const BrowseDevices = () => {
                 return;
             }
 
-            const response = await axios.get("http://localhost:8000/devices", {
+            const response = await axios.get("https://library-management-system-gf9d.onrender.com/devices", {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
