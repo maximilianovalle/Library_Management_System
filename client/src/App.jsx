@@ -21,13 +21,13 @@ function App() {
       {/* Available after logging in */}
 
         <Route path="/" element={<HomePage/>} />
-        <Route path="/account/:userId" element={<Account/>} />
-        {/* <Route path="/user/:userId" element={<UserPage />} /> */}
-        <Route path="/browsebooks/:userId" element={<BrowseBooks />} />
-        <Route path="/browsedevices/:userId" element={<BrowseDevices />} />
+        <Route path="/account" element={<Account/>} />
+        {/* <Route path="/user" element={<UserPage />} /> */}
+        <Route path="/browsebooks" element={<BrowseBooks />} />
+        <Route path="/browsedevices" element={<BrowseDevices />} />
         <Route path="/output" element={<OutputPage/>} />
         <Route path="/librarian" element={<LibrarianPage/>} />
-        <Route path="/mybooks/:userId" element={<MyBooksPage/>} />
+        <Route path="/mybooks" element={<MyBooksPage/>} />
       {/* when log in take to home or librarian page */}
         <Route path="/login" element={<Login/>} />
 

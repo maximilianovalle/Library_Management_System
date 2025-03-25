@@ -29,7 +29,7 @@ const Login = () => {
             if (res.data.token && res.data.role === 2) {
                 localStorage.setItem("token", res.data.token);  // store token in frontend localStorage
                 alert(res.data.message);
-                window.location.href = `/account/${userID}`;
+                window.location.href = `/account`;
             }
 
             // if token received and LIBRARIAN role

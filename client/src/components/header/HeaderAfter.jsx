@@ -1,14 +1,12 @@
 import "./HeaderAfter.css";
-import { useParams } from 'react-router-dom';
 
 const HeaderAfter = () => {
-    const { userId } = useParams();
 
     const loggedInItems = [
-        { title: "My Books", link: `/mybooks/${userId}` },
-        { title: "Browse Books", link: `/browsebooks/${userId}` },
-        { title: "Browse Devices", link: `/browsedevices/${userId}` },
-        { title: "Account", link: `/account/${userId}` }
+        { title: "My Books", link: `/mybooks` },
+        { title: "Browse Books", link: `/browsebooks` },
+        { title: "Browse Devices", link: `/browsedevices` },
+        { title: "Account", link: `/account` }
     ];
 
     const handleLogout = async () => {
