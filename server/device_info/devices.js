@@ -61,8 +61,8 @@ module.exports = async function getDevices(req, res) {
         query += ` LIMIT ? OFFSET ?`;
         params.push(parseInt(limit), offset);
 
-        console.log("FINAL QUERY:", query);
-        console.log("PARAMS:", params);
+        // console.log("FINAL QUERY:", query);
+        // console.log("PARAMS:", params);
 
         // Run device query
         const [rows] = await pool.query(query, params);
