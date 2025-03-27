@@ -9,21 +9,25 @@ const Login = () => {
     const [userID, setUserID] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     // const navigate = useNavigate();
 
     // triggered when user submits the login form
-    const handleSubmit =  async(event) => {
+    const handleSubmit = async(event) => {
         event.preventDefault(); // prevents the page from refreshing
+        setIsLoading(true);
+        setMessage('');
 
         const data = {
             userID,
             password
         };
 
-        console.log(data);
+        console.log("Attempting login with:", data);
 
         try {
             const res = await axios.post('https://library-management-system-gf9d.onrender.com/login', data);  // sends a POST request to /login w/ userID and password
+            console.log("Login response:", res.data);
 
             // if token received and USER role
             if (res.data.token && res.data.role === 2) {
@@ -37,16 +41,22 @@ const Login = () => {
                 localStorage.setItem("token", res.data.token);  // store token in frontend localStorage
                 alert(res.data.message);
                 window.location.href = `/librarian`;
+            } else {
+                // Handle unexpected response format
+                setMessage('Received unexpected response from server');
+                console.error('Unexpected response:', res.data);
             }
 
         } catch (error) {
-            console.log(error);
+            console.error("Login error:", error);
 
             if (error.response && error.response.data && error.response.data.message) {
                 setMessage(error.response.data.message);
             } else {
-                setMessage('An unexpected error occurred');
+                setMessage('An unexpected error occurred. Please try again.');
             }
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -82,8 +92,14 @@ const Login = () => {
                             />
                         </label>
                     </div>
-                    <button type="submit" className="login_button">Login</button>
-                    {message && <p>{message}</p>}
+                    <button 
+                        type="submit" 
+                        className="login_button"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Logging in...' : 'Login'}
+                    </button>
+                    {message && <p className="error-message">{message}</p>}
                 </div>
             </form>
 
@@ -92,4 +108,4 @@ const Login = () => {
     );
 }
 
-export default Login
+export default Login;

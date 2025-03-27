@@ -1,0 +1,17 @@
+# netlify.toml
+# This file tells Netlify how to handle your React Router routes
+# It should be placed in the root of your client directory
+
+[build]
+  # Directory to publish (relative to root of your repo)
+  publish = "build"
+  
+  # Default build command
+  command = "npm run build"
+
+# The following redirect is the key part - it tells Netlify to serve 
+# your index.html for any route that doesn't match a static file
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
