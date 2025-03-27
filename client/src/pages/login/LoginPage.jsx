@@ -26,7 +26,7 @@ const Login = () => {
         console.log("Attempting login with:", data);
 
         try {
-            const res = await axios.post('https://library-management-system-gf9d.onrender.com/login', data);  // sends a POST request to /login w/ userID and password
+            const res = await axios.post(`${process.env.BACKEND_URL}/login`, data);  // sends a POST request to /login w/ userID and password
             console.log("Login response:", res.data);
 
             // if token received and USER role

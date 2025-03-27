@@ -18,7 +18,7 @@ const HeaderAfter = () => {
 
         if (token) {
             try {
-                await fetch("https://library-management-system-gf9d.onrender.com/logout", {
+                await fetch(`${process.env.BACKEND_URL}/login`, {
                     method: 'DELETE',
                     headers: {
                         "Content-Type": "application/json",
