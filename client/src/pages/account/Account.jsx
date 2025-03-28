@@ -30,7 +30,7 @@ const Account = () => {
                 }
 
                 // sends a GET request to /account including token
-                const res = await axios.get("https://library-management-system-gf9d.onrender.com/account", {
+                const res = await axios.get(`${process.env.BACKEND_URL}/account`, {
                     headers: {
                         "Authorization": `Bearer ${token}`,
                     },
@@ -76,7 +76,7 @@ const Account = () => {
             }
 
             // sends a PUT request to /account including token
-            const res = await axios.put('https://library-management-system-gf9d.onrender.com/account', {}, {
+            const res = await axios.put(`${process.env.BACKEND_URL}/account`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 },
@@ -88,7 +88,7 @@ const Account = () => {
             // });
 
             // sends a GET request to /account including token
-            const res2 = await axios.get("https://library-management-system-gf9d.onrender.com/account", {
+            const res2 = await axios.get(`${process.env.BACKEND_URL}/account`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 },

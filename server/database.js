@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');                                // include the library
-require('dotenv').config();                                             // include the .env file with all the information to connect to the DBMS             
+require('dotenv').config(); // include the .env file with all the information to connect to the DBMS             
 const fs = require('fs');
 
 const pool = mysql.createPool({                                         // Create the pool

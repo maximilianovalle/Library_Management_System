@@ -3,74 +3,54 @@ import axios from "axios";
 import './browsebooks.css';
 import DropDown from './components/drop_down';
 import HeaderAfter from "../../components/header/HeaderAfter";
+
 // THIS IS FOR THE DROP DOWN MENU
 const browse_by = ["Title", "ISBN", "Author", "Genre"];
-// THIS IS FOR THE DIFFERENT TYPES OF GENRES THE USER CAN SELECT FROM
-// const genres = [
-//     {genre : "Accounting" }, {genre : "Adventure"}, {genre : "History"}, {genre : "Arts"}, {genre : "Biomaterials"}, {genre : "Cardiology"}, {genre : "Child research"}, {genre : "Classic"},
-//     {genre : "Computer science"}, {genre: "Economics"}, {genre: "Educational"}, {genre: "Educational"}, {genre: "Fiction"}, {genre: "Genetics"}, {genre: "Geography"}, {genre: "Geometry"},
-//     {genre: ""}, {genre: ""}, {genre: ""}, {genre: ""}, {genre: ""},
-// ]
 
 const BrowseBooks = () => {
     // THIS IS TO SET THE VALUES FOR THE BOOK INFORMATION
     const [search_value, setSearchValue] = useState("");
     const [search_by, setSearchBy] = useState("");
-    // const [ISBN, setISBN] = useState("");
-    // const [tile, setTitle] = useState("");
-    // const [genre, setGenre] = useState("");
-    // const [year, setYear] = useState("");
-    // const [author, setAuthor] = useState("");
-    // const [image, setImage] = useState("");
-    // const [similar_book_array, setSimilar_books] = useState("");
+    const [books, setBooks] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
+
     const handleSelect = (selectedOption) => {
         setSearchBy(selectedOption);
     };
 
-    const data = {
-        search_value,
-        search_by
-    };
-
-    console.log(data.search_value);
-    console.log(data.search_by);
-
-    const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
-
-    // if ( no token )
-    if (!token) {
-        console.error("No token found. Redirecting to login...");
-        window.location.href = "/login";
-        return;
-    }
-
     const fetchBook = async (e) => {
-        e.preventDefault(); //prevents page reload on submit
+        e.preventDefault(); // prevents page reload on submit
+        setLoading(true);
+        setError("");
 
         try {
-        // const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
+            const token = localStorage.getItem("token");
 
-        // // if ( no token )
-        //     if (!token) {
-        //         console.error("No token found. Redirecting to login...");
-        //         window.location.href = "/login";
-        //         return;
-        //     }
+            if (!token) {
+                console.error("No token found. Redirecting to login...");
+                window.location.href = "/login";
+                return;
+            }
 
-            const response = await axios.get("https://library-management-system-gf9d.onrender.com/books", {
+            // Fix: Use search_value and search_by directly from state
+            const response = await axios.get(`${process.env.BACKEND_URL}/books`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 },
                 params: {
-                    search_value: data.searchValue,
-                    search_by: data.searchBy,
+                    search_value: search_value,
+                    search_by: search_by,
                 }
             });
 
             console.log("Books fetched:", response.data);
-            // TODO: update state with books here
+            setBooks(response.data.books || []);
         } catch (error) {
             console.error("Error fetching books:", error);
+            setError("Failed to load books. Please try again.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -83,23 +63,39 @@ const BrowseBooks = () => {
                     <input
                         className="search_bar"
                         type="text"
-                            label="Search"
+                        label="Search"
                         placeholder="Search ..."
-                            variant="outlined"
-                            value={search_value}
+                        variant="outlined"
+                        value={search_value}
                         onChange={(e) => setSearchValue(e.target.value)}
                     />
-                        <button className= "search_button" type="submit" value="Send">Search</button>
+                    <button className="search_button" type="submit">Search</button>
                 </form>
 
                 <div className="search">
-                        <DropDown options={browse_by} onSelect={handleSelect}/>
-                            {/*ILL FIX THE DROP DOWN BUTTON POSITION LATER TT*/}
+                    <DropDown options={browse_by} onSelect={handleSelect} />
                 </div>
             </div>
 
             <div className="Display_container">
-                    {/* THIS IS WHERE THE CODE TO DISPLAY THE RETRIEVED ITEMS WILL GO */}
+                {loading && <p>Loading...</p>}
+                {error && <p className="error-message">{error}</p>}
+                {!loading && !error && books.length === 0 && (
+                    <p>No books found. Try a different search.</p>
+                )}
+                {!loading && !error && books.length > 0 && (
+                    <ul className="book-list">
+                        {/* Render books here once backend is complete */}
+                        {books.map((book, index) => (
+                            <li key={index} className="book-item">
+                                <h3>{book.title}</h3>
+                                <p><strong>Author:</strong> {book.author}</p>
+                                <p><strong>ISBN:</strong> {book.isbn}</p>
+                                <p><strong>Genre:</strong> {book.genre}</p>
+                            </li>
+                        ))}
+                    </ul>
+                )}
             </div>
         </div>
     );

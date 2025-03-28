@@ -1,6 +1,10 @@
 import "./HeaderAfter.css";
+// Remove the useParams import since it's not being used
+// import { useParams } from 'react-router-dom';
 
 const HeaderAfter = () => {
+    // Remove the unused userId variable
+    // const { userId } = useParams();
 
     const loggedInItems = [
         { title: "My Books", link: `/mybooks` },
@@ -14,7 +18,7 @@ const HeaderAfter = () => {
 
         if (token) {
             try {
-                await fetch("http://localhost:8000/logout", {
+                await fetch(`${process.env.BACKEND_URL}/login`, {
                     method: 'DELETE',
                     headers: {
                         "Content-Type": "application/json",
