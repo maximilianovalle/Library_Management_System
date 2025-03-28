@@ -23,7 +23,9 @@ const Login = () => {
         console.log(data);
 
         try {
-            const res = await axios.post('https://library-management-system-gf9d.onrender.com/login', data);  // sends a POST request to /login w/ userID and password
+            // sends a POST request to /login w/ userID and password
+            const res = await axios.post('https://library-management-system-gf9d.onrender.com/login', data);
+            // const res = await axios.post('http://localhost:8000/login', data);
 
             // if token received and USER role
             if (res.data.token && res.data.role === 2) {

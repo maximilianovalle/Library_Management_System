@@ -9,9 +9,12 @@ module.exports = async function getUserName(req, res, userID) {
         
         const [[userInfo], [fineInfo], [pastBooksRows], [pastDevicesRows]] = await Promise.all([
             pool.query("SELECT First_Name, Last_Name, Email, Created_At FROM user WHERE User_ID = ?", [TEMP_USER]), // queries database for user info of specific User_ID
+
             pool.query("SELECT Amount FROM fines WHERE User_ID = ? AND Fine_Status = 2", [TEMP_USER]),   // queries database for user unpaid fine amount
+
             pool.query("SELECT book.Title, author.Name, borrow_record.Checkout_Date, borrow_record.Return_Date FROM borrow_record, book, author WHERE borrow_record.User_ID = ? AND borrow_record.Return_Date IS NOT NULL AND borrow_record.ISBN IS NOT NULL AND book.ISBN = borrow_record.ISBN AND author.Author_ID = book.Author_ID", [TEMP_USER]),  // select all previously checked out + returned books for user
-            pool.query("SELECT Category, Model, Checkout_Date, Return_Date FROM borrow_record WHERE User_ID = ? AND Return_Date IS NOT NULL AND Category IS NOT NULL", [TEMP_USER]),
+
+            pool.query("SELECT Category, Model, Checkout_Date, Return_Date FROM borrow_record WHERE User_ID = ? AND Return_Date IS NOT NULL AND Category IS NOT NULL", [TEMP_USER]),    // select all previously checked out + returned devices for user
         ]);
 
         if (userInfo.length === 0) {    // if no user found

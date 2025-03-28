@@ -114,7 +114,7 @@ module.exports = async function login(req, res) {
 
                 let user_name = `${user.First_Name} ${user.Last_Name}`;
                 res.end(JSON.stringify({
-                    message: `Hi ${user_name}!`,
+                    message: `Login successful!`,
                     user: user_name,
                     token: sessionToken,
                     role: role,

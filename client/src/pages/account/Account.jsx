@@ -2,9 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";  // used for making HTTP requests
 import './Account.css';
 import HeaderAfter from '../../components/header/HeaderAfter';
+
 // The (React) frontend sends a GET, POST, DELETE, etc. request to the (NodeJS) backend. The backend server.js file processes the request and returns a response that is then displayed on the frontend.
-
-
 
 const Account = () => {
     const [firstName, setFirstName] = useState("");
@@ -14,6 +13,7 @@ const Account = () => {
     const [fineAmntDue, setFineAmnt] = useState("");
     const [pastBooksArray, setPastBooks] = useState("");
     const [pastDevicesArray, setPastDevices] = useState("");
+
 
     // triggered once when the page loads
     useEffect(() => {
@@ -35,6 +35,11 @@ const Account = () => {
                         "Authorization": `Bearer ${token}`,
                     },
                 });
+                // const res = await axios.get("http://localhost:8000/account", {
+                //     headers: {
+                //         "Authorization": `Bearer ${token}`,
+                //     },
+                // });
 
                 // receive JSON from account.js
                 setFirstName(res.data.firstName);
@@ -58,7 +63,53 @@ const Account = () => {
         fetchName();    // need to explicitly call fetchName to run
     }, []);
 
-    return( // HTML -----
+
+    // payfines function
+    const payFines = async (event) => {
+        try {
+            const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
+
+            if (!token) {
+                console.error("No token found. Redirecting to login...");
+                window.location.href = "/login";
+                return;
+            }
+
+            // sends a PUT request to /account including token
+            const res = await axios.put('https://library-management-system-gf9d.onrender.com/account', {}, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            // const res = await axios.put('http://localhost:8000/account', {}, {
+            //     headers: {
+            //         "Authorization": `Bearer ${token}`,
+            //     },
+            // });
+
+            // sends a GET request to /account including token
+            const res2 = await axios.get("https://library-management-system-gf9d.onrender.com/account", {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            // const res2 = await axios.get("http://localhost:8000/account", {
+            //     headers: {
+            //         "Authorization": `Bearer ${token}`,
+            //     },
+            // });
+
+            setFineAmnt(res2.data.fineAmntDue); // update fine amount
+            alert(res.data.message);
+
+        } catch (error) {
+            console.log("Error paying fine: ", error);
+        }
+    };
+
+
+    // HTML
+    return(
 
         <div id="body">
 
@@ -74,14 +125,19 @@ const Account = () => {
                 {/* user info */}
                 <div id="userInfo">
 
-                    <div>
+                    <div id="userDesc">
                         {lastName && firstName && <h1>{lastName}, {firstName}</h1>}
                         {email && <p>{email}</p>}
                     </div>
 
                     {createdAt && <p id="dateJoined">Joined {createdAt}</p>}
+                    
                     <h2 id="finesDue">Fines Due</h2>
                     <p id="amountDue">-${fineAmntDue}</p>
+
+                    <div id="buttonAlign">
+                        <button id="payBtn" onClick={payFines}>Pay Now</button>
+                    </div>
 
                 </div>
 

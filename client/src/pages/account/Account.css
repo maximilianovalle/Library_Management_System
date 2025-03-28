@@ -96,9 +96,6 @@
 }
 
 #userInfo {
-    /* width: 80%;
-    margin: 0px auto; */
-
     padding: 16px 48px;
     border-radius: 16px;
     box-sizing: border-box;
@@ -106,7 +103,7 @@
     background-color: #f0f0f0;
 }
 
-#userInfo > div {
+#userDesc {
     padding: 0px;
     margin: 0px;
 
@@ -144,6 +141,13 @@
 
     text-align: center;
     font-size: 2rem;
+}
+
+#buttonAlign {
+    margin-top: 22px;
+    
+    display: flex;
+    justify-content: center;
 }
 
 #recentActivity > h1 {
