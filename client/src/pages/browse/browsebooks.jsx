@@ -34,7 +34,7 @@ const BrowseBooks = () => {
             }
 
             // Fix: Use search_value and search_by directly from state
-            const response = await axios.get(`${process.env.BACKEND_URL}/books`, {
+            const response = await axios.get('https://library-management-system-8ktv.onrender.com/books', {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 },

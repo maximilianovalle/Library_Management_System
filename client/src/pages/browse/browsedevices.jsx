@@ -24,7 +24,7 @@ const BrowseDevices = () => {
                 return;
             }
 
-            const response = await axios.get(`${process.env.BACKEND_URL}/devices`, {
+            const response = await axios.get('https://library-management-system-8ktv.onrender.com/devices', {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

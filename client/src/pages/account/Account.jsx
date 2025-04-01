@@ -30,7 +30,7 @@ const Account = () => {
                 }
 
                 // sends a GET request to /account including token
-                const res = await axios.get(`${process.env.BACKEND_URL}/account`, {
+                const res = await axios.get('https://library-management-system-8ktv.onrender.com/account', {
                     headers: {
                         "Authorization": `Bearer ${token}`,
                     },

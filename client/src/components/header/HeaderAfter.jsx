@@ -18,7 +18,7 @@ const HeaderAfter = () => {
 
         if (token) {
             try {
-                await fetch(`${process.env.BACKEND_URL}/login`, {
+                await fetch('https://library-management-system-8ktv.onrender.com/login', {
                     method: 'DELETE',
                     headers: {
                         "Content-Type": "application/json",

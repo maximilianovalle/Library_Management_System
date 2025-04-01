@@ -27,7 +27,7 @@ const Login = () => {
 
         try {
             // sends a POST request to /login w/ userID and password
-            const res = await axios.post(`${process.env.BACKEND_URL}/login`, data);
+            const res = await axios.post('https://library-management-system-8ktv.onrender.com/login', data);
             // const res = await axios.post(`http://localhost:8000//login`, data);
             console.log("Login response:", res.data);
 
