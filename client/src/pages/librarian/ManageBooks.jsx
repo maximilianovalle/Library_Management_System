@@ -25,7 +25,7 @@ const ManageBooks = () => {
                 return;
             }
             
-            const response = await axios.get(`https://library-management-system-gf9d.onrender.com/librarian/books?filter=${filterType}`, {
+            const response = await axios.get(`https://library-management-system-8ktv.onrender.com/librarian/books?filter=${filterType}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -53,7 +53,7 @@ const ManageBooks = () => {
         try {
             const token = localStorage.getItem("token");
             
-            await axios.delete(`https://library-management-system-gf9d.onrender.com/librarian/books/${selectedBook.isbn}`, {
+            await axios.delete(`https://library-management-system-8ktv.onrender.com/librarian/books/${selectedBook.isbn}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }

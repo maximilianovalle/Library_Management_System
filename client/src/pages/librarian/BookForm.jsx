@@ -36,7 +36,7 @@ const BookForm = () => {
                 }
                 
                 // Fetch all authors
-                const authorsResponse = await axios.get("https://library-management-system-gf9d.onrender.com/librarian/authors", {
+                const authorsResponse = await axios.get("https://library-management-system-8ktv.onrender.com/librarian/authors", {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
@@ -46,7 +46,7 @@ const BookForm = () => {
                 
                 // If in edit mode, fetch book details
                 if (isEditMode) {
-                    const bookResponse = await axios.get(`https://library-management-system-gf9d.onrender.com/librarian/books/${isbn}`, {
+                    const bookResponse = await axios.get(`https://library-management-system-8ktv.onrender.com/librarian/books/${isbn}`, {
                         headers: {
                             "Authorization": `Bearer ${token}`
                         }
@@ -103,7 +103,7 @@ const BookForm = () => {
                 showNotification("Book updated successfully!", "success");
             } else {
                 // Add new book
-                await axios.post("https://library-management-system-gf9d.onrender.com/librarian/books", formData, {
+                await axios.post("https://library-management-system-8ktv.onrender.com/librarian/books", formData, {
                     headers: {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"

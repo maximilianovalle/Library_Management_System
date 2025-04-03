@@ -58,7 +58,7 @@ const ManageDevices = () => {
         try {
             const token = localStorage.getItem("token");
             
-            await axios.delete(`https://library-management-system-gf9d.onrender.com/librarian/devices/${selectedDevice.category}/${selectedDevice.model}/${selectedDevice.copy_id}`, {
+            await axios.delete(`https://library-management-system-8ktv.onrender.com/librarian/devices/${selectedDevice.category}/${selectedDevice.model}/${selectedDevice.copy_id}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }

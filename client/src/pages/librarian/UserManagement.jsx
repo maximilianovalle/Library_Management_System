@@ -40,7 +40,7 @@ const UserManagement = () => {
             }
             
             // Search for the user
-            const userResponse = await axios.get("https://library-management-system-gf9d.onrender.com/librarian/users/search", {
+            const userResponse = await axios.get("https://library-management-system-8ktv.onrender.com/librarian/users/search", {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 },

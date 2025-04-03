@@ -36,7 +36,7 @@ const DeviceForm = () => {
                     return;
                 }
                 
-                const response = await axios.get(`https://library-management-system-gf9d.onrender.com/librarian/devices/${category}/${model}/${copyId}`, {
+                const response = await axios.get(`https://library-management-system-8ktv.onrender.com/librarian/devices/${category}/${model}/${copyId}`, {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
@@ -79,7 +79,7 @@ const DeviceForm = () => {
             
             if (isEditMode) {
                 // Update existing device
-                await axios.put(`https://library-management-system-gf9d.onrender.com/librarian/devices/${category}/${model}/${copyId}`, {
+                await axios.put(`https://library-management-system-8ktv.onrender.com/librarian/devices/${category}/${model}/${copyId}`, {
                     device_condition: formData.device_condition,
                     device_status: formData.device_status
                 }, {
@@ -92,7 +92,7 @@ const DeviceForm = () => {
                 showNotification("Device updated successfully!", "success");
             } else {
                 // Add new device
-                await axios.post("https://library-management-system-gf9d.onrender.com/librarian/devices", formData, {
+                await axios.post("https://library-management-system-8ktv.onrender.com/librarian/devices", formData, {
                     headers: {
                         "Authorization": `Bearer ${token}`,
                         "Content-Type": "application/json"

@@ -46,7 +46,7 @@ const Notifications = () => {
             }
             
             // Fetch user's borrowed items
-            const response = await axios.get("https://library-management-system-gf9d.onrender.com/account", {
+            const response = await axios.get("https://library-management-system-8ktv.onrender.com/account", {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -164,7 +164,7 @@ const Notifications = () => {
                 }
                 
                 // Fetch user's fines
-                const response = await axios.get("https://library-management-system-gf9d.onrender.com/fines", {
+                const response = await axios.get("https://library-management-system-8ktv.onrender.com/fines", {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }

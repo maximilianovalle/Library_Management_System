@@ -63,7 +63,7 @@ const ReportsPage = () => {
             // Determine if we need to send the timeFrame
             const params = reportOption.timeFrames.length > 0 ? { timeFrame } : {};
             
-            const response = await axios.get(`https://library-management-system-gf9d.onrender.com/librarian/reports/${selectedReport}`, {
+            const response = await axios.get(`https://library-management-system-8ktv.onrender.com/librarian/reports/${selectedReport}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 },
