@@ -64,7 +64,6 @@ module.exports = async function login(req, res) {
                     user = await getAdmin(userID, body);    // check if admin
                     role = 1;   // ADMIN ROLE = 1
                 }
-
                 // if ( user still does not exist )
                 if (!user) {
                     res.writeHead(401, { 'Content-Type': 'application/json' });
