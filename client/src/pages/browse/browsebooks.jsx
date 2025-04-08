@@ -3,7 +3,7 @@ import axios from "axios";
 import './browsebooks.css';
 import DropDown from './components/drop_down';
 import HeaderAfter from "../../components/header/HeaderAfter";
-// import Genres from "./genres";
+import Genres from "./genres";
 
 // THIS IS FOR THE DROP DOWN MENU
 const browse_by = ["Title", "ISBN", "Author", "Genre", "Book_Status"];
@@ -118,7 +118,7 @@ const BrowseBooks = () => {
                     )}
                 </div>
                 <div className="genre_container">
-                    <h2 style={{font: "12", fontFamily: "sans-serif"}}>
+                    {/* <h2 style={{font: "12", fontFamily: "sans-serif"}}>
                         Search by Genres
                         </h2>
                         <div>
@@ -127,7 +127,8 @@ const BrowseBooks = () => {
                             {popular_genres.genre}
                         </div>
                         }
-                    </div>
+                    </div> */}
+                    <Genres />
                 </div>
         </div>
 
