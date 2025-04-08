@@ -6,15 +6,14 @@ const { currSessions } = require("./login_function/login.js");
 
 const login = require("./login_function/login.js"); // login()
 const getUserName = require("./account_info/account.js"); // getUserName()
-const getBookInfo = require("./book_info/books.js")
+const getBooks = require("./book_info/books.js") // getBookInfo()
 const getDevices = require("./device_info/devices.js"); // getDevices()
 const payFine = require('./account_info/payFine.js'); // payFine()
-
+// const getGenres = require('./book_info/genres.js'); // getGenres()
 
 
 // creates HTTP server and listens for incoming requests
 const app = http.createServer( async (req, res) => {
-
   // req [AKA request] - object representing the HTTP request sent by the client, contains details like
   // - HTTP Method: GET, POST, PUT, etc.
   // - URL/path: some general examples include "/login" and "api/users/" 
@@ -76,7 +75,8 @@ const app = http.createServer( async (req, res) => {
 
   // if ( the browser sends a GET request to "/books" and has USER role )
   if (req.url === '/books' && req.method === 'GET' && role === 2){
-    getBookInfo(req, res, userID);
+    getBooks(req, res);
+    return;
   }
 
   // if ( browser sends a GET request to "/devices" and USER role )
@@ -84,6 +84,12 @@ const app = http.createServer( async (req, res) => {
     getDevices(req, res);  // call getDevices() to search devices
     return;
   }
+
+  // if(req.url === '/genres' && req.method === 'GET' && role === 2){
+  //   console.log("getGenres function called")
+  //   getGenres(req, res);  // call getGenres() to search genres
+  //   return;
+  // }
 
   res.end();  // if request does not match any of the defined routes, ends response w/ no data
     

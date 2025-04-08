@@ -1,21 +1,25 @@
 const pool = require('../database.js');
+module.exports = async function getBooks(req, res){
+    // try {
+    //     const search_by = searchParams.get("search_by");
+    //     const search_value = searchParams.get("search_value");
+    //     const allowedFields = ['ISBN', 'Book_Condition', 'Book_Status'];
+    //     let params = []
+    //     const fieldMap = {
+    //         model: "bc.ISBN",
+    //         book_condition: "bc.Book_Condition",
+    //         book_status: "bc.Book_Status"
+    //     };
+        // let query = `
+        //     SELECT b.Title, b.Genre, b.ISBN, b.Publication_Year
+        //     FROM book b
+        //     JOIN book_copies bc ON b.ISBN = bc.ISBN
+        //     WHERE bc.Book_Status = 'Available'`     
+        
+        // const [rows] = pool.query(query)
+        // console.log(rows)
 
-module.exports = async function getBookInfo(req, res, userID){
-    let body = '';
-    req.on('data', (chunk) => { // listens for incoming data
-    body += chunk;  // adds data chunk to body
-    })
-    console.log(body)    
-    // console.log(req)
-     try {
-        const {search_value, search_by} = JSON.parse(body);
-        if(search_by === 'Title'){
-            const[[Title], [Genre], [ISBN], [Year], [Author], [Image]] = await Promise.all([
-                pool.query('SELECT B.Title, B.Genre, B.ISBN, B.Year, B.Author, B.Image FROM book as B WHERE B.Title LIKE search_value')
-            ])
-      
-        }
-     } catch(error){
+    // } catch (error) {
 
-     }
+    // }
 }
