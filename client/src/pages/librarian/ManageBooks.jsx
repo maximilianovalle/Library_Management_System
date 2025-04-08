@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../../components/header/Header";
+import ConfirmationDialog from "../../components/ConfirmationDialog";
 import "./LibrarianPage.css";
 
 const ManageBooks = () => {
@@ -8,8 +9,9 @@ const ManageBooks = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [filterType, setFilterType] = useState("all");
-    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [selectedBook, setSelectedBook] = useState(null);
+    const [notification, setNotification] = useState(null);
     
     useEffect(() => {
         fetchBooks();
@@ -36,6 +38,7 @@ const ManageBooks = () => {
         } catch (error) {
             console.error("Error fetching books:", error);
             setLoading(false);
+            showNotification("Failed to load books. Please try again.", "error");
         }
     };
     
@@ -46,7 +49,7 @@ const ManageBooks = () => {
     
     const handleDeleteClick = (book) => {
         setSelectedBook(book);
-        setShowDeleteModal(true);
+        setShowDeleteDialog(true);
     };
     
     const confirmDelete = async () => {
@@ -61,7 +64,7 @@ const ManageBooks = () => {
             
             // Remove the deleted book from the state
             setBooks(books.filter(book => book.isbn !== selectedBook.isbn));
-            setShowDeleteModal(false);
+            setShowDeleteDialog(false);
             setSelectedBook(null);
             
             // Show success notification
@@ -73,18 +76,12 @@ const ManageBooks = () => {
     };
     
     const showNotification = (message, type) => {
-        // Create notification element
-        const notification = document.createElement("div");
-        notification.className = `notification notification-${type}`;
-        notification.textContent = message;
+        setNotification({ message, type });
         
-        // Append to body
-        document.body.appendChild(notification);
-        
-        // Remove after 3 seconds
+        // Auto dismiss after 5 seconds
         setTimeout(() => {
-            notification.remove();
-        }, 3000);
+            setNotification(null);
+        }, 5000);
     };
     
     // Filter books based on search term
@@ -100,6 +97,19 @@ const ManageBooks = () => {
             
             <div className="container">
                 <h1 className="page-title">Manage Books</h1>
+                
+                {/* Notification message */}
+                {notification && (
+                    <div className={`notification notification-${notification.type}`}>
+                        <span className="notification-message">{notification.message}</span>
+                        <button 
+                            className="notification-close"
+                            onClick={() => setNotification(null)}
+                        >
+                            ×
+                        </button>
+                    </div>
+                )}
                 
                 <div className="management-controls">
                     <form className="search-bar" onSubmit={handleSearch}>
@@ -186,40 +196,17 @@ const ManageBooks = () => {
                 )}
             </div>
             
-            {/* Delete Confirmation Modal */}
-            {showDeleteModal && selectedBook && (
-                <div className="modal-backdrop">
-                    <div className="modal">
-                        <div className="modal-header">
-                            <h3 className="modal-title">Confirm Deletion</h3>
-                            <button 
-                                className="modal-close"
-                                onClick={() => setShowDeleteModal(false)}
-                            >
-                                ×
-                            </button>
-                        </div>
-                        <div className="modal-body">
-                            <p>Are you sure you wish to delete "{selectedBook.title}"?</p>
-                            <p className="text-danger">This action cannot be undone.</p>
-                        </div>
-                        <div className="modal-footer">
-                            <button 
-                                className="btn btn-outline"
-                                onClick={() => setShowDeleteModal(false)}
-                            >
-                                Cancel
-                            </button>
-                            <button 
-                                className="btn btn-danger"
-                                onClick={confirmDelete}
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            {/* Confirmation Dialog */}
+            <ConfirmationDialog
+                isOpen={showDeleteDialog}
+                title="Confirm Deletion"
+                message={selectedBook ? `Are you sure you wish to delete "${selectedBook.title}"? This action cannot be undone.` : ''}
+                confirmText="Delete"
+                cancelText="Cancel"
+                onConfirm={confirmDelete}
+                onCancel={() => setShowDeleteDialog(false)}
+                type="danger"
+            />
         </div>
     );
 };

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import './Notifications.css';
 
@@ -6,38 +6,10 @@ const Notifications = () => {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [showDropdown, setShowDropdown] = useState(false);
+    const dropdownRef = useRef(null);
     
-    useEffect(() => {
-        // Load saved notifications from localStorage on component mount
-        loadSavedNotifications();
-        
-        // Check for due date notifications when component mounts
-        checkDueDateNotifications();
-        
-        // Set up intervals for periodic checks
-        const dueDateInterval = setInterval(checkDueDateNotifications, 3600000); // Check every hour
-        
-        return () => {
-            clearInterval(dueDateInterval);
-        };
-    }, []);
-    
-    // Load saved notifications from localStorage
-    const loadSavedNotifications = () => {
-        const savedNotifications = JSON.parse(localStorage.getItem('notifications') || '[]');
-        setNotifications(savedNotifications);
-        setUnreadCount(savedNotifications.filter(n => !n.isRead).length);
-    };
-    
-    // Save notifications to localStorage
-    const saveNotifications = (updatedNotifications) => {
-        localStorage.setItem('notifications', JSON.stringify(updatedNotifications));
-        setNotifications(updatedNotifications);
-        setUnreadCount(updatedNotifications.filter(n => !n.isRead).length);
-    };
-    
-    // Check for items due in 2 days
-    const checkDueDateNotifications = async () => {
+    // Fetch notifications from server
+    const fetchNotifications = async () => {
         try {
             const token = localStorage.getItem("token");
             
@@ -45,224 +17,105 @@ const Notifications = () => {
                 return;
             }
             
-            // Fetch user's borrowed items
-            const response = await axios.get("https://library-management-system-8ktv.onrender.com/account", {
+            const response = await axios.get("https://library-management-system-8ktv.onrender.com/notifications", {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
             });
             
-            const userData = response.data;
-            
-            // Check if we have borrowed books/devices data
-            if (!userData.pastBooksArray) {
-                return;
-            }
-            
-            // Create a date object for 2 days from now (midnight)
-            const twoDaysFromNow = new Date();
-            twoDaysFromNow.setDate(twoDaysFromNow.getDate() + 2);
-            twoDaysFromNow.setHours(0, 0, 0, 0);
-            
-            // Process borrowed books
-            const borrowedBooks = userData.pastBooksArray || [];
-            borrowedBooks.forEach(book => {
-                // Check if the book has a return date (if not, it's still checked out)
-                if (!book.returnedDate) {
-                    // Parse the due date
-                    const dueDate = new Date(book.dueDate);
-                    
-                    // Check if due in 2 days
-                    if (
-                        dueDate.getDate() === twoDaysFromNow.getDate() &&
-                        dueDate.getMonth() === twoDaysFromNow.getMonth() &&
-                        dueDate.getFullYear() === twoDaysFromNow.getFullYear()
-                    ) {
-                        // Create a unique ID for this notification
-                        const notificationId = `book-${book.title}-${dueDate.getTime()}`;
-                        
-                        // Check if we already have this notification
-                        const existingNotification = notifications.find(n => n.id === notificationId);
-                        
-                        if (!existingNotification) {
-                            const formattedDate = dueDate.toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric"
-                            });
-                            
-                            // Add new notification
-                            const newNotification = {
-                                id: notificationId,
-                                message: `Your book "${book.title}" is due in 2 days on ${formattedDate}.`,
-                                type: 'due_date',
-                                isRead: false,
-                                createdAt: new Date()
-                            };
-                            
-                            saveNotifications([newNotification, ...notifications]);
-                        }
-                    }
-                }
-            });
-            
-            // Handle devices if that data is available
-            const borrowedDevices = userData.pastDevicesArray || [];
-            borrowedDevices.forEach(device => {
-                // Check if the device has a return date (if not, it's still checked out)
-                if (!device.returnedDate) {
-                    // Parse the due date
-                    const dueDate = new Date(device.dueDate);
-                    
-                    // Check if due in 2 days
-                    if (
-                        dueDate.getDate() === twoDaysFromNow.getDate() &&
-                        dueDate.getMonth() === twoDaysFromNow.getMonth() &&
-                        dueDate.getFullYear() === twoDaysFromNow.getFullYear()
-                    ) {
-                        // Create a unique ID for this notification
-                        const notificationId = `device-${device.model}-${dueDate.getTime()}`;
-                        
-                        // Check if we already have this notification
-                        const existingNotification = notifications.find(n => n.id === notificationId);
-                        
-                        if (!existingNotification) {
-                            const formattedDate = dueDate.toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric"
-                            });
-                            
-                            // Add new notification
-                            const newNotification = {
-                                id: notificationId,
-                                message: `Your device "${device.model}" is due in 2 days on ${formattedDate}.`,
-                                type: 'due_date',
-                                isRead: false,
-                                createdAt: new Date()
-                            };
-                            
-                            saveNotifications([newNotification, ...notifications]);
-                        }
-                    }
-                }
-            });
-            
+            setNotifications(response.data.notifications || []);
+            setUnreadCount(response.data.notifications.filter(n => !n.Is_Read).length);
         } catch (error) {
-            console.error("Error checking due dates:", error);
+            console.error("Error fetching notifications:", error);
         }
     };
     
-    // Check for new fines
     useEffect(() => {
-        const checkForNewFines = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                
-                if (!token) {
-                    return;
-                }
-                
-                // Fetch user's fines
-                const response = await axios.get("https://library-management-system-8ktv.onrender.com/fines", {
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
-                
-                const fines = response.data.fines || [];
-                const lastCheckTime = localStorage.getItem('lastFineCheck') || '0';
-                
-                // Find new fines since last check
-                const newFines = fines.filter(fine => {
-                    const fineCreatedTime = new Date(fine.created_at).getTime();
-                    return fineCreatedTime > parseInt(lastCheckTime);
-                });
-                
-                // Create notifications for new fines
-                newFines.forEach(fine => {
-                    const notificationId = `fine-${fine.fine_id}`;
-                    
-                    // Check if we already have this notification
-                    const existingNotification = notifications.find(n => n.id === notificationId);
-                    
-                    if (!existingNotification) {
-                        // Get reason text
-                        let reasonText = 'library policy violation';
-                        if (fine.reason === 'Late') {
-                            reasonText = 'late return';
-                        } else if (fine.reason === 'Damaged') {
-                            reasonText = 'item damage';
-                        }
-                        
-                        // Add new notification
-                        const newNotification = {
-                            id: notificationId,
-                            message: `A new fine of $${fine.amount} has been added to your account for ${reasonText}.`,
-                            type: 'fine',
-                            isRead: false,
-                            createdAt: new Date()
-                        };
-                        
-                        saveNotifications([newNotification, ...notifications]);
-                        
-                        // If total fines exceed $25, add a warning
-                        const totalUnpaidFines = fines
-                            .filter(f => f.fine_status === 2) // 2 = Unpaid
-                            .reduce((sum, f) => sum + f.amount, 0);
-                        
-                        if (totalUnpaidFines >= 25) {
-                            const warningId = `fine-warning-${Date.now()}`;
-                            
-                            const warningNotification = {
-                                id: warningId,
-                                message: 'Your total unpaid fines now exceed $25. You cannot check out or place holds on items until your fines are paid.',
-                                type: 'fine_warning',
-                                isRead: false,
-                                createdAt: new Date()
-                            };
-                            
-                            saveNotifications([warningNotification, ...notifications]);
-                        }
-                    }
-                });
-                
-                // Update last check time
-                localStorage.setItem('lastFineCheck', Date.now().toString());
-                
-            } catch (error) {
-                console.error("Error checking for new fines:", error);
+        // Load notifications when component mounts
+        fetchNotifications();
+        
+        // Set up intervals for periodic checks
+        const notificationInterval = setInterval(fetchNotifications, 300000); // Check every 5 minutes
+        
+        // Click outside to close dropdown
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowDropdown(false);
             }
         };
         
-        // Check for new fines on component mount
-        checkForNewFines();
-        
-        // Set up interval for periodic checks
-        const fineCheckInterval = setInterval(checkForNewFines, 3600000); // Check every hour
+        document.addEventListener('mousedown', handleClickOutside);
         
         return () => {
-            clearInterval(fineCheckInterval);
+            clearInterval(notificationInterval);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [notifications]);
+    }, []);
     
-    const markAsRead = (notificationId) => {
-        const updatedNotifications = notifications.map(n => 
-            n.id === notificationId 
-                ? { ...n, isRead: true } 
-                : n
-        );
-        
-        saveNotifications(updatedNotifications);
+    const markAsRead = async (notificationId) => {
+        try {
+            const token = localStorage.getItem("token");
+            
+            await axios.put("https://library-management-system-8ktv.onrender.com/notifications/read", 
+                { notification_id: notificationId },
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+            
+            // Update notifications in state
+            setNotifications(notifications.map(n => 
+                n.Notification_ID === notificationId 
+                    ? { ...n, Is_Read: 1 } 
+                    : n
+            ));
+            
+            // Update unread count
+            setUnreadCount(prev => Math.max(0, prev - 1));
+        } catch (error) {
+            console.error("Error marking notification as read:", error);
+        }
     };
     
-    const markAllAsRead = () => {
-        const updatedNotifications = notifications.map(n => ({ ...n, isRead: true }));
-        saveNotifications(updatedNotifications);
+    const markAllAsRead = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            
+            await axios.put("https://library-management-system-8ktv.onrender.com/notifications/read-all", 
+                {},
+                {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    }
+                }
+            );
+            
+            // Update all notifications in state
+            setNotifications(notifications.map(n => ({ ...n, Is_Read: 1 })));
+            setUnreadCount(0);
+        } catch (error) {
+            console.error("Error marking all notifications as read:", error);
+        }
     };
     
     const toggleDropdown = () => {
+        if (!showDropdown) {
+            // Fetch latest notifications when opening dropdown
+            fetchNotifications();
+        }
         setShowDropdown(!showDropdown);
+    };
+    
+    // Determine notification type based on message content
+    const getNotificationType = (message) => {
+        if (message.includes('due in')) return 'due_date';
+        if (message.includes('fine')) return 'fine';
+        if (message.includes('exceed $25')) return 'fine_warning';
+        return 'general';
     };
     
     // Format the notification timestamp
@@ -284,37 +137,13 @@ const Notifications = () => {
             return date.toLocaleDateString();
         }
     };
-    
-    // Clean up old notifications (older than 7 days)
-    useEffect(() => {
-        const cleanupNotifications = () => {
-            const sevenDaysAgo = new Date();
-            sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-            
-            const updatedNotifications = notifications.filter(notification => 
-                new Date(notification.createdAt) > sevenDaysAgo
-            );
-            
-            if (updatedNotifications.length !== notifications.length) {
-                saveNotifications(updatedNotifications);
-            }
-        };
-        
-        cleanupNotifications();
-        
-        // Run cleanup daily
-        const cleanupInterval = setInterval(cleanupNotifications, 86400000); // 24 hours
-        
-        return () => {
-            clearInterval(cleanupInterval);
-        };
-    }, [notifications]);
 
     return (
-        <div className="notifications-container">
+        <div className="notifications-container" ref={dropdownRef}>
             <button 
                 className="notifications-bell"
                 onClick={toggleDropdown}
+                aria-label="Notifications"
             >
                 <span className="bell-icon">🔔</span>
                 {unreadCount > 0 && (
@@ -340,19 +169,19 @@ const Notifications = () => {
                         {notifications.length > 0 ? (
                             notifications.map((notification) => (
                                 <div 
-                                    key={notification.id}
-                                    className={`notification-item ${!notification.isRead ? 'unread' : ''} ${notification.type}`}
-                                    onClick={() => markAsRead(notification.id)}
+                                    key={notification.Notification_ID}
+                                    className={`notification-item ${notification.Is_Read ? '' : 'unread'} ${getNotificationType(notification.Message)}`}
+                                    onClick={() => markAsRead(notification.Notification_ID)}
                                 >
                                     <div className="notification-content">
                                         <div className="notification-message">
-                                            {notification.message}
+                                            {notification.Message}
                                         </div>
                                         <div className="notification-time">
-                                            {formatTime(notification.createdAt)}
+                                            {formatTime(notification.Created_At)}
                                         </div>
                                     </div>
-                                    {!notification.isRead && (
+                                    {!notification.Is_Read && (
                                         <div className="unread-dot"></div>
                                     )}
                                 </div>
