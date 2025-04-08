@@ -9,7 +9,7 @@ const getUserName = require("./account_info/account.js"); // getUserName()
 const getBooks = require("./book_info/books.js") // getBookInfo()
 const getDevices = require("./device_info/devices.js"); // getDevices()
 const payFine = require('./account_info/payFine.js'); // payFine()
-// const getGenres = require('./book_info/genres.js'); // getGenres()
+const {getGenres} = require('./book_info/genres.js'); // getGenres()
 
 
 // creates HTTP server and listens for incoming requests
@@ -85,11 +85,11 @@ const app = http.createServer( async (req, res) => {
     return;
   }
 
-  // if(req.url === '/genres' && req.method === 'GET' && role === 2){
-  //   console.log("getGenres function called")
-  //   getGenres(req, res);  // call getGenres() to search genres
-  //   return;
-  // }
+  if(req.url === '/genres' && req.method === 'GET' && role === 2){
+    getGenres(req, res);  // call getGenres() to search genres
+    
+    return;
+  }
 
   res.end();  // if request does not match any of the defined routes, ends response w/ no data
     
