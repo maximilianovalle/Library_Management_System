@@ -38,7 +38,8 @@ const Login = () => {
         console.log("Attempting login with:", data);
 
         try {
-            const res = await axios.post(`${process.env.REACT_APP_API_URL}/login`, data);
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/login`, data);  // This one says "Login Successful or Invalid Password/ UserID"
+            // const res = await axios.post('https://library-management-system-8ktv.onrender.com/login', data); //original Hi message
             // const res = await axios.post(`http://localhost:8000//login`, data);
             console.log("Login response:", res.data);
 
@@ -54,6 +55,7 @@ const Login = () => {
                 // Redirect after a short delay
                 setTimeout(() => {
                     window.location.href = `/account`;
+                    // window.location.href = `/browsebooks`;
                 }, 1000);
             }
 
@@ -95,6 +97,7 @@ const Login = () => {
                 <div className="login-header">
                     <img src="/logo.png" alt="Cougar Public Library Logo" className="login-logo" />
                     <h1>Cougar Library</h1>
+                    <p>Secure Access Portal</p>
                 </div>
                 
                 <form id="login_form" className="login-form" onSubmit={handleSubmit}>
