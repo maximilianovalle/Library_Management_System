@@ -1,0 +1,66 @@
+.librarian-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.librarian-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.librarian-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.librarian-logo img {
+    height: 70px;
+}
+
+.librarian-logo h1 {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin: 0;
+}
+
+.nav-links, .librarian-links {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.nav-links a, .librarian-links a {
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s;
+    color: black;
+}
+
+.nav-links a:hover, .librarian-links a:hover {
+    color: #2563eb;
+}
+
+.librarian-link.active {
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.logout-button {
+    background-color: #dc3545;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: darkred;
+}
