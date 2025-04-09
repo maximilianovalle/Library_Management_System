@@ -9,7 +9,7 @@ const getUserName = require("./account_info/account.js"); // getUserName()
 const getBooks = require("./book_info/books.js") // getBookInfo()
 const getDevices = require("./device_info/devices.js"); // getDevices()
 const payFine = require('./account_info/payFine.js'); // payFine()
-const {getGenres} = require('./book_info/genres.js'); // getGenres()
+const getGenres = require('./book_info/genres.js'); // getGenres()
 
 
 // creates HTTP server and listens for incoming requests
@@ -23,9 +23,11 @@ const app = http.createServer( async (req, res) => {
   
   // FOR CORS : Cross-Origin Resource Sharing, allow methods and headers, and set the content type
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // specifies which HTTP methods are allowed from the client
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // specifies which HTTP methods are allowed from the client
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin'); // specifies which headers the client can send in the request
   res.setHeader("Access-Control-Allow-Credentials", "true");  // cookies/sessions
+
+  console.log("Incoming request:", req.method, req.url);
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
@@ -38,6 +40,7 @@ const app = http.createServer( async (req, res) => {
     return;
   }
 
+  console.log("passed auth 000")
   // client sends request with authentication ("Authorization: Bearer [tokenString]")
   const token = req.headers.authorization?.split("Bearer ")[1]; // retrieves actual token string from request
 
@@ -46,7 +49,7 @@ const app = http.createServer( async (req, res) => {
     res.end(JSON.stringify({ message: "You must log in before accessing that page." }));
     return;
   }
-
+  console.log("passed auth")
   // logout function
   if (req.url === '/logout' && req.method == 'DELETE') {
     currSessions.delete(token);
@@ -84,10 +87,12 @@ const app = http.createServer( async (req, res) => {
     getDevices(req, res);  // call getDevices() to search devices
     return;
   }
+  
+  console.log("passed auth 2s")
 
   if(req.url === '/genres' && req.method === 'GET' && role === 2){
+    console.log("Received request for /genres");
     getGenres(req, res);  // call getGenres() to search genres
-    
     return;
   }
 

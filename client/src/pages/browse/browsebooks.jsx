@@ -8,7 +8,7 @@ import Genres from "./genres";
 // THIS IS FOR THE DROP DOWN MENU
 const browse_by = ["Title", "ISBN", "Author", "Genre", "Book_Status"];
 // const sort_options = ["Name A-Z", "Name Z-A", "Available First", "Unavailable First"];
-const popular_genres = [{genre: 'Fiction'}, {genre: 'Non-Fiction'},{genre: 'Romance'}, {genre:'Mystery'}, {genre:'Action'},{genre: 'Thriller'}];
+// const popular_genres = [{genre: 'Fiction'}, {genre: 'Non-Fiction'},{genre: 'Romance'}, {genre:'Mystery'}, {genre:'Action'},{genre: 'Thriller'}];
 
 const BrowseBooks = () => {
     // THIS IS TO SET THE VALUES FOR THE BOOK INFORMATION
@@ -43,7 +43,7 @@ const BrowseBooks = () => {
 
             // Fix: Use search_value and search_by directly from state
 
-            const response = await axios.get('https://library-management-system-8ktv.onrender.com/books', {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/books`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 },

@@ -27,7 +27,7 @@ const ManageBooks = () => {
                 return;
             }
             
-            const response = await axios.get(`https://library-management-system-8ktv.onrender.com/librarian/books?filter=${filterType}`, {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/librarian/books?filter=${filterType}`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
