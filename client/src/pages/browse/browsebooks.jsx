@@ -75,9 +75,10 @@ const BrowseBooks = () => {
         });
     }
     return (
-        <div className = "user_page" id="body">
+        <div>
+            <HeaderAfter/>
+        <div className = "user_page">
             
-            <HeaderAfter />
                 <form className = "search" onSubmit={handleSearch}>
                     
                 <div className="dropdown">
@@ -101,7 +102,6 @@ const BrowseBooks = () => {
                 </form>
             
                 <div className="books_container">
-                    {loading && <p>Loading...</p>}
                     {error && <p>{error}</p>}
                     {books.length > 0 ? (
                         books.map((book, index) => (
@@ -114,7 +114,7 @@ const BrowseBooks = () => {
                             </div>
                         ))
                     ) : (
-                        <p>No books found.</p>
+                        <p>YERRRR</p>
                     )}
                 </div>
                 <div className="genre_container">
@@ -131,7 +131,7 @@ const BrowseBooks = () => {
                     <Genres />
                 </div>
         </div>
-
+    </div>
     );
 };
 

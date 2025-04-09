@@ -10,14 +10,14 @@ module.exports = async function getBooks(req, res){
     //         book_condition: "bc.Book_Condition",
     //         book_status: "bc.Book_Status"
     //     };
-        // let query = `
-        //     SELECT b.Title, b.Genre, b.ISBN, b.Publication_Year
-        //     FROM book b
-        //     JOIN book_copies bc ON b.ISBN = bc.ISBN
-        //     WHERE bc.Book_Status = 'Available'`     
+    //     let query = `
+    //         SELECT b.Title, b.Genre, b.ISBN, b.Publication_Year
+    //         FROM book b
+    //         JOIN book_copies bc ON b.ISBN = bc.ISBN
+    //         WHERE bc.Book_Status = 'Available'`     
         
-        // const [rows] = pool.query(query)
-        // console.log(rows)
+    //     const [rows] = pool.query(query)
+    //     console.log(rows)
 
     // } catch (error) {
 
