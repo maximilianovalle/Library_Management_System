@@ -2,8 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";  // used for making HTTP requests
 import './Account.css';
 import HeaderAfter from '../../components/header/HeaderAfter';
+import './CheckoutModal.css'; // Style for modal
 
-// The (React) frontend sends a GET, POST, DELETE, etc. request to the (NodeJS) backend. The backend server.js file processes the request and returns a response that is then displayed on the frontend.
+// The (React) frontend sends a GET, POST, DELETE, etc. request to the (NodeJS) backend. 
+// The backend server.js file processes the request and returns a response that is then displayed on the frontend.
 
 const Account = () => {
     const [firstName, setFirstName] = useState("");
@@ -11,14 +13,13 @@ const Account = () => {
     const [email, setEmail] = useState("");
     const [createdAt, setCreatedAt] = useState("");
     const [fineAmntDue, setFineAmnt] = useState("");
-    const [pastBooksArray, setPastBooks] = useState("");
-    const [pastDevicesArray, setPastDevices] = useState("");
-
+    const [pastBooksArray, setPastBooks] = useState([]);
+    const [pastDevicesArray, setPastDevices] = useState([]);
+    const [showCheckout, setShowCheckout] = useState(false);
 
     // triggered once when the page loads
     useEffect(() => {
         const fetchName = async () => {
-
             try {
                 const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
 
@@ -57,14 +58,11 @@ const Account = () => {
             } catch (error) {
                 console.error("Error fetching account data:", error);
             }
-
         }
 
         fetchName();    // need to explicitly call fetchName to run
     }, []);
 
-
-    // payfines function
     const payFines = async (event) => {
         try {
             const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
@@ -106,11 +104,13 @@ const Account = () => {
             console.log("Error paying fine: ", error);
         }
     };
+    // opens checkout modal
+    const openModal = () => setShowCheckout(true);
 
+    // closes checkout modal
+    const closeModal = () => setShowCheckout(false);
 
-    // HTML
-    return(
-
+    return (
         <div id="body">
 
             {/* header code credit to @ alan "atonyit" */}
@@ -120,36 +120,30 @@ const Account = () => {
             {/* main content - my code ----- */}
             <div id="main">
 
-                {/* {userName && <h1>{userName}</h1>} */}
-
                 {/* user info */}
                 <div id="userInfo">
-
                     <div id="userDesc">
                         {lastName && firstName && <h1>{lastName}, {firstName}</h1>}
                         {email && <p>{email}</p>}
                     </div>
 
                     {createdAt && <p id="dateJoined">Joined {createdAt}</p>}
-                    
+
                     <h2 id="finesDue">Fines Due</h2>
                     <p id="amountDue">-${fineAmntDue}</p>
 
                     <div id="buttonAlign">
-                        <button id="payBtn" onClick={payFines}>Pay Now</button>
+                        <button id="payBtn" onClick={openModal}>Pay Now</button>
                     </div>
-
                 </div>
 
                 {/* recent activity */}
                 <div id="recentActivity">
-
                     <h1>Recent Activity</h1>
 
                     {/* past books */}
                     <h2>Past Books</h2>
-
-                    {pastBooksArray.length > 0 ? (  // if user has past checked out books
+                    {pastBooksArray.length > 0 ? (
                         <ul id="pastBooksList">
                             {pastBooksArray.map((book, i) => (
                                 <li key={i}>
@@ -159,15 +153,13 @@ const Account = () => {
                                 </li>
                             ))}
                         </ul>
-                    ) : (   // if user has no past checked out books
+                    ) : (
                         <p>No books to display! Try returning a checked out book...</p>
-                    )
-                    }
+                    )}
 
                     {/* past devices */}
                     <h2>Past Devices</h2>
-
-                    {pastBooksArray.length > 0 ? (  // if user has past checked out devices
+                    {pastDevicesArray.length > 0 ? (
                         <ul id="pastDevicesList">
                             {pastDevicesArray.map((device, i) => (
                                 <li key={i}>
@@ -177,18 +169,41 @@ const Account = () => {
                                 </li>
                             ))}
                         </ul>
-                    ) : (   // if user has no past checked out books
+                    ) : (
                         <p>No devices to show! Try returning a checked out device...</p>
-                    )
-                    }
-
+                    )}
                 </div>
-
             </div>
 
+            {/* modal pop-up for checkout */}
+            {showCheckout && (
+                <div className="checkout-modal-overlay">
+                    <div className="checkout-modal">
+                        <div className="checkout-header">
+                            <h2>Checkout</h2>
+                            <button className="close-button" onClick={closeModal}>×</button>
+                        </div>
+
+                        <div className="checkout-body">
+                            <p>You are about to pay <strong>${fineAmntDue}</strong> in library fines.</p>
+                            <form className="checkout-form" onSubmit={(e) => { e.preventDefault(); alert("Payment processed!"); }}>
+                                <input type="text" placeholder="Cardholder Name" required />
+                                <input type="text" placeholder="Card Number" maxLength="19" required />
+
+                                <div style={{ display: "flex", gap: "10px" }}>
+                                    <input type="text" placeholder="MM/YY" maxLength="5" style={{ flex: 1 }} required />
+                                    <input type="text" placeholder="CVV" maxLength="4" style={{ flex: 1 }} required />
+                                </div>
+
+                                <input type="text" placeholder="ZIP Code" maxLength="10" required />
+                                <button type="submit"  onClick={payFines} className="confirm-payment">Confirm Payment</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
-
     );
-}
+};
 
-export default Account
+export default Account;
