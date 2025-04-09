@@ -41,7 +41,7 @@ const HeaderAfter = () => {
                         <Link to="/browsebooks">
                             <img src="/logo.png" alt="Library Logo" />
                         </Link>
-                        <h1>Cougar Public Library</h1>
+                        <h1>Cougar Library</h1>
                     </div>
 
                     <div className="librarian-links">
