@@ -14,6 +14,13 @@ import Login from './pages/login/LoginPage'
 import BrowseBooks from './pages/browse/browsebooks'
 import BrowseDevices from './pages/browse/browsedevices'
 
+import HoldsPage from './pages/librarian/HoldsPage'
+// import FinesPage from './pages/librarian/UserManagement'
+// import ActivityPage from './pages/librarian/UserManagement'
+// import PopularBooksReport from './pages/librarian/UserManagement'
+// import OverdueItemsPage from './pages/librarian/UserManagement'
+
+
 function App() {
   return (
     <Routes>
@@ -40,6 +47,13 @@ function App() {
       <Route path="/librarian/manage-devices/edit/:category/:model/:copyId" element={<DeviceForm/>} />
       <Route path="/librarian/users" element={<UserManagement/>} />
       <Route path="/librarian/reports" element={<ReportsPage/>} />
+
+      <Route path="/librarian/holds" element={<HoldsPage />} />
+      {/*  <Route path="/librarian/fines" element={<FinesPage />} />
+      <Route path="/librarian/activity" element={<ActivityPage />} />
+      <Route path="/librarian/reports/popular-books" element={<PopularBooksReport />} />
+      <Route path="/librarian/overdue" element={<OverdueItemsPage />} /> */}
+
     </Routes>
   );
 }
