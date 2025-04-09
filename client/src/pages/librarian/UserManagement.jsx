@@ -40,7 +40,7 @@ const UserManagement = () => {
             }
             
             // Search for the user
-            const userResponse = await axios.get("https://library-management-system-8ktv.onrender.com/librarian/users/search", {
+            const userResponse = await axios.get(`${process.env.REACT_APP_API_URL}/librarian/users/search`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 },
@@ -59,7 +59,7 @@ const UserManagement = () => {
             setUser(userResponse.data.user);
             
             // Get user's fines
-            const finesResponse = await axios.get(`https://library-management-system-gf9d.onrender.com/librarian/users/${userResponse.data.user.user_id}/fines`, {
+            const finesResponse = await axios.get(`${process.env.REACT_APP_API_URL}/librarian/users/${userResponse.data.user.user_id}/fines`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -68,7 +68,7 @@ const UserManagement = () => {
             setFines(finesResponse.data.fines || []);
             
             // Get user's borrowed items
-            const borrowedResponse = await axios.get(`https://library-management-system-gf9d.onrender.com/librarian/users/${userResponse.data.user.user_id}/borrowed`, {
+            const borrowedResponse = await axios.get(`${process.env.REACT_APP_API_URL}/librarian/users/${userResponse.data.user.user_id}/borrowed`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -77,7 +77,7 @@ const UserManagement = () => {
             setBorrowedItems(borrowedResponse.data.borrowed || []);
             
             // Get user's holds
-            const holdsResponse = await axios.get(`https://library-management-system-gf9d.onrender.com/librarian/users/${userResponse.data.user.user_id}/holds`, {
+            const holdsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/librarian/users/${userResponse.data.user.user_id}/holds`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -102,7 +102,7 @@ const UserManagement = () => {
         try {
             const token = localStorage.getItem("token");
             
-            await axios.post(`https://library-management-system-gf9d.onrender.com/librarian/fines/${selectedFine.fine_id}/pay`, {}, {
+            await axios.post(`${process.env.REACT_APP_API_URL}/librarian/fines/${selectedFine.fine_id}/pay`, {}, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }

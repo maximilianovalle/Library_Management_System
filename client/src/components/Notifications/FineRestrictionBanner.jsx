@@ -17,7 +17,7 @@ const FineRestrictionBanner = () => {
                 }
                 
                 // Fetch user's fines
-                const response = await axios.get("https://library-management-system-8ktv.onrender.com/fines", {
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/fines`, {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }

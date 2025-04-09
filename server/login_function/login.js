@@ -58,7 +58,7 @@ module.exports = async function login(req, res) {
 
                 let user = await getUser(userID, body);   // calls above getUser() function to fetch user details
                 let role = 2;   // USER ROLE = 2
-
+                
                 // if ( user does not exist )
                 if (!user) {
                     user = await getAdmin(userID, body);    // check if admin

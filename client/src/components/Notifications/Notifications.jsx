@@ -17,7 +17,7 @@ const Notifications = () => {
                 return;
             }
             
-            const response = await axios.get("https://library-management-system-8ktv.onrender.com/notifications", {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/notifications`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 }
@@ -56,7 +56,7 @@ const Notifications = () => {
         try {
             const token = localStorage.getItem("token");
             
-            await axios.put("https://library-management-system-8ktv.onrender.com/notifications/read", 
+            await axios.put(`${process.env.REACT_APP_API_URL}/notifications/read`, 
                 { notification_id: notificationId },
                 {
                     headers: {
@@ -84,7 +84,7 @@ const Notifications = () => {
         try {
             const token = localStorage.getItem("token");
             
-            await axios.put("https://library-management-system-8ktv.onrender.com/notifications/read-all", 
+            await axios.put(`${process.env.REACT_APP_API_URL}/notifications/read-all`, 
                 {},
                 {
                     headers: {

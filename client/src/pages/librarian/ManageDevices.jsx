@@ -26,7 +26,7 @@ const ManageDevices = () => {
                 return;
             }
             
-            const response = await axios.get("https://library-management-system-gf9d.onrender.com/librarian/devices", {
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/librarian/devices`, {
                 headers: {
                     "Authorization": `Bearer ${token}`
                 },
