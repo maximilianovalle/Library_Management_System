@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import Header from "../../components/header/Header";
+import Header from "../../components/header/LibrarianHeader";
 import "./LibrarianPage.css";
 
 const ReportsPage = () => {
