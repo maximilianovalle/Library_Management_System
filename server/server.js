@@ -23,7 +23,7 @@ const app = http.createServer( async (req, res) => {
   
   // FOR CORS : Cross-Origin Resource Sharing, allow methods and headers, and set the content type
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE'); // specifies which HTTP methods are allowed from the client
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // specifies which HTTP methods are allowed from the client
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin'); // specifies which headers the client can send in the request
   res.setHeader("Access-Control-Allow-Credentials", "true");  // cookies/sessions
 
@@ -49,7 +49,7 @@ const app = http.createServer( async (req, res) => {
     res.end(JSON.stringify({ message: "You must log in before accessing that page." }));
     return;
   }
-  console.log("passed auth")
+  // console.log("passed auth")
   // logout function
   if (req.url === '/logout' && req.method == 'DELETE') {
     currSessions.delete(token);
@@ -77,7 +77,8 @@ const app = http.createServer( async (req, res) => {
   }
 
   // if ( the browser sends a GET request to "/books" and has USER role )
-  if (req.url === '/books' && req.method === 'GET' && role === 2){
+  if (req.url.startsWith('/books') && req.method === 'GET' && role === 2){
+    console.log('req for books')
     getBooks(req, res);
     return;
   }
@@ -88,14 +89,19 @@ const app = http.createServer( async (req, res) => {
     return;
   }
   
-  console.log("passed auth 2s")
-
   if(req.url === '/genres' && req.method === 'GET' && role === 2){
-    console.log("Received request for /genres");
     getGenres(req, res);  // call getGenres() to search genres
     return;
   }
-
+  if(req.url === '/book_by_genre' && req.method === 'GET' && role === 2){
+    console.log("book by genre neow")
+    get_book_by_genre(req, res);
+    return;
+  }
+  if(req.url === '/borrowbooks' && req.method === 'GET' && role === 2){
+    listBooks(req,res);
+    return;
+  }
   res.end();  // if request does not match any of the defined routes, ends response w/ no data
     
 }).listen(8000, console.log('Server is running on port 8000')); // server is listening on port 8000 for incoming HTTP requests

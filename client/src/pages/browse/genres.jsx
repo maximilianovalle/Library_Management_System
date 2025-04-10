@@ -57,8 +57,46 @@ const Genre = () => {
     const [genres, setGenres] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [search_genre, setSearch_Genre] = useState([]);
+    const [books, setBooks] = useState([]);
     const navigate = useNavigate();
+    console.log(search_genre)
 
+
+    const fetchBook = async (params = {}) => {
+        console.log("Params:", params);
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("No token found. Redirecting to login...");
+                window.location.href = "/login";
+                return;
+            }
+    
+            // Fix: Use search_value and search_by directly from state
+    
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/books`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+                params,
+            });
+    
+            console.log("Books fetched:", response.data.books);
+            setBooks(response.data.books || []);
+        } catch (error) {
+            console.error("Error fetching books:", error);
+            setError("Failed to load books. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+    useEffect((search_genre) => {
+        fetchBook({
+                search_by: "Genre",
+                search_value: search_genre
+            });
+    }, []);
     useEffect(() => {
         const fetchGenres = async () => {
             try {
@@ -97,7 +135,6 @@ const Genre = () => {
     }, []);
 
     const categorized = categorizeGenres(genres);
-
     return (
         <div className="genre-container">
             <h1>Browse by Genre</h1>
@@ -114,8 +151,9 @@ const Genre = () => {
                                     key={index}
                                     className="genre-button"
                                     // Navigate to /books?genre=GenreName
-                                    onClick={() =>
-                                        navigate(`/books?genre=${encodeURIComponent(genre)}`)
+                                    onClick={() =>{
+                                        navigate(`/browsebooks?genre=${encodeURIComponent(genre)}`)
+                                        setSearch_Genre(genre)}
                                     }
                                 >
                                     {genre}

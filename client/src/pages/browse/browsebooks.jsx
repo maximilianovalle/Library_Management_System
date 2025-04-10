@@ -5,34 +5,19 @@ import DropDown from './components/drop_down';
 import HeaderAfter from "../../components/header/HeaderAfter";
 import Genres from "./genres";
 
-// THIS IS FOR THE DROP DOWN MENU
+// Dropdown options for searching
 const browse_by = ["Title", "ISBN", "Author", "Genre", "Book_Status"];
-// const sort_options = ["Name A-Z", "Name Z-A", "Available First", "Unavailable First"];
-// const popular_genres = [{genre: 'Fiction'}, {genre: 'Non-Fiction'},{genre: 'Romance'}, {genre:'Mystery'}, {genre:'Action'},{genre: 'Thriller'}];
 
 const BrowseBooks = () => {
-    // THIS IS TO SET THE VALUES FOR THE BOOK INFORMATION
+    // State for search criteria and results
     const [search_value, setSearchValue] = useState("");
-    // console.log("Search Value:", search_value);
-    const [search_by, setSearchBy] = useState("");
-    // console.log("Search By:", search_by);
-    const [books, setBooks] = useState([])
-    // books = {
-    //     Author : 'yer',
-    //     ISBN : "12983u812",
-    //     Genre : 'Romance',
-    //     Publication_Year :'20003'
-
-    // }
+    const [search_by, setSearchBy] = useState(""); // 'Title', 'Author', 'Genre', etc.
+    const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
 
-    // const handleSelect = (selectedOption) => {
-    //     setSearchBy(selectedOption);
-    // };
-    
-    const fetchBook = async (params = {}) => {
-        console.log("Params:", params);
+    // Fetch books based on search parameters
+    const fetchBooks = async (params = {}) => {
         try {
             const token = localStorage.getItem("token");
             if (!token) {
@@ -41,8 +26,6 @@ const BrowseBooks = () => {
                 return;
             }
 
-            // Fix: Use search_value and search_by directly from state
-
             const response = await axios.get(`${process.env.REACT_APP_API_URL}/books`, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
@@ -50,7 +33,6 @@ const BrowseBooks = () => {
                 params,
             });
 
-            console.log("Books fetched:", response.data);
             setBooks(response.data.books || []);
         } catch (error) {
             console.error("Error fetching books:", error);
@@ -59,37 +41,44 @@ const BrowseBooks = () => {
             setLoading(false);
         }
     };
+
+    // Run the fetchBooks with a default filter (e.g., available books) on initial load
     useEffect(() => {
-        fetchBook({
-                search_by: "Book_Status",
-                search_value: "Available"
-            });
+        fetchBooks({
+            search_by: "Book_Status",
+            search_value: "Available",
+        });
     }, []);
-    const handleSearch = async (e) => {
+
+    // Handle the search form submission
+    const handleSearch = (e) => {
         e.preventDefault();
         setLoading(true);
         setError("");
-        fetchBook({
-            search_by,
-            search_value
+        
+        // Fetch books based on search criteria
+        fetchBooks({
+            search_by: search_by.toLowerCase(), // Convert to lowercase to match the backend query logic
+            search_value,
         });
-    }
+    };
+
     return (
         <div>
-            <HeaderAfter/>
-        <div className = "user_page">
-            
-                <form className = "search" onSubmit={handleSearch}>
-                    
-                <div className="dropdown">
+            <HeaderAfter />
+            <div className="user_page">
+                <form className="search" onSubmit={handleSearch}>
+                    {/* Dropdown to select search criteria */}
+                    <div className="dropdown">
                         <DropDown
                             options={browse_by}
                             onSelect={(selectedOption) => {
-                                setSearchBy(selectedOption.toLowerCase());
+                                setSearchBy(selectedOption);
                             }}
                         />
                     </div>
-                    <input 
+                    {/* Input field for search value */}
+                    <input
                         className="search_bar"
                         type="text"
                         label="Search"
@@ -97,12 +86,13 @@ const BrowseBooks = () => {
                         value={search_value}
                         onChange={(e) => setSearchValue(e.target.value)}
                     />
-                    <button className="search_button" type="submit">Search</button>
-
+                    <button className= "browse_button" type="submit">Search</button>
                 </form>
-            
+
+                {/* Displaying the list of books */}
                 <div className="books_container">
                     {error && <p>{error}</p>}
+                    {loading && <p>Loading...</p>}
                     {books.length > 0 ? (
                         books.map((book, index) => (
                             <div key={index} className="book_card">
@@ -111,27 +101,20 @@ const BrowseBooks = () => {
                                 <p>ISBN: {book.ISBN}</p>
                                 <p>Genre: {book.Genre}</p>
                                 <p>Publication Year: {book.Publication_Year}</p>
+                                <button>Borrow :3</button>
                             </div>
                         ))
                     ) : (
-                        <p>YERRRR</p>
+                        <p>No books found. Try different search criteria.</p>
                     )}
                 </div>
+
+                {/* Genre filter component (optional, can be integrated if needed) */}
                 <div className="genre_container">
-                    {/* <h2 style={{font: "12", fontFamily: "sans-serif"}}>
-                        Search by Genres
-                        </h2>
-                        <div>
-                            popular_genres.map((genre)) ={
-                        <div>
-                            {popular_genres.genre}
-                        </div>
-                        }
-                    </div> */}
                     <Genres />
                 </div>
+            </div>
         </div>
-    </div>
     );
 };
 
