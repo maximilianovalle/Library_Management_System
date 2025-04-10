@@ -9,10 +9,11 @@ module.exports = async function getBooks(req, res) {
         const search_value = searchParams.get("search_value");
         console.log(search_by, search_value)
         let query = `
-            SELECT b.Title, b.Genre, b.ISBN, b.Publication_Year, b.Image_URL
-            FROM book b
-            JOIN book_copies bc ON b.ISBN = bc.ISBN
-            WHERE bc.Book_Status = 'Available'
+            SELECT b.Title, author.Name, b.Genre, b.ISBN, b.Publication_Year, b.Image_URL
+            FROM book AS b
+            JOIN author ON author.Author_ID = b.Author_ID
+            JOIN book_copies AS bc ON b.ISBN = bc.ISBN
+            WHERE bc.Book_Status = 'Available'; 
         `;
 
         if (search_by && search_value) {
