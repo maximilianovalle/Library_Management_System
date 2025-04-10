@@ -36,11 +36,6 @@ const Account = () => {
                         "Authorization": `Bearer ${token}`,
                     },
                 });
-                // const res = await axios.get("http://localhost:8000/account", {
-                //     headers: {
-                //         "Authorization": `Bearer ${token}`,
-                //     },
-                // });
 
                 // receive JSON from account.js
                 setFirstName(res.data.firstName);
@@ -79,11 +74,6 @@ const Account = () => {
                     "Authorization": `Bearer ${token}`,
                 },
             });
-            // const res = await axios.put('http://localhost:8000/account', {}, {
-            //     headers: {
-            //         "Authorization": `Bearer ${token}`,
-            //     },
-            // });
 
             // sends a GET request to /account including token
             const res2 = await axios.get(`${process.env.REACT_APP_API_URL}/account`, {
@@ -91,11 +81,6 @@ const Account = () => {
                     "Authorization": `Bearer ${token}`,
                 },
             });
-            // const res2 = await axios.get("http://localhost:8000/account", {
-            //     headers: {
-            //         "Authorization": `Bearer ${token}`,
-            //     },
-            // });
 
             setFineAmnt(res2.data.fineAmntDue); // update fine amount
             alert(res.data.message);
@@ -129,7 +114,7 @@ const Account = () => {
 
                     {createdAt && <p id="dateJoined">Joined {createdAt}</p>}
 
-                    <h2 id="finesDue">Fines Due</h2>
+                    <h2 id="finesDue">Fines Owed:</h2>
                     <p id="amountDue">-${fineAmntDue}</p>
 
                     <div id="buttonAlign">

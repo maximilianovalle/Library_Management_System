@@ -41,7 +41,7 @@ const MyBooksPage = () => {
             <HeaderAfter />
 
             <div className="mybooks-container">
-                <h1 className="title">My Borrowed Books</h1>
+                <h1 className="title">Checked Out</h1>
 
                 {loading ? (
                     <p>Loading...</p>

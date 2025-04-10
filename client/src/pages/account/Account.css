@@ -14,6 +14,11 @@
     flex-wrap: wrap;
     gap: 12px;
   }
+
+  #buttonAlign {
+    display: flex;
+    justify-content: center;
+  }
   
   #userDesc h1 {
     font-size: 2rem;
@@ -51,6 +56,7 @@
   
   #payBtn {
     background-color: #2563eb;
+    min-width: 40%;
     color: white;
     padding: 12px 24px;
     font-size: 1rem;
