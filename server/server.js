@@ -10,6 +10,7 @@ const getBooks = require("./book_info/books.js") // getBookInfo()
 const getDevices = require("./device_info/devices.js"); // getDevices()
 const payFine = require('./account_info/payFine.js'); // payFine()
 const getGenres = require('./book_info/genres.js'); // getGenres()
+const getCheckedOutItems = require('./checkedOutItems/checkedOut.js');
 
 
 // creates HTTP server and listens for incoming requests
@@ -27,7 +28,7 @@ const app = http.createServer( async (req, res) => {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin'); // specifies which headers the client can send in the request
   res.setHeader("Access-Control-Allow-Credentials", "true");  // cookies/sessions
 
-  console.log("Incoming request:", req.method, req.url);
+  console.log("\nIncoming Request:", req.method, req.url);
 
   if (req.method === 'OPTIONS') {
     res.writeHead(204);
@@ -40,7 +41,6 @@ const app = http.createServer( async (req, res) => {
     return;
   }
 
-  console.log("passed auth 000")
   // client sends request with authentication ("Authorization: Bearer [tokenString]")
   const token = req.headers.authorization?.split("Bearer ")[1]; // retrieves actual token string from request
 
@@ -49,7 +49,9 @@ const app = http.createServer( async (req, res) => {
     res.end(JSON.stringify({ message: "You must log in before accessing that page." }));
     return;
   }
-  console.log("passed auth")
+
+  console.log("Token authorized.")
+
   // logout function
   if (req.url === '/logout' && req.method == 'DELETE') {
     currSessions.delete(token);
@@ -64,7 +66,7 @@ const app = http.createServer( async (req, res) => {
   const userID = ID_and_Role ? ID_and_Role.userID : null; // extract userID
   const role = ID_and_Role ? ID_and_Role.role : null;  // extract user role (1 = LIBRARIAN, 2 = USER)
 
-  // when /account page loads and when "pay now" button clicked
+  // when /account page loads
   if (req.url === '/account' && req.method === 'GET' && role === 2) {
     getUserName(req, res, userID);  // call getUserName() function imported above
     return;
@@ -88,7 +90,13 @@ const app = http.createServer( async (req, res) => {
     return;
   }
   
-  console.log("passed auth 2s")
+  // when /checkedout loads
+  if (req.url === '/checkedout' && req.method === 'GET' && role === 2) {
+    console.log("Retrieving user checked out page info.")
+    getCheckedOutItems(req, res, userID);
+    console.log("Checked out page info retrieved.");
+    return;
+  }
 
   if(req.url === '/genres' && req.method === 'GET' && role === 2){
     console.log("Received request for /genres");
@@ -99,14 +107,3 @@ const app = http.createServer( async (req, res) => {
   res.end();  // if request does not match any of the defined routes, ends response w/ no data
     
 }).listen(8000, console.log('Server is running on port 8000')); // server is listening on port 8000 for incoming HTTP requests
-
-
-
-// async function getLibrarianInfo() {
-//     const [rows] = await pool.query('SELECT * FROM librarian');
-//     return rows;
-// }
-
-// getLibrarianInfo().then((librarian) => {
-//     console.log(librarian);
-// });

@@ -9,10 +9,12 @@ import ManageDevices from './pages/librarian/ManageDevices'
 import DeviceForm from './pages/librarian/DeviceForm'
 import UserManagement from './pages/librarian/UserManagement'
 import ReportsPage from './pages/librarian/ReportsPage'
-import MyBooksPage from './pages/mybooks/mybooks'
+import MyBooksPage from './pages/checkedOutItems/checkedOut'
 import Login from './pages/login/LoginPage'
 import BrowseBooks from './pages/browse/browsebooks'
 import BrowseDevices from './pages/browse/browsedevices'
+
+import CheckedOutPage from './pages/checkedOutItems/checkedOut'
 
 import HoldsPage from './pages/librarian/HoldsPage'
 // import FinesPage from './pages/librarian/UserManagement'
@@ -36,6 +38,8 @@ function App() {
       <Route path="/browsebooks" element={<BrowseBooks />} />
       <Route path="/browsedevices" element={<BrowseDevices />} />
       <Route path="/mybooks" element={<MyBooksPage/>} />
+      <Route path="/checkedout" element={<CheckedOutPage />}/>
+
       
       {/* Librarian routes */}
       <Route path="/librarian" element={<LibrarianDashboard/>} />

@@ -61,6 +61,8 @@ module.exports = async function getUserName(req, res, userID) {
             : "???",    // changes YYYY-MM-DD to Month DD, YYYY
         }));
 
+        console.log("Returning checked out items as JSON.");
+
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
             firstName: firstName,
