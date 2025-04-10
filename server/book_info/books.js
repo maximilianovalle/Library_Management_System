@@ -9,7 +9,7 @@ module.exports = async function getBooks(req, res) {
         const search_value = searchParams.get("search_value");
         console.log(search_by, search_value)
         let query = `
-            SELECT b.Title, b.Genre, b.ISBN, b.Publication_Year
+            SELECT b.Title, b.Genre, b.ISBN, b.Publication_Year, b.Image_URL
             FROM book b
             JOIN book_copies bc ON b.ISBN = bc.ISBN
             WHERE bc.Book_Status = 'Available'
