@@ -1,15 +1,48 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import HeaderAfter from "../../components/header/HeaderAfter";
 
+import HeaderAfter from "../../components/header/HeaderAfter";
 import "./checkedOut.css";
-import defaultCover from './cover-not-found.png';
+import defaultCover from './book-not-found.png';
+import Laptop from './laptop.png';
+import Camera from './camera.png';
+import Calculator from './calculator.png';
+
+// carousel slider imports
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import Slider from "react-slick";
+
+const sliderSettings = {
+    arrows: true,
+    dots: false,
+    infinite: false,
+    speed: 450,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    centerMode: true,
+    centerPadding: "0px",
+    responsive: [
+        {
+            breakpoint: 768,
+            settings: {
+                slidesToShow: 1,
+                centerMode: true,
+                centerPadding: "0px",
+            }
+        }
+    ]
+};
+
+const deviceImages = {
+    "Calculator": Calculator,
+    "Camera": Camera,
+    "Laptop": Laptop,
+}
 
 const CheckedOutPage = () => {
-    const [loading, setLoading] = useState(true);
     const [checkedOutBooks, setBooks] = useState([]);
     const [checkedOutDevices, setDevices] = useState([]);
-    const [message, setMessage] = useState("");
     const currDate = new Date();
 
     console.log("today's date: ", currDate);
@@ -36,9 +69,6 @@ const CheckedOutPage = () => {
                 // receive JSON from checkedOut.js
                 setBooks(res.data.checkedOutBooksArr);
                 setDevices(res.data.checkedOutDevicesArr);
-                setMessage(res.data.message);
-
-                setLoading(false);
             } catch (error) {
                 console.error("Error fetching books:", error);
             }
@@ -48,49 +78,106 @@ const CheckedOutPage = () => {
     }, []);
 
     return (
-        <div id="body">
+        <div id="todo">
 
             <HeaderAfter /> {/* header component */}
+            <div id="body">
 
-            {/* checked out books */}
-            {checkedOutBooks.length > 0 ? (
-                <ul id="checkedOutBooksList">
-                    {checkedOutBooks.map((book, index) => (
-                        
-                        // book entry
-                        <li key={`book_${index}`}>
-                            <p>{book.title}</p>
-                            <img src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`} alt={book.title} onError={(err) => {  // if no book cover
-                                if (!err.target.dataset.fallback) {
-                                    err.target.src = defaultCover;
-                                    err.target.dataset.fallback = true;
-                                }
-                            }}/>
-                        </li>
-                        // ------
+                <h1 class="header">My Books</h1>
+                <p class="description">All currently checked out books.</p>
 
-                    ))}
-                </ul>
-            ) : (
-                <p>No currently checked out books. Browse our catalogue <a href="/browsebooks">here</a>.</p>
-            )}
+                <div class="container">
 
-            {/* checked out devices */}
-            {checkedOutDevices.length > 0 ? (
-                <ul id="checkedOutDevicesList">
-                    {checkedOutDevices.map((device, index) => (
+                {/* checked out books*/}
+                {checkedOutBooks.length > 0 ? (
+                    <div class="carousel">
+                        <Slider {...sliderSettings}>
+                            {checkedOutBooks.map((book, index) => {
 
-                        // device entry
-                        <li key={`device_${index}`}>
-                            <p>{device.model}</p>
-                        </li>
-                        // ------
+                                const isLate = new Date(book.due) < new Date();
 
-                    ))}
-                </ul>
-            ) : (
-                <p>No currently checked out devices. Browse our catalogue <a href="/browsedevices">here</a>.</p>
-            )}
+                                // book entry
+                                return (
+                                    <div key={`book_${index}`} className="bookEntry">
+                                        <h3 class="entryElement">{book.title}</h3>
+                                        <p class="entryElement">{book.author}</p>
+                                        <img src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg`} alt={book.title} onError={(err) => {  // if no book cover
+                                                if (!err.target.dataset.fallback) {
+                                                    err.target.src = defaultCover;
+                                                    err.target.dataset.fallback = true;
+                                                }
+                                        }}/>
+                                        {isLate && <span class="label entryElement">LATE</span>}
+                                        <p class="entryElement"><strong>Due:</strong>{" "} {book.due
+                                            ? new Date(book.due).toLocaleDateString("en-US", {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric"
+                                        })
+                                        : "No due date"
+                                        }</p>
+
+                                        <button class="btn entryElement">Return Book</button>
+                                    </div>
+                                )
+
+                            })}
+                        </Slider>
+                    </div>
+                ) : (
+                    <p>No books currently checked out. Browse our catalogue <a href="/browsebooks">here</a>.</p>
+                )}
+
+                </div>
+
+
+                <h1 class="header">My Devices</h1>
+                <p class="description">All currently checked out devices.</p>
+
+                <div class="container">
+
+                {/* checked out books*/}
+                {checkedOutDevices.length > 0 ? (
+                    <div class="carousel">
+                        <Slider {...sliderSettings}>
+                            {checkedOutDevices.map((device, index) => {
+
+                                const isLate = new Date(device.due) < new Date();
+
+                                // book entry
+                                return (
+                                    <div key={`device_${index}`} className="deviceEntry">
+                                        <h3 class="entryElement">{device.model}</h3>
+                                        <p class="entryElement">{device.category}</p>
+                                        <img src={deviceImages[device.category]} alt={device.category}/>
+                                        {isLate && <span class="label entryElement">LATE</span>}
+                                        <p class="entryElement"><strong>Due:</strong>{" "} {device.due
+                                            ? new Date(device.due).toLocaleDateString("en-US", {
+                                            year: "numeric",
+                                            month: "long",
+                                            day: "numeric"
+                                        })
+                                        : "No due date"
+                                        }</p>
+
+                                        <button class="btn entryElement">Return Device</button>
+                                    </div>
+                                )
+
+                            })}
+                        </Slider>
+                    </div>
+                ) : (
+                    <p>No devices currently checked out. Browse our catalogue <a href="/browsedevices">here</a>.</p>
+                )}
+
+                </div>
+
+                <div class="centering">
+                    <img src="/logo.png" alt="Cougar Public Library Logo" id="logo"/>
+                </div>
+
+            </div>
 
         </div>
     );
