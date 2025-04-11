@@ -77,10 +77,12 @@ const BrowseBooks = () => {
     };
 
     const handleLoadMore = () => {
-        setVisible((previous) => previous + 10);
+        setVisible((previous) => previous + 5);
     };
 
     const handleBorrow = async (isbn) => {
+        console.log("Borrowing ISBN:", isbn);
+
         try {
             const token = localStorage.getItem("token");
             if (!token) {
