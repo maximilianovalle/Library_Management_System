@@ -95,7 +95,6 @@ const Login = () => {
                 <div className="login-header">
                     <img src="/logo.png" alt="Cougar Public Library Logo" className="login-logo" />
                     <h1>Cougar Library</h1>
-                    <p>Secure Access Portal</p>
                 </div>
                 
                 <form id="login_form" className="login-form" onSubmit={handleSubmit}>
