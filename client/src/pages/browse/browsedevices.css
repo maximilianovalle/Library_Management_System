@@ -151,3 +151,23 @@
     background-color: #ff7979;
 }
 
+.held_by_you {
+    font-weight: bold;
+    color: #d97706;
+    margin-right: 10px;
+}
+
+.cancel_hold_button {
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    margin-top: 5px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.toggle_held {
+    margin-top: 10px;
+    font-size: 14px;
+}
