@@ -6,7 +6,7 @@ import cameraImg from "../checkedOutItems/camera.png";
 import calculatorImg from "../checkedOutItems/calculator.png";
 import laptopImg from "../checkedOutItems/laptop.png";
 
-// const browse_by = ["Model", "Category", "Condition", "Status"];
+const browse_by = ["Model", "Category", "Status"];
 const categoryChips = ["Laptop", "Camera", "Calculator"];
 
 const categoryImages = {
@@ -17,7 +17,7 @@ const categoryImages = {
 
 const BrowseDevices = () => {
     const [searchValue, setSearchValue] = useState("");
-    const [searchBy, setSearchBy] = useState("");
+    const [searchBy, setSearchBy] = useState("model");
     const [sortBy] = useState("");
     const [devices, setDevices] = useState([]);
 
@@ -68,7 +68,7 @@ const BrowseDevices = () => {
 
     const handleHold = (device) => {
         alert(`Hold placed on ${device.model} (${device.category})`);
-        // You would send a POST request here to /hold or similar
+        // hold logic
     };
 
     return (
@@ -76,29 +76,30 @@ const BrowseDevices = () => {
             <HeaderAfter />
 
             <div className="search-area">
-                {/* <form className="search" onSubmit={handleSearch}>
-                    <input
-                        className="search_bar"
-                        type="text"
-                        placeholder="Ex: Dell, Camera, Good condition..."
-                        value={searchValue}
-                        onChange={(e) => setSearchValue(e.target.value)}
-                    />
-                    <select
-                        className="search_dropdown"
-                        value={searchBy}
-                        onChange={(e) => setSearchBy(e.target.value.toLowerCase())}
-                    >
-                        {browse_by.map((option, idx) => (
-                            <option key={idx} value={option.toLowerCase()}>{option}</option>
-                        ))}
-                    </select>
-                    <button className="search_button" type="submit">Search</button>
-                </form> */}
+            <form className="search" onSubmit={handleSearch}>
+    <input
+        className="search_bar"
+        type="text"
+        placeholder="Search..."
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+    />
+    <select
+        className="search_dropdown"
+        value={searchBy}
+        onChange={(e) => setSearchBy(e.target.value)}
+    >
+        {browse_by.map((option, idx) => (
+            <option key={idx} value={option.toLowerCase()}>{option}</option>
+        ))}
+    </select>
+    <button className="search_button" type="submit">Search</button>
+</form>
+
             </div>
 
             <div className="filters">
-                <p>Quick Category Filters:</p>
+                <p> Category Filters:</p>
                 {categoryChips.map((category) => (
                     <button
                         key={category}
@@ -128,7 +129,7 @@ const BrowseDevices = () => {
                                                 className="hold_button"
                                                 onClick={() => handleHold(device)}
                                             >
-                                                Place on Hold
+                                                Place a Hold
                                             </button>
                                         )}
                                     </div>
