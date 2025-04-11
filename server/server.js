@@ -105,7 +105,7 @@ const app = http.createServer( async (req, res) => {
   }
 
   if(req.url === '/genres' && req.method === 'GET' && role === 2){
-    getGenres(req, res);  // call getGenres() to search genres
+    getGenres(req, res);
     return;
   }
   if(req.url === '/book_by_genre' && req.method === 'GET' && role === 2){
@@ -117,8 +117,6 @@ const app = http.createServer( async (req, res) => {
     listBooks(req,res);
     return;
   }
-
-
   if (req.url === '/hold' && req.method === 'POST' && role === 2) {
     holdDevice(req, res);
     return;

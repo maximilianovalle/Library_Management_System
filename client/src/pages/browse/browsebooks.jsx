@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
 import './browsebooks.css';
 import DropDown from './components/drop_down';
 import HeaderAfter from "../../components/header/HeaderAfter";
+
 import Genres from "./genres";
 
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 import defaultCover from './book-not-found.png';
+
 // Dropdown options for searching
-const browse_by = ["Title", "ISBN", "Author", "Genre", "Book_Status"];
+const browse_by = ["Title", "ISBN", "Author", "Genre"];
 
 const processBooks = (books) => {
     const bookMap = new Map();
@@ -34,7 +35,12 @@ const BrowseBooks = () => {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-
+    const [visible, setVisible] = useState(10);
+    const handleLoadMore = () => {
+        setVisible((previous) => previous + 10);
+    };
+    const handleBorrow = () => {
+    }
     const fetchBooks = async (params = {}) => {
         console.log(params)
         try {
@@ -102,7 +108,7 @@ const BrowseBooks = () => {
                     {error && <p>{error}</p>}
                     {loading && <p>Loading...</p>}
                     {books.length > 0 ? (
-                        books.map((book, index) => (
+                        books.slice(0, visible).map((book, index) => (
                             <div key={index} className="book_card">
                                 <h3>{book.Title}</h3>
                                 <img
@@ -119,13 +125,19 @@ const BrowseBooks = () => {
                                 <p>Genre: {book.Genre}</p>
                                 <p>Publication Year: {book.Publication_Year || "Unknown"}</p>
                                 <p>Available: {book.count}</p>
-                                <button className="borrow_button">Borrow :3</button>
+                                <button className="borrow_button" onClick={handleBorrow}>Borrow :3</button>
                             </div>
+                            
                         ))
                     ) : (
                         <p>No books found. Try different search criteria.</p>
                     )}
                 </div>
+                {visible < books.length && (
+                    <button className="load_more_button" onClick={handleLoadMore}>
+                        Show more...
+                    </button>
+                )}
                 <div className="genre_container">
                     <Genres />
                 </div>
