@@ -117,8 +117,8 @@ const app = http.createServer( async (req, res) => {
     get_book_by_genre(req, res);
     return;
   }
-  if(req.url === '/borrowbooks' && req.method === 'GET' && role === 2){
-    listBooks(req,res);
+  if(req.url === '/borrow_book' && req.method === 'PUT' && role === 2){
+    add_book_to_user(req,res);
     return;
   }
   if (req.url === '/hold' && req.method === 'POST' && role === 2) {

@@ -39,7 +39,25 @@ const BrowseBooks = () => {
     const handleLoadMore = () => {
         setVisible((previous) => previous + 10);
     };
-    const handleBorrow = () => {
+    const handleBorrow = async (isbn) => {
+        try{
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("No token found. Redirecting to login...");
+                window.location.href = "/login";
+                return;
+            }
+            await axios.put(`${process.env.REACT_APP_API_URL}/borrow_book`, 
+                {ISBN : isbn}, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                    }, 
+            });
+            alert("Book borrowed successfully!");
+        } catch(error){
+            console.error("Error borrowing book:", error);
+            alert("Failed to borrow book. Please try again.");
+        }
     }
     const fetchBooks = async (params = {}) => {
         console.log(params)
@@ -125,7 +143,7 @@ const BrowseBooks = () => {
                                 <p>Genre: {book.Genre}</p>
                                 <p>Publication Year: {book.Publication_Year || "Unknown"}</p>
                                 <p>Available: {book.count}</p>
-                                <button className="borrow_button" onClick={handleBorrow}>Borrow :3</button>
+                                <button className="borrow_button" onClick={() => handleBorrow(book.ISBN)}>Borrow :3</button>
                             </div>
                             
                         ))
