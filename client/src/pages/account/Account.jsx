@@ -89,15 +89,22 @@ const Account = () => {
             });
 
             setPrevFine(res.data.amount_paid);
-            setFineAmnt(res2.data.fineAmntDue); // update fine amount
+
+            setTimeout(() => {
+                setFineAmnt(res2.data.fineAmntDue); // update fine amount
+            }, 250);
 
         } catch (error) {
             console.log("Error paying fine: ", error);
         }
     };
 
-    // opens checkout modal
-    const openModal = () => setShowCheckout(true);
+    // opens checkout modal after brief timeout (for info loading purposes)
+    const openModal = () => {
+        setTimeout(() => {
+            setShowCheckout(true);
+        }, 250); // delay in milliseconds (1000ms = 1 second)
+    };
 
     // closes checkout modal
     const closeModal = () => setShowCheckout(false);
