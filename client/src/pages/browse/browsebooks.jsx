@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-
 import './browsebooks.css';
 import DropDown from './components/drop_down';
 import HeaderAfter from "../../components/header/HeaderAfter";
-
 import Genres from "./genres";
-
 import defaultCover from './book-not-found.png';
+
+import { FaPlus, FaMinus } from "react-icons/fa";
 
 // Dropdown options for searching
 const browse_by = ["Title", "ISBN", "Author", "Genre"];
@@ -36,31 +35,74 @@ const BrowseBooks = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [visible, setVisible] = useState(10);
+
+    const [modalContent, setModalContent] = useState(null);
+
+    // FAQ state
+    const [activeIndex, setActiveIndex] = useState(null);
+
+    const toggleFAQ = (index) => {
+        setActiveIndex((prevIndex) => (prevIndex === index ? null : index));
+    };
+
+    const faqItems = [
+        {
+            question: "How do I place a hold on a device?",
+            answer: "On the Browse Devices page, click 'Place Hold' next to an available item. The device will be reserved for 1 day and marked as 'Held by you'.",
+        },
+        {
+            question: "Where can I view my checked-out books and devices?",
+            answer: "Go to your Account page. You’ll see a list of items you’ve checked out, their due dates, and any late fees owed.",
+        },
+        {
+            question: "Can I return items online?",
+            answer: "Returns must be made in person at the library desk. Once scanned, your account will update and late fees (if any) will be applied automatically.",
+        },
+        {
+            question: "What happens if I don’t pick up a held item?",
+            answer: "If not picked up in time, the item will become available again and removed from your hold list.",
+        },
+        {
+            question: "How do I know if I have late fees?",
+            answer: "Late fees are shown on your Account page. They are calculated at check-in based on the return date and item type/condition.",
+        },
+        {
+            question: "Can I check out multiple devices at once?",
+            answer: "Students may borrow up to 2 devices and 3 books at a time. Faculty may borrow more. Limits reset after returns are completed.",
+        },
+    ];
+
+    const closeModal = () => {
+        setModalContent(null);
+    };
+
     const handleLoadMore = () => {
         setVisible((previous) => previous + 10);
     };
+
     const handleBorrow = async (isbn) => {
-        try{
+        try {
             const token = localStorage.getItem("token");
             if (!token) {
                 console.error("No token found. Redirecting to login...");
                 window.location.href = "/login";
                 return;
             }
-            await axios.put(`${process.env.REACT_APP_API_URL}/borrow_book`, 
-                {ISBN : isbn}, {
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                    }, 
+            await axios.put(`${process.env.REACT_APP_API_URL}/borrow_book`,
+                { ISBN: isbn }, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
             });
             alert("Book borrowed successfully!");
-        } catch(error){
+        } catch (error) {
             console.error("Error borrowing book:", error);
             alert("Failed to borrow book. Please try again.");
         }
-    }
+    };
+
     const fetchBooks = async (params = {}) => {
-        console.log(params)
+        console.log(params);
         try {
             const token = localStorage.getItem("token");
             if (!token) {
@@ -84,6 +126,7 @@ const BrowseBooks = () => {
             setLoading(false);
         }
     };
+
     useEffect(() => {
         fetchBooks();
     }, []);
@@ -92,9 +135,9 @@ const BrowseBooks = () => {
         e.preventDefault();
         setLoading(true);
         setError("");
-        
+
         fetchBooks({
-            search_by: search_by, 
+            search_by: search_by,
             search_value,
         });
     };
@@ -120,7 +163,7 @@ const BrowseBooks = () => {
                         value={search_value}
                         onChange={(e) => setSearchValue(e.target.value)}
                     />
-                    <button className= "browse_button" type="submit">Search</button>
+                    <button className="browse_button" type="submit">Search</button>
                 </form>
                 <div className="books_container">
                     {error && <p>{error}</p>}
@@ -137,7 +180,7 @@ const BrowseBooks = () => {
                                         e.target.onerror = null;
                                         e.target.src = defaultCover;
                                     }}
-                                    />
+                                />
                                 <p>Author: {book.Name}</p>
                                 <p>ISBN: {book.ISBN}</p>
                                 <p>Genre: {book.Genre}</p>
@@ -145,7 +188,6 @@ const BrowseBooks = () => {
                                 <p>Available: {book.count}</p>
                                 <button className="borrow_button" onClick={() => handleBorrow(book.ISBN)}>Borrow :3</button>
                             </div>
-                            
                         ))
                     ) : (
                         <p>No books found. Try different search criteria.</p>
@@ -160,6 +202,50 @@ const BrowseBooks = () => {
                     <Genres />
                 </div>
             </div>
+
+            <div className="library-info-section">
+                <div className="library-info-left">
+                <h1>Welcome to Cougar Library!</h1>
+                    <p>
+                        As a UH student, you get full access to our library services — no sign-up required. Use your account to browse, place holds, check out books and devices, and track late fees in one place.
+                    </p>
+                    <p>
+                        Whether you need a laptop for class or a book for research, we’ve got you covered. All devices and books are free to borrow, with extended time limits for faculty.
+                    </p>
+                </div>
+                <div className="library-info-right">
+                    <h2>Frequently Asked Questions</h2>
+                    {faqItems.map((item, index) => (
+                        <div
+                            key={index}
+                            className={`faq-item ${activeIndex === index ? "active" : ""}`}
+                            onClick={() => toggleFAQ(index)}
+                        >
+                            <div className="faq-question">
+                                <span>{item.question}</span>
+                                <span className="faq-icon">
+                                    {activeIndex === index ? <FaMinus /> : <FaPlus />}
+                                </span>
+                                </div>
+
+                            {activeIndex === index && (
+                                <div className="faq-answer">
+                                    <p>{item.answer}</p>
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {modalContent && (
+                <div className="modal-overlay" onClick={closeModal}>
+                    <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+                        <span className="modal-close" onClick={closeModal}>&times;</span>
+                        <p>{modalContent}</p>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
