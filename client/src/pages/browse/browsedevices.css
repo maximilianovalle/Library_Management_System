@@ -171,3 +171,45 @@
     margin-top: 10px;
     font-size: 14px;
 }
+
+.filters {
+    margin: 30px auto;
+    padding: 1rem;
+    border-radius: 12px;
+    width: fit-content;
+}
+
+.filters p {
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #333;
+}
+
+.filters .chip {
+    background-color: #e0e0e0;
+    color: #333;
+    font-size: 0.95rem;
+    padding: 8px 14px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    margin: 4px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.filters .chip:hover {
+    background-color: dimgrey;
+    color: white;
+}
+
+.toggle_held,
+.toggle_available {
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    user-select: none;
+}
