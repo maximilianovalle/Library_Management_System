@@ -3,7 +3,6 @@ const pool = require("../database.js");
 // payFines() function, handles HTTP request and response
 module.exports = async function payFine(req, res, userID) {
   try {
-    console.log("'Pay Now' button clicked.");
 
     // Start a transaction to ensure all operations succeed or fail together
     const connection = await pool.getConnection();
@@ -16,7 +15,14 @@ module.exports = async function payFine(req, res, userID) {
         [userID]
       );
 
-      const totalBefore = totalFinesBefore[0].total || 0;
+      console.log("Total Before: ", totalFinesBefore[0].total);
+
+      const totalBefore = totalFinesBefore[0].total;
+
+      if (totalBefore === null) {
+        totalBefore = 0;
+      }
+
       const wasRestricted = totalBefore >= 25;
 
       // Update all unpaid fines to paid
@@ -24,6 +30,8 @@ module.exports = async function payFine(req, res, userID) {
         "UPDATE fines SET Fine_Status = 1 WHERE User_ID = ? AND Fine_status = 2",
         [userID]
       );
+
+      console.log(`${result.affectedRows} fine(s) updated.`);
 
       if (result.affectedRows === 0) {
         await connection.rollback();
@@ -42,9 +50,7 @@ module.exports = async function payFine(req, res, userID) {
                  VALUES (?, ?, NOW(), 0, 'payment_success')`,
         [
           userID,
-          `Your payment of $${totalBefore.toFixed(
-            2
-          )} has been successfully processed. Thank you for your payment.`,
+          `Your payment of $${totalBefore} has been successfully processed. Thank you for your payment.`,
         ]
       );
 
@@ -69,7 +75,7 @@ module.exports = async function payFine(req, res, userID) {
       res.end(
         JSON.stringify({
           message: "Successfully paid all fines!",
-          amount_paid: totalBefore.toFixed(2),
+          amount_paid: totalBefore,
           restrictions_lifted: wasRestricted,
         })
       );

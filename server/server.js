@@ -41,6 +41,8 @@ const app = http.createServer( async (req, res) => {
     return;
   }
 
+  console.log("Authorizing token...");
+
   // client sends request with authentication ("Authorization: Bearer [tokenString]")
   const token = req.headers.authorization?.split("Bearer ")[1]; // retrieves actual token string from request
 
@@ -50,7 +52,7 @@ const app = http.createServer( async (req, res) => {
     return;
   }
 
-  console.log("Token authorized.")
+  console.log("Token authorized.");
 
   // console.log("passed auth")
   // logout function
@@ -75,7 +77,9 @@ const app = http.createServer( async (req, res) => {
 
   // when /account "pay now" button clicked
   if (req.url === '/account' && req.method === 'PUT' && role === 2) {
+    console.log("Paying user fine amount.");
     payFine(req, res, userID);
+    console.log("User fine amount paid.");
     return;
   }
 

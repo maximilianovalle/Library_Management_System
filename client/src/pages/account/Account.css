@@ -5,6 +5,7 @@
     background-color: #fff;
     border-radius: 16px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    animation: fade-in 0.5s ease;
   }
   
   #userDesc {
@@ -39,19 +40,32 @@
   }
   
   #finesDue {
-    margin-top: 28px;
     text-align: center;
     font-size: 1.5rem;
     color: #111827;
     font-weight: 500;
+
+    margin: 0px;
   }
   
   #amountDue {
     text-align: center;
     font-size: 2.25rem;
     color: #dc2626;
-    margin: 8px 0 24px;
+    margin: 0px;
     font-weight: bold;
+
+    margin-bottom: 12px;
+  }
+
+  #noAmountDue {
+    text-align: center;
+    font-size: 2.25rem;
+    color: #2563eb;
+    margin: 0px;
+    font-weight: bold;
+
+    margin-bottom: 12px;
   }
   
   #payBtn {

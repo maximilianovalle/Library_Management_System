@@ -14,10 +14,13 @@ const Account = () => {
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [createdAt, setCreatedAt] = useState("");
-    const [fineAmntDue, setFineAmnt] = useState("");
+
     const [pastBooksArray, setPastBooks] = useState([]);
     const [pastDevicesArray, setPastDevices] = useState([]);
     const [showCheckout, setShowCheckout] = useState(false);
+
+    const [fineAmntDue, setFineAmnt] = useState("");
+    const [prevFineAmnt, setPrevFine] = useState("");
 
     // triggered once when the page loads
     useEffect(() => {
@@ -71,9 +74,10 @@ const Account = () => {
             }
 
             // sends a PUT request to /account including token
-            const res = await axios.put(`${process.env.REACT_APP_API_URL}/account`, {
+            const res = await axios.put(`${process.env.REACT_APP_API_URL}/account`, {}, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
+                    "Content-Type": `application/json`,
                 },
             });
 
@@ -84,13 +88,14 @@ const Account = () => {
                 },
             });
 
+            setPrevFine(res.data.amount_paid);
             setFineAmnt(res2.data.fineAmntDue); // update fine amount
-            alert(res.data.message);
 
         } catch (error) {
             console.log("Error paying fine: ", error);
         }
     };
+
     // opens checkout modal
     const openModal = () => setShowCheckout(true);
 
@@ -117,11 +122,22 @@ const Account = () => {
                     {createdAt && <p id="dateJoined">Joined {createdAt}</p>}
 
                     <h2 id="finesDue">Fines Owed:</h2>
-                    <p id="amountDue">-${fineAmntDue}</p>
 
-                    <div id="buttonAlign">
-                        <button id="payBtn" onClick={openModal}>Pay Now</button>
-                    </div>
+                    {fineAmntDue > 0 ? (
+                        <div>
+                        <p id="amountDue">-${fineAmntDue}</p>
+                        <div id="buttonAlign">
+                        <button id="payBtn" onClick={() => {
+                            openModal();
+                            payFines();
+                        }
+                        }>Pay Now</button>
+                        </div>
+                        </div>
+                    ) : (
+                        <p id="noAmountDue">${fineAmntDue}</p>
+                    )}
+
                 </div>
 
                 {/* recent activity */}
@@ -180,7 +196,7 @@ const Account = () => {
                 </div>
                 <div className="checkout-body">
                     <p>
-                    Thank you for paying your fine. Your payment of <strong>${fineAmntDue}</strong> has been processed successfully through your linked ShastaBucks account.
+                    Thank you for paying your fine. Your payment of <strong>${prevFineAmnt}</strong> has been processed successfully through your linked ShastaBucks account.
                     </p>
                     <p>
                     All related holds and restrictions have been removed. 
