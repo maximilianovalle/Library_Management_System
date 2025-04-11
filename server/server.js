@@ -11,6 +11,10 @@ const getDevices = require("./device_info/devices.js"); // getDevices()
 const payFine = require('./account_info/payFine.js'); // payFine()
 const getGenres = require('./book_info/genres.js'); // getGenres()
 const getCheckedOutItems = require('./checkedOutItems/checkedOut.js');
+const holdDevice = require("./hold_item/hold_device.js"); //holdDevice()
+const getUserHolds = require('./hold_item/user_holds.js');
+const cancelHold = require('./hold_item/cancel_hold.js');
+
 
 
 // creates HTTP server and listens for incoming requests
@@ -105,7 +109,7 @@ const app = http.createServer( async (req, res) => {
   }
 
   if(req.url === '/genres' && req.method === 'GET' && role === 2){
-    getGenres(req, res);  // call getGenres() to search genres
+    getGenres(req, res);
     return;
   }
   if(req.url === '/book_by_genre' && req.method === 'GET' && role === 2){
@@ -117,6 +121,21 @@ const app = http.createServer( async (req, res) => {
     listBooks(req,res);
     return;
   }
+  if (req.url === '/hold' && req.method === 'POST' && role === 2) {
+    holdDevice(req, res);
+    return;
+  }
+  if (req.url === '/user/holds' && req.method === 'GET' && role === 2) {
+    getUserHolds(req, res);
+    return;
+  }
+  if (req.url === '/hold/cancel' && req.method === 'POST') {
+    cancelHold(req, res);
+    return;
+}
+
+
+
   res.end();  // if request does not match any of the defined routes, ends response w/ no data
     
 }).listen(8000, console.log('Server is running on port 8000')); // server is listening on port 8000 for incoming HTTP requests

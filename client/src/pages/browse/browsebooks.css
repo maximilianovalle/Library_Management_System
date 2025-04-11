@@ -110,3 +110,18 @@
     border-radius: 4px;
     width: 150px;
 }
+
+.load_more_button {
+    margin: 1rem auto;
+    display: block;
+    padding: 10px 20px;
+    background-color: #fa2e2e;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.load_more_button:hover {
+    background-color: #ff7979;
+}

@@ -20,6 +20,8 @@ const BrowseDevices = () => {
     const [searchBy, setSearchBy] = useState("model");
     const [sortBy] = useState("");
     const [devices, setDevices] = useState([]);
+    const [userHolds, setUserHolds] = useState([]);
+    const [showOnlyHeld, setShowOnlyHeld] = useState(false);
 
     const fetchDevices = async (params = {}) => {
         try {
@@ -40,11 +42,25 @@ const BrowseDevices = () => {
         }
     };
 
+    const fetchUserHolds = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/holds`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            setUserHolds(response.data.holds.map(h => h.model));
+        } catch (error) {
+            console.error("Error fetching user holds:", error);
+        }
+    };
+
     useEffect(() => {
-        fetchDevices({
-            search_by: "device_status",
-            search_value: "Available"
-        });
+        const init = async () => {
+            await fetchDevices({ search_by: "device_status", search_value: "Available" });
+            await fetchUserHolds();
+        };
+        init();
     }, []);
 
     const handleSearch = (e) => {
@@ -66,40 +82,77 @@ const BrowseDevices = () => {
         });
     };
 
-    const handleHold = (device) => {
-        alert(`Hold placed on ${device.model} (${device.category})`);
-        // hold logic
+    const handleHold = async (device) => {
+        try {
+            const token = localStorage.getItem("token");
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/hold`, {
+                model: device.model,
+                category: device.category
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 200) {
+                alert(`Hold placed on ${device.model} (${device.category})!`);
+                await fetchDevices();
+                await fetchUserHolds();
+            }
+
+        } catch (err) {
+            alert(err.response?.data?.message || "Hold failed.");
+        }
     };
+
+    const handleCancelHold = async (model) => {
+        try {
+            const token = localStorage.getItem("token");
+            await axios.post(`${process.env.REACT_APP_API_URL}/hold/cancel`, {
+                model
+            }, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            await fetchDevices();
+            await fetchUserHolds();
+            alert("Hold released.");
+        } catch (err) {
+            alert("Failed to cancel hold.");
+        }
+    };
+
+    const filteredDevices = showOnlyHeld
+        ? devices.filter(device => userHolds.includes(device.model))
+        : devices;
 
     return (
         <div>
             <HeaderAfter />
 
             <div className="search-area">
-            <form className="search" onSubmit={handleSearch}>
-    <input
-        className="search_bar"
-        type="text"
-        placeholder="Search..."
-        value={searchValue}
-        onChange={(e) => setSearchValue(e.target.value)}
-    />
-    <select
-        className="search_dropdown"
-        value={searchBy}
-        onChange={(e) => setSearchBy(e.target.value)}
-    >
-        {browse_by.map((option, idx) => (
-            <option key={idx} value={option.toLowerCase()}>{option}</option>
-        ))}
-    </select>
-    <button className="search_button" type="submit">Search</button>
-</form>
-
+                <form className="search" onSubmit={handleSearch}>
+                    <input
+                        className="search_bar"
+                        type="text"
+                        placeholder="Search..."
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                    />
+                    <select
+                        className="search_dropdown"
+                        value={searchBy}
+                        onChange={(e) => setSearchBy(e.target.value)}
+                    >
+                        {browse_by.map((option, idx) => (
+                            <option key={idx} value={option.toLowerCase()}>{option}</option>
+                        ))}
+                    </select>
+                    <button className="search_button" type="submit">Search</button>
+                </form>
             </div>
 
             <div className="filters">
-                <p> Category Filters:</p>
+                <p>Category Filters:</p>
                 {categoryChips.map((category) => (
                     <button
                         key={category}
@@ -109,13 +162,24 @@ const BrowseDevices = () => {
                         {category}
                     </button>
                 ))}
+
+                <label className="toggle_held">
+                    <input
+                        type="checkbox"
+                        checked={showOnlyHeld}
+                        onChange={(e) => setShowOnlyHeld(e.target.checked)}
+                    />
+                    Show only held devices
+                </label>
             </div>
 
             <div className="Display_container">
-                {devices.length > 0 ? (
+                {filteredDevices.length > 0 ? (
                     <ul className="device_list">
-                        {devices.map((device, index) => {
+                        {filteredDevices.map((device, index) => {
                             const imageSrc = categoryImages[device.category.toLowerCase()];
+                            const isHeldByUser = userHolds.includes(device.model);
+
                             return (
                                 <li key={index} className="device_card">
                                     <div className="device_info">
@@ -124,7 +188,18 @@ const BrowseDevices = () => {
                                         Status: <span className={`status ${device.status.replace(" ", "-").toLowerCase()}`}>
                                             {device.status}
                                         </span><br />
-                                        {device.status.toLowerCase() === "available" && (
+
+                                        {isHeldByUser ? (
+                                            <div className="held-section">
+                                                <span className="held_by_you">Held by you</span>
+                                                <button
+                                                    className="cancel_hold_button"
+                                                    onClick={() => handleCancelHold(device.model)}
+                                                >
+                                                    Release Hold
+                                                </button>
+                                            </div>
+                                        ) : device.status.toLowerCase() === "available" && (
                                             <button
                                                 className="hold_button"
                                                 onClick={() => handleHold(device)}

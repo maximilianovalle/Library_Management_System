@@ -19,7 +19,7 @@
 
 .genre-big-button {
     padding: 16px 32px;
-    background-color: #fa2e2e;
+    background-color: #ff7979;
     color: white;
     border: none;
     font-size: 16px;
@@ -31,7 +31,7 @@
 }
 
 .genre-big-button:hover {
-    background-color: #ff7777;
+    background-color: #fa2e2e;
 }
 
 .error {

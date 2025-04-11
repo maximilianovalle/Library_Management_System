@@ -15,7 +15,6 @@ module.exports = async function getBooks(req, res) {
             FROM book AS b
             JOIN author ON author.Author_ID = b.Author_ID
             JOIN book_copies AS bc ON b.ISBN = bc.ISBN
-            WHERE 1=1
         `;
 
         const params = [];
