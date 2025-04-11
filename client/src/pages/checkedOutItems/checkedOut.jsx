@@ -43,9 +43,10 @@ const deviceImages = {
 const CheckedOutPage = () => {
     const [checkedOutBooks, setBooks] = useState([]);
     const [checkedOutDevices, setDevices] = useState([]);
+    const [onHoldDevices, setHoldDevices] = useState([]);
     const currDate = new Date();
 
-    console.log("today's date: ", currDate);
+    console.log("Current Date: ", currDate);
 
     // triggered once when the page loads
     useEffect(() => {
@@ -69,6 +70,7 @@ const CheckedOutPage = () => {
                 // receive JSON from checkedOut.js
                 setBooks(res.data.checkedOutBooksArr);
                 setDevices(res.data.checkedOutDevicesArr);
+                setHoldDevices(res.data.heldDevicesArr);
             } catch (error) {
                 console.error("Error fetching books:", error);
             }
@@ -132,21 +134,44 @@ const CheckedOutPage = () => {
 
 
                 <h1 class="header">My Devices</h1>
-                <p class="description">All currently checked out devices.</p>
+                <p class="description">All currently checked out and on hold devices.</p>
 
                 <div class="container">
 
-                {/* checked out books*/}
-                {checkedOutDevices.length > 0 ? (
+                {/* checked out + on hold books*/}
+                {checkedOutDevices.length + onHoldDevices.length > 0 ? (
                     <div class="carousel">
                         <Slider {...sliderSettings}>
-                            {checkedOutDevices.map((device, index) => {
 
+                        {onHoldDevices.map((device, index) => {
+                            // device entry
+                            return (
+                                <div key={`hold_${index}`} class="deviceEntry">
+                                    <p id="holdSubtext">HOLD - Pick up item at library help desk</p>
+                                    <h3 class="entryElement">{device.model}</h3>
+                                    <p class="entryElement">{device.category}</p>
+                                    <img src={deviceImages[device.category]} alt={device.category}/>
+                                    <p class="entryElement">Expires<strong>{" "} {device.expires
+                                            ? new Date(device.expires).toLocaleDateString("en-US", {
+                                                year: "numeric",
+                                                month: "long",
+                                                day: "numeric",
+                                            }) : "Never"
+                                        }
+                                    </strong></p>
+
+                                    <button class="btn holdBtn entryElement">Remove Hold</button>
+                                </div>
+                            )
+
+                            })}
+
+                            {checkedOutDevices.map((device, index) => {
                                 const isLate = new Date(device.due) < new Date();
 
-                                // book entry
+                                // device entry
                                 return (
-                                    <div key={`device_${index}`} className="deviceEntry">
+                                    <div key={`device_${index}`} class="deviceEntry">
                                         <h3 class="entryElement">{device.model}</h3>
                                         <p class="entryElement">{device.category}</p>
                                         <img src={deviceImages[device.category]} alt={device.category}/>
@@ -160,15 +185,18 @@ const CheckedOutPage = () => {
                                         : "No due date"
                                         }</p>
 
-                                        <button class="btn entryElement">Return Device</button>
+                                        <p id="returnMsg">Return to library help desk</p>
+
+                                        {/* <button class="btn entryElement">Return Device</button> */}
                                     </div>
                                 )
 
                             })}
+
                         </Slider>
                     </div>
                 ) : (
-                    <p>No devices currently checked out. Browse our catalogue <a href="/browsedevices">here</a>.</p>
+                    <p>No devices currently checked out or on hold. Browse our catalogue <a href="/browsedevices">here</a>.</p>
                 )}
 
                 </div>

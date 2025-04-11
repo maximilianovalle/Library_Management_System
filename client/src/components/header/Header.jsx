@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const Header = () => {
     const items = [
-        { title: "Checked Out", link: `/checkedout` },
+        { title: "My Items", link: `/checkedout` },
         { title: "Browse Books", link: `/browsebooks` },
         { title: "Browse Devices", link: `/browsedevices` },
         { title: "Account", link: `/account` }

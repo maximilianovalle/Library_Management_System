@@ -6,7 +6,7 @@ const HeaderAfter = () => {
     const location = useLocation();
 
     const navItems = [
-        { title: "Checked Out", link: "/checkedout" },
+        { title: "My Items", link: "/checkedout" },
         { title: "Browse Books", link: "/browsebooks" },
         { title: "Browse Devices", link: "/browsedevices" },
         { title: "Account", link: "/account" }
