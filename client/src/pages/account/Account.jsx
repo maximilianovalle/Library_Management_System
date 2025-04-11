@@ -128,13 +128,13 @@ const Account = () => {
 
                     {createdAt && <p id="dateJoined">Joined {createdAt}</p>}
 
-                    <h2 id="finesDue">Fines Owed:</h2>
+                    <h2 id="finesDue">Fines Due:</h2>
 
                     {fineAmntDue > 0 ? (
                         <div>
                         <p id="amountDue">-${fineAmntDue}</p>
                         <div id="buttonAlign">
-                        <button id="payBtn" onClick={() => {
+                        <button class="btn" onClick={() => {
                             openModal();
                             payFines();
                         }
@@ -202,15 +202,12 @@ const Account = () => {
                     <h2>Payment Successful!</h2>
                 </div>
                 <div className="checkout-body">
-                    <p>
-                    Thank you for paying your fine. Your payment of <strong>${prevFineAmnt}</strong> has been processed successfully through your linked ShastaBucks account.
-                    </p>
-                    <p>
-                    All related holds and restrictions have been removed. 
-                    </p>
-                    <p>
-                    Please refer to a librarian with any questions or concerns.
-                    </p>
+                    <p>Your payment of <strong>${prevFineAmnt}</strong> has been processed successfully through your linked ShastaBucks account. All related holds and restrictions have been removed.</p>
+                    <p id="subtext">Please see our help desk for help with any questions or concerns.</p>
+                    <button class="btn" onClick={() => {
+                            closeModal();
+                    }}>Ok</button>
+                    {/* <p id="subtext">Please see our help desk for help with any questions or concerns.</p> */}
                 </div>
                 </div>
             </div>

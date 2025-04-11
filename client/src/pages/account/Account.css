@@ -17,8 +17,11 @@
   }
 
   #buttonAlign {
+    padding: 0px;
+    margin: 0px;
     display: flex;
     justify-content: center;
+    align-items: centerS;
   }
   
   #userDesc h1 {
@@ -55,7 +58,7 @@
     margin: 0px;
     font-weight: bold;
 
-    margin-bottom: 12px;
+    /* margin-bottom: 12px; */
   }
 
   #noAmountDue {
@@ -65,10 +68,10 @@
     margin: 0px;
     font-weight: bold;
 
-    margin-bottom: 12px;
+    /* margin-bottom: 12px; */
   }
   
-  #payBtn {
+  .btn {
     background-color: #2563eb;
     min-width: 40%;
     color: white;
@@ -80,7 +83,7 @@
     transition: background-color 0.3s ease;
   }
   
-  #payBtn:hover {
+  .btn:hover {
     background-color: #1e40af;
   }
   
