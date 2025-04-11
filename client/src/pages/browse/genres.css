@@ -1,5 +1,5 @@
 .genre-container {
-    padding: 20px;
+    width: 100%;
     font-family:'Times New Roman', Times, serif
 }
 
@@ -9,43 +9,29 @@
     margin-bottom: 30px;
 }
 
-.cards-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
-}
-
-.genre-card {
-    background-color: #f5f5f5;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.genre-card h2 {
-    font-size: 20px;
-    color: #333;
-}
-
-.button-group {
+.genre-button-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 20px;
 }
 
-.genre-button {
+.genre-big-button {
+    padding: 16px 32px;
     background-color: #fa2e2e;
     color: white;
     border: none;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 14px;
+    font-size: 16px;
+    border-radius: 12px;
     cursor: pointer;
     transition: background-color 0.2s ease;
+    min-width: 200px;
+    text-align: center;
 }
 
-.genre-button:hover {
-    background-color: #ff7979;
+.genre-big-button:hover {
+    background-color: #ff7777;
 }
 
 .error {
