@@ -8,25 +8,37 @@
     align-items: center;
     flex-direction: column;
 }
-.search{
-    justify-content: center;
-    margin-top: 2rem;
+.search {
     display: flex;
+    width: 100%;
+    padding: 0 1rem;
+    box-sizing: border-box;
 }
-.search_bar{
-    width: 80%;
+
+.search_bar {
+    flex: 1;
     padding: 1rem;
-    border-radius: 5px;
-    border: 2px solid #000000;
+    border-radius: 10px;
+    border: 10px solid #000000;
     outline: black;
 }
-.browse_button{
+
+.browse_button {
     padding: 1rem;
     border-radius: 5px;
     border: 1px solid #000000;
-    background-color: #000000;
+    background-color: #fa2e2e;
     color: white;
     margin-left: 1rem;
+    flex-shrink: 0; 
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.browse_button:hover {
+    background-color: #ff7979;
+
 }
 .logout_button{
     padding : .5rem;
@@ -90,7 +102,11 @@
     background-color: #ff7979;
 }
 .book_image{
-    border: 1px solid #ddd;
+    border: 2px solid #050505;
     border-radius: 4px;
     padding: 5px;
-    width: 150px;}
+    height: 220px;
+    object-fit: cover;
+    border-radius: 4px;
+    width: 150px;
+}

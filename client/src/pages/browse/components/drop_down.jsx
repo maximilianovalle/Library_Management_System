@@ -6,7 +6,8 @@ function Dropdown({ options, onSelect }) {
   const [selectedValue, setSelectedValue] = useState(null);
   const dropdownRef = useRef(null);
 
-  const toggleDropdown = () => {
+  const toggleDropdown = (e) => {
+    e.preventDefault();
     setIsOpen(!isOpen);
   };
 
@@ -38,9 +39,15 @@ function Dropdown({ options, onSelect }) {
       {isOpen && (
         <ul className="dropdown-menu">
           {options.map((option) => (
-            <li key={option} onClick={() => handleOptionClick(option)}>
-              {option}
-            </li>
+            <li
+            key={option}
+            onClick={(e) => {
+              e.preventDefault(); // important
+              handleOptionClick(option);
+            }}
+          >
+            {option}
+          </li>
           ))}
         </ul>
       )}
