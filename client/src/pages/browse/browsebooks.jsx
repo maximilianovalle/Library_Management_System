@@ -36,6 +36,7 @@ const BrowseBooks = () => {
     const [error, setError] = useState("");
 
     const fetchBooks = async (params = {}) => {
+        console.log(params)
         try {
             const token = localStorage.getItem("token");
             if (!token) {
@@ -60,10 +61,7 @@ const BrowseBooks = () => {
         }
     };
     useEffect(() => {
-        fetchBooks({
-            search_by: "Book_Status",
-            search_value: "Available",
-        });
+        fetchBooks();
     }, []);
 
     const handleSearch = (e) => {
@@ -72,7 +70,7 @@ const BrowseBooks = () => {
         setError("");
         
         fetchBooks({
-            search_by: search_by.toLowerCase(), 
+            search_by: search_by, 
             search_value,
         });
     };
@@ -112,14 +110,14 @@ const BrowseBooks = () => {
                                     src={`https://covers.openlibrary.org/b/isbn/${book.ISBN}-L.jpg?default=false`}
                                     alt={book.Title}
                                     onError={(e) => {
-                                        e.target.onerror = null; // Prevent infinite loop
-                                        e.target.src = defaultCover; // Make sure image is in `public/` folder
+                                        e.target.onerror = null;
+                                        e.target.src = defaultCover;
                                     }}
                                     />
                                 <p>Author: {book.Name}</p>
                                 <p>ISBN: {book.ISBN}</p>
                                 <p>Genre: {book.Genre}</p>
-                                <p>Publication Year: {book.Publication_Year}</p>
+                                <p>Publication Year: {book.Publication_Year || "Unknown"}</p>
                                 <p>Available: {book.count}</p>
                                 <button className="borrow_button">Borrow :3</button>
                             </div>
