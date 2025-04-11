@@ -35,11 +35,13 @@ const BrowseBooks = () => {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [visible, setVisible] = useState(10);
+    const [visible, setVisible] = useState(5);
     const handleLoadMore = () => {
-        setVisible((previous) => previous + 10);
+        setVisible((previous) => previous + 5);
     };
     const handleBorrow = async (isbn) => {
+        console.log("Borrowing ISBN:", isbn);
+
         try{
             const token = localStorage.getItem("token");
             if (!token) {

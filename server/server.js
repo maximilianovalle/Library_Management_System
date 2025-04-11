@@ -14,7 +14,7 @@ const getCheckedOutItems = require('./checkedOutItems/checkedOut.js');
 const holdDevice = require("./hold_item/hold_device.js"); //holdDevice()
 const getUserHolds = require('./hold_item/user_holds.js');
 const cancelHold = require('./hold_item/cancel_hold.js');
-
+const add_book_to_user = require('./borrow_item/borrow_book.js');
 
 
 // creates HTTP server and listens for incoming requests
@@ -112,13 +112,13 @@ const app = http.createServer( async (req, res) => {
     getGenres(req, res);
     return;
   }
-  if(req.url === '/book_by_genre' && req.method === 'GET' && role === 2){
-    console.log("book by genre neow")
-    get_book_by_genre(req, res);
-    return;
-  }
+  // if(req.url === '/book_by_genre' && req.method === 'GET' && role === 2){
+  //   console.log("book by genre neow")
+  //   get_book_by_genre(req, res);
+  //   return;
+  // }
   if(req.url === '/borrow_book' && req.method === 'PUT' && role === 2){
-    add_book_to_user(req,res);
+    add_book_to_user(req,res, userID);
     return;
   }
   if (req.url === '/hold' && req.method === 'POST' && role === 2) {
