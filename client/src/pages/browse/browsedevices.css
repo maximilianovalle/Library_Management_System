@@ -27,7 +27,7 @@
     font-size: 1rem;
     border: none;
     border-radius: 5px;
-    background-color: #0077cc;
+    background-color: black;
     color: white;
     cursor: pointer;
     transition: 0.2s ease;
@@ -96,8 +96,58 @@
     font-weight: bold;
 }
 
+.status.available {
+    color: green;
+    font-weight: bold;
+}
+.status.on-hold {
+    color: #eab308; 
+    font-weight: 600;
+    padding: 0.25rem 0.5rem;
+}
+
 .status.checked-out,
 .status.maintenance {
     color: red;
     font-weight: bold;
 }
+
+.device_card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fefefe;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.device_info {
+    flex: 1;
+}
+
+.device_image {
+    width: 100px;
+    height: auto;
+    margin-left: 1rem;
+    border-radius: 8px;
+}
+
+.hold_button {
+    margin-top: 0.5rem;
+    background-color: #fa2e2e;
+    color: white;
+    border: none;
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s ease;
+}
+
+.hold_button:hover {
+    background-color: #ff7979;
+}
+
