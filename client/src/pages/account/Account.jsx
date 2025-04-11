@@ -98,7 +98,7 @@ const Account = () => {
     const closeModal = () => setShowCheckout(false);
 
     return (
-        <div id="body">
+        <div>
 
             {/* header code credit to @ alan "atonyit" */}
 
