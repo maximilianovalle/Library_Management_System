@@ -55,7 +55,7 @@
     max-width: 80%;
     min-width: 60%;
     margin: 0px auto;
-    height: 100%;
+    height: 440px;  /* same as .container */
 }
 
 .slick-prev, .slick-next {
@@ -70,7 +70,7 @@
 }
 
 .bookEntry, .deviceEntry {
-    height: 440px;  /* carousel height - carousel padding */
+    height: 440px;  /* same as .carousel */
 
     display: flex !important;
     flex-direction: column !important;
