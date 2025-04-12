@@ -1,5 +1,24 @@
 const pool = require("../database.js");
 
+// random condition algorithm
+function getRandomWeighed() {
+    const weights = {
+        1: 0.85, // good condition, 85%
+        2: 0.12,    // worn out, 12%
+        // bad condition, 3%
+    }
+
+    const randomVal = Math.random();    // generate random val between 0 -1
+
+    if (randomVal < weights[1]) {
+        return 1;
+    } else if (randomVal < weights[1] + weights[2]) {
+        return 2;
+    } else {
+        return 3;
+    }
+}
+
 module.exports = async function returnBook(req, res, userID) {
 
     try {
@@ -24,7 +43,25 @@ module.exports = async function returnBook(req, res, userID) {
                     return;
                 }
 
-                const [result] = await pool.query("UPDATE borrow_record SET Return_Date = NOW() WHERE User_ID = ? AND ISBN = ? AND Book_Copy_ID = ?", [userID, isbn, copyID]);
+                await pool.query("UPDATE borrow_record SET Return_Date = NOW() WHERE User_ID = ? AND ISBN = ? AND Book_Copy_ID = ?", [userID, isbn, copyID]);
+
+
+                // 1 = good condition, 2 = worn out, or 3 = bad cond.
+                const bookCondition = getRandomWeighed();
+
+                const condition = {
+                    1: "Good condition",
+                    2: "Worn out",
+                    3: "Bad condition",
+                }
+
+                const status = {
+                    1: "Available",
+                    2: "Available",
+                    3: "Maintenance",
+                }
+
+                await pool.query("UPDATE book_copies SET Book_Status = ?, Book_Condition = ? WHERE ISBN = ? AND Copy_ID = ?", [status[bookCondition], condition[bookCondition], isbn, copyID]);
 
             } catch (error) {
                 console.log("Return book error: ", error);

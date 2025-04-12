@@ -23,7 +23,9 @@ module.exports = async function removeHold(req, res, userID) {
                     return;
                 }
 
-                const [result] = await pool.query("UPDATE holds SET Hold_Status = 3 WHERE User_ID = ? AND Model = ?", [userID, model]);
+                await pool.query("UPDATE holds SET Hold_Status = 3 WHERE User_ID = ? AND Model = ?", [userID, model]);
+
+                await pool.query("UPDATE device_copies SET Device_Status = 'Available' WHERE Model = ? AND Device_Status = 'On hold' LIMIT 1", [model]);
 
             } catch (error) {
                 console.log("Remove hold error: ", error);
