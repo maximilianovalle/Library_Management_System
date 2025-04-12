@@ -1,440 +1,634 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../../components/header/LibrarianHeader";
 import "./LibrarianPage.css";
+import "./ReportsPage.css";
 
 const ReportsPage = () => {
-    const [selectedReport, setSelectedReport] = useState(null);
-    const [timeFrame, setTimeFrame] = useState("month");
+    const [activeReport, setActiveReport] = useState(null);
+    const [showDropdown, setShowDropdown] = useState(false);
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     
     const reportOptions = [
-        {
-            id: "popular-books",
-            title: "Most Popular Books",
-            description: "View the most checked out books in a specific time period",
-            timeFrames: ["month", "six_months", "year"]
-        },
-        {
-            id: "damaged-items",
-            title: "Damaged Items",
-            description: "View items reported as damaged in a specific time period",
-            timeFrames: ["month", "six_months", "year"]
-        },
-        {
-            id: "overdue-items",
-            title: "Overdue Items",
-            description: "View currently overdue items and associated fines",
-            timeFrames: []
-        },
-        {
-            id: "fine-collections",
-            title: "Fine Collections",
-            description: "View fine collection statistics for a specific time period",
-            timeFrames: ["month", "six_months", "year"]
-        },
-        {
-            id: "new-users",
-            title: "New User Registrations",
-            description: "View new user registration statistics for a specific time period",
-            timeFrames: ["month", "six_months", "year"]
-        }
+        { id: "overview", name: "Library Overview" },
+        { id: "overdue", name: "Overdue Items" },
+        { id: "fines", name: "Fines & Payments" },
+        { id: "checkouts", name: "Current Checkouts" },
+        { id: "popular", name: "Popular Items" }
     ];
     
-    const generateReport = async () => {
-        setLoading(true);
-        setError("");
-        setReportData(null);
+    const toggleDropdown = () => {
+        setShowDropdown(!showDropdown);
+    };
+    
+    const selectReport = (reportId) => {
+        setActiveReport(reportId);
+        setShowDropdown(false);
+        fetchReportData(reportId);
+    };
+    
+ const fetchReportData = async (reportType) => {
+    setLoading(true);
+    setError("");
+    localStorage.removeItem('reportError');
+    
+    try {
+        const token = localStorage.getItem("token");
         
-        try {
-            const token = localStorage.getItem("token");
-            
-            if (!token) {
-                console.error("No token found. Redirecting to login...");
-                window.location.href = "/login";
-                return;
+        if (!token) {
+            console.error("No token found");
+            localStorage.removeItem("token"); // Clear any invalid token
+            window.location.href = "/login";
+            return;
+        }
+        
+        const response = await axios.get(`${process.env.REACT_APP_API_URL}/reports?type=${reportType}`, {
+            headers: {
+                "Authorization": `Bearer ${token}`
             }
-            
-            // Get the selected report option
-            const reportOption = reportOptions.find(option => option.id === selectedReport);
-            
-            // Determine if we need to send the timeFrame
-            const params = reportOption.timeFrames.length > 0 ? { timeFrame } : {};
-            
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/librarian/reports/${selectedReport}`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                },
-                params
-            });
-            
-            setReportData(response.data);
-        } catch (error) {
-            console.error("Error generating report:", error);
-            setError("Failed to generate report. Please try again.");
-        } finally {
-            setLoading(false);
+        });
+        
+        setReportData(response.data);
+        setLoading(false);
+    } catch (error) {
+        console.error("Error fetching report data:", error);
+        
+        // Handle 401 Unauthorized error specifically
+        if (error.response && error.response.status === 401) {
+            localStorage.removeItem("token"); // Clear the expired token
+            setError("Your session has expired. Please log in again.");
+            setTimeout(() => {
+                window.location.href = "/login";
+            }, 2000); // Redirect after 2 seconds
+        } else {
+            setError("Failed to load report data. Please try again.");
+        }
+        setLoading(false);
+        
+        // Store the error in localStorage
+        localStorage.setItem('reportError', error.response?.data?.message || "Failed to load report data");
+    }
+};
+    
+    const clearError = () => {
+        setError("");
+        localStorage.removeItem('reportError');
+        
+        // If a report was previously selected, try fetching it again
+        if (activeReport) {
+            fetchReportData(activeReport);
         }
     };
     
-    const renderReportContent = () => {
+    const renderOverviewReport = () => {
         if (!reportData) return null;
         
-        switch (selectedReport) {
-            case "popular-books":
-                return renderPopularBooksReport();
-            case "damaged-items":
-                return renderDamagedItemsReport();
-            case "overdue-items":
-                return renderOverdueItemsReport();
-            case "fine-collections":
-                return renderFineCollectionsReport();
-            case "new-users":
-                return renderNewUsersReport();
-            default:
-                return <p>Select a report type to view data</p>;
-        }
-    };
-    
-    // Render functions for each report type
-    const renderPopularBooksReport = () => {
-        const { books, timeFrameLabel } = reportData;
+        const { books, devices, fines, overdue } = reportData;
+        
         return (
-            <>
-                <h3>Most Popular Books - {timeFrameLabel}</h3>
-                {books.length > 0 ? (
-                    <table className="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Rank</th>
-                                <th>Title</th>
-                                <th>Author</th>
-                                <th>Genre</th>
-                                <th>Checkouts</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {books.map((book, index) => (
-                                <tr key={book.isbn}>
-                                    <td>{index + 1}</td>
-                                    <td>{book.title}</td>
-                                    <td>{book.author}</td>
-                                    <td>{book.genre}</td>
-                                    <td>{book.checkouts}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No checkout data available for this period</p>
-                )}
-            </>
-        );
-    };
-    
-    const renderDamagedItemsReport = () => {
-        const { books, devices, timeFrameLabel } = reportData;
-        return (
-            <>
-                <h3>Damaged Items - {timeFrameLabel}</h3>
-                
-                <h4>Damaged Books</h4>
-                {books.length > 0 ? (
-                    <table className="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Author</th>
-                                <th>Copy ID</th>
-                                <th>Return Date</th>
-                                <th>Fine Amount</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {books.map((book) => (
-                                <tr key={`${book.isbn}-${book.copy_id}`}>
-                                    <td>{book.title}</td>
-                                    <td>{book.author}</td>
-                                    <td>{book.copy_id}</td>
-                                    <td>{new Date(book.return_date).toLocaleDateString()}</td>
-                                    <td>${book.fine_amount}</td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <p>No damaged books reported in this period</p>
-                )}
-                
-                <h4>Damaged Devices</h4>
-                {devices.length > 0 ? (
-                    <table className="table table-hover">
+            <div className="overview-report">
+                <div className="table-container">
+                    <h3 className="table-title">Library Inventory Summary</h3>
+                    <table className="data-table">
                         <thead>
                             <tr>
                                 <th>Category</th>
-                                <th>Model</th>
-                                <th>Copy ID</th>
-                                <th>Return Date</th>
-                                <th>Fine Amount</th>
+                                <th>Total Items</th>
+                                <th>Available</th>
+                                <th>Checked Out</th>
+                                <th>Availability %</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {devices.map((device) => (
-                                <tr key={`${device.category}-${device.model}-${device.copy_id}`}>
-                                    <td>{device.category}</td>
-                                    <td>{device.model}</td>
-                                    <td>{device.copy_id}</td>
-                                    <td>{new Date(device.return_date).toLocaleDateString()}</td>
-                                    <td>${device.fine_amount}</td>
-                                </tr>
-                            ))}
+                            <tr>
+                                <td><strong>Books</strong></td>
+                                <td>{books.total_books}</td>
+                                <td>{books.available_books}</td>
+                                <td>{books.checked_out_books}</td>
+                                <td>{books.total_books ? ((books.available_books / books.total_books) * 100).toFixed(1) : 0}%</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Devices</strong></td>
+                                <td>{devices.total_devices}</td>
+                                <td>{devices.available_devices}</td>
+                                <td>{devices.checked_out_devices}</td>
+                                <td>{devices.total_devices ? ((devices.available_devices / devices.total_devices) * 100).toFixed(1) : 0}%</td>
+                            </tr>
                         </tbody>
                     </table>
-                ) : (
-                    <p>No damaged devices reported in this period</p>
-                )}
-            </>
-        );
-    };
-    
-    const renderOverdueItemsReport = () => {
-        const { books, devices, totalFinesDue } = reportData;
-        return (
-            <>
-                <h3>Overdue Items Report</h3>
-                <div className="report-summary">
-                    <p><strong>Total Fines Due:</strong> ${totalFinesDue.toFixed(2)}</p>
-                    <p><strong>Total Overdue Items:</strong> {books.length + devices.length}</p>
                 </div>
                 
-                <h4>Overdue Books</h4>
-                {books.length > 0 ? (
-                    <table className="table table-hover">
+                <div className="table-container">
+                    <h3 className="table-title">Financial & Activity Summary</h3>
+                    <table className="data-table">
                         <thead>
                             <tr>
-                                <th>Title</th>
-                                <th>User</th>
-                                <th>Due Date</th>
-                                <th>Days Overdue</th>
-                                <th>Fine Amount</th>
+                                <th>Metric</th>
+                                <th>Value</th>
+                                <th>Details</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {books.map((book) => (
-                                <tr key={`${book.record_id}`}>
-                                    <td>{book.title}</td>
-                                    <td>{book.user_name}</td>
-                                    <td>{new Date(book.due_date).toLocaleDateString()}</td>
-                                    <td>{book.days_overdue}</td>
-                                    <td>${book.fine_amount}</td>
-                                </tr>
-                            ))}
+                            <tr>
+                                <td><strong>Total Unpaid Fines</strong></td>
+                                <td className="emphasis">${fines.unpaid_amount ? fines.unpaid_amount.toFixed(2) : '0.00'}</td>
+                                <td>From {fines.total_fines || 0} outstanding fines</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Total Collected Fines</strong></td>
+                                <td>${fines.paid_amount ? fines.paid_amount.toFixed(2) : '0.00'}</td>
+                                <td>All time collected amount</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Overdue Books</strong></td>
+                                <td className={overdue.overdue_books > 0 ? "warning" : ""}>{overdue.overdue_books}</td>
+                                <td>Currently past due date</td>
+                            </tr>
+                            <tr>
+                                <td><strong>Overdue Devices</strong></td>
+                                <td className={overdue.overdue_devices > 0 ? "warning" : ""}>{overdue.overdue_devices}</td>
+                                <td>Currently past due date</td>
+                            </tr>
                         </tbody>
                     </table>
-                ) : (
-                    <p>No overdue books</p>
-                )}
+                </div>
+            </div>
+        );
+    };
+    
+    const renderOverdueReport = () => {
+        if (!reportData) return null;
+        
+        const { books, devices } = reportData;
+        
+        return (
+            <div className="overdue-report">
+                <div className="table-container">
+                    <h3 className="table-title">Overdue Books <span className="badge">{books.length}</span></h3>
+                    {books.length > 0 ? (
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>User</th>
+                                    <th>Due Date</th>
+                                    <th>Days Overdue</th>
+                                    <th>User Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {books.map((book) => {
+                                    const dueDate = new Date(book.Due_Date);
+                                    const today = new Date();
+                                    const diffTime = Math.abs(today - dueDate);
+                                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                    
+                                    return (
+                                        <tr key={book.Record_ID}>
+                                            <td>{book.Title}</td>
+                                            <td>{book.Author_Name}</td>
+                                            <td>{book.First_Name} {book.Last_Name}</td>
+                                            <td>{new Date(book.Due_Date).toLocaleDateString()}</td>
+                                            <td className="overdue-days">{diffDays}</td>
+                                            <td>{book.User_Role}</td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p className="no-data-message">No overdue books found.</p>
+                    )}
+                </div>
                 
-                <h4>Overdue Devices</h4>
-                {devices.length > 0 ? (
-                    <table className="table table-hover">
+                <div className="table-container">
+                    <h3 className="table-title">Overdue Devices <span className="badge">{devices.length}</span></h3>
+                    {devices.length > 0 ? (
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Model</th>
+                                    <th>User</th>
+                                    <th>Due Date</th>
+                                    <th>Days Overdue</th>
+                                    <th>User Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {devices.map((device) => {
+                                    const dueDate = new Date(device.Due_Date);
+                                    const today = new Date();
+                                    const diffTime = Math.abs(today - dueDate);
+                                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                    
+                                    return (
+                                        <tr key={device.Record_ID}>
+                                            <td>{device.Category}</td>
+                                            <td>{device.Model}</td>
+                                            <td>{device.First_Name} {device.Last_Name}</td>
+                                            <td>{new Date(device.Due_Date).toLocaleDateString()}</td>
+                                            <td className="overdue-days">{diffDays}</td>
+                                            <td>{device.User_Role}</td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p className="no-data-message">No overdue devices found.</p>
+                    )}
+                </div>
+            </div>
+        );
+    };
+    
+    const renderFinesReport = () => {
+        if (!reportData) return null;
+        
+        const { fines, reasonStats, roleStats } = reportData;
+        
+        return (
+            <div className="fines-report">
+                <div className="table-container">
+                    <h3 className="table-title">Fines by Reason</h3>
+                    <table className="data-table">
                         <thead>
                             <tr>
-                                <th>Device</th>
-                                <th>User</th>
-                                <th>Due Date</th>
-                                <th>Days Overdue</th>
-                                <th>Fine Amount</th>
+                                <th>Reason</th>
+                                <th>Count</th>
+                                <th>Total Amount</th>
+                                <th>Paid Amount</th>
+                                <th>Unpaid Amount</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {devices.map((device) => (
-                                <tr key={`${device.record_id}`}>
-                                    <td>{device.model} ({device.category})</td>
-                                    <td>{device.user_name}</td>
-                                    <td>{new Date(device.due_date).toLocaleDateString()}</td>
-                                    <td>{device.days_overdue}</td>
-                                    <td>${device.fine_amount}</td>
+                            {reasonStats.map((stat) => (
+                                <tr key={stat.Reason}>
+                                    <td>{stat.Reason}</td>
+                                    <td>{stat.count}</td>
+                                    <td>${Number(stat.total_amount || 0).toFixed(2)}</td>
+                                    <td>${Number(stat.paid_amount || 0).toFixed(2)}</td>
+                                    <td className={stat.unpaid_amount > 0 ? "warning" : ""}>
+                                        ${Number(stat.unpaid_amount || 0).toFixed(2)}
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
-                ) : (
-                    <p>No overdue devices</p>
-                )}
-            </>
-        );
-    };
-    
-    const renderFineCollectionsReport = () => {
-        const { 
-            totalCollected, 
-            totalOutstanding,
-            collectionsByReason,
-            timeFrameLabel
-        } = reportData;
-        
-        return (
-            <>
-                <h3>Fine Collections - {timeFrameLabel}</h3>
-                <div className="report-summary">
-                    <p><strong>Total Collected:</strong> ${totalCollected.toFixed(2)}</p>
-                    <p><strong>Total Outstanding:</strong> ${totalOutstanding.toFixed(2)}</p>
                 </div>
                 
-                <h4>Collections by Reason</h4>
-                <table className="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Reason</th>
-                            <th>Amount Collected</th>
-                            <th>Amount Outstanding</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Object.entries(collectionsByReason).map(([reason, data]) => (
-                            <tr key={reason}>
-                                <td>{reason}</td>
-                                <td>${data.collected.toFixed(2)}</td>
-                                <td>${data.outstanding.toFixed(2)}</td>
+                <div className="table-container">
+                    <h3 className="table-title">Fines by User Role</h3>
+                    <table className="data-table">
+                        <thead>
+                            <tr>
+                                <th>User Role</th>
+                                <th>Count</th>
+                                <th>Total Amount</th>
+                                <th>% of All Fines</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </>
-        );
-    };
-    
-    const renderNewUsersReport = () => {
-        const { 
-            totalNewUsers,
-            usersByRole,
-            monthlyBreakdown,
-            timeFrameLabel
-        } = reportData;
-        
-        return (
-            <>
-                <h3>New User Registrations - {timeFrameLabel}</h3>
-                <div className="report-summary">
-                    <p><strong>Total New Users:</strong> {totalNewUsers}</p>
+                        </thead>
+                        <tbody>
+                            {roleStats.map((stat) => {
+                                const totalFines = roleStats.reduce((sum, item) => sum + item.total_amount, 0);
+                                const percentage = (stat.total_amount / totalFines * 100).toFixed(1);
+                                
+                            return (
+                                <tr key={stat.User_Role}>
+                                    <td>{stat.User_Role}</td>
+                                    <td>{stat.count}</td>
+                                    <td>${Number(stat.total_amount || 0).toFixed(2)}</td>
+                                    <td>{percentage}%</td>
+                                </tr>
+                            );
+                            })}
+                        </tbody>
+                    </table>
                 </div>
                 
-                <h4>Users by Role</h4>
-                <table className="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Role</th>
-                            <th>Count</th>
-                            <th>Percentage</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Object.entries(usersByRole).map(([role, data]) => (
-                            <tr key={role}>
-                                <td>{role}</td>
-                                <td>{data.count}</td>
-                                <td>{data.percentage}%</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-                
-                <h4>Monthly Breakdown</h4>
-                <table className="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>Month</th>
-                            <th>New Users</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {monthlyBreakdown.map((month) => (
-                            <tr key={month.month}>
-                                <td>{month.month}</td>
-                                <td>{month.count}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </>
+                <div className="table-container">
+                    <h3 className="table-title">Fine Details <span className="badge">{fines.length}</span></h3>
+                    {fines.length > 0 ? (
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Amount</th>
+                                    <th>Reason</th>
+                                    <th>Date Issued</th>
+                                    <th>Status</th>
+                                    <th>User Role</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {fines.map((fine) => (
+                                    <tr key={fine.Fine_ID}>
+                                        <td>{fine.First_Name} {fine.Last_Name}</td>
+                                        <td>${fine.Amount.toFixed(2)}</td>
+                                        <td>{fine.Reason}</td>
+                                        <td>{new Date(fine.Date_Issued).toLocaleDateString()}</td>
+                                        <td>
+                                            <span className={`status-badge ${fine.Fine_Status === 1 ? 'paid' : 'unpaid'}`}>
+                                                {fine.Fine_Status === 1 ? 'Paid' : 'Unpaid'}
+                                            </span>
+                                        </td>
+                                        <td>{fine.User_Role}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p className="no-data-message">No fines found.</p>
+                    )}
+                </div>
+            </div>
         );
     };
     
-    const formatTimeFrame = (timeFrame) => {
-        switch (timeFrame) {
-            case 'month':
-                return 'Last Month';
-            case 'six_months':
-                return 'Last 6 Months';
-            case 'year':
-                return 'Last Year';
+    const renderCheckoutsReport = () => {
+        if (!reportData) return null;
+        
+        const { books, devices, userRoleStats } = reportData;
+        
+        return (
+            <div className="checkouts-report">
+                <div className="table-container">
+                    <h3 className="table-title">Checkouts by User Role</h3>
+                    <table className="data-table">
+                        <thead>
+                            <tr>
+                                <th>User Role</th>
+                                <th>Checkouts</th>
+                                <th>Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {userRoleStats.map((stat) => {
+                                const totalCheckouts = userRoleStats.reduce((sum, item) => sum + item.count, 0);
+                                const percentage = (stat.count / totalCheckouts * 100).toFixed(1);
+                                
+                                return (
+                                    <tr key={stat.User_Role}>
+                                        <td>{stat.User_Role}</td>
+                                        <td>{stat.count}</td>
+                                        <td>{percentage}%</td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div className="table-container">
+                    <h3 className="table-title">Checked Out Books <span className="badge">{books.length}</span></h3>
+                    {books.length > 0 ? (
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>User</th>
+                                    <th>Checkout Date</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {books.map((book) => (
+                                    <tr key={book.Record_ID}>
+                                        <td>{book.Title}</td>
+                                        <td>{book.Author_Name}</td>
+                                        <td>{book.First_Name} {book.Last_Name}</td>
+                                        <td>{new Date(book.Checkout_Date).toLocaleDateString()}</td>
+                                        <td>{new Date(book.Due_Date).toLocaleDateString()}</td>
+                                        <td>
+                                            <span className={`status-badge ${book.Is_Overdue ? 'overdue' : 'active'}`}>
+                                                {book.Is_Overdue ? 'Overdue' : 'Active'}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p className="no-data-message">No checked out books found.</p>
+                    )}
+                </div>
+                
+                <div className="table-container">
+                    <h3 className="table-title">Checked Out Devices <span className="badge">{devices.length}</span></h3>
+                    {devices.length > 0 ? (
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Model</th>
+                                    <th>User</th>
+                                    <th>Checkout Date</th>
+                                    <th>Due Date</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {devices.map((device) => (
+                                    <tr key={device.Record_ID}>
+                                        <td>{device.Category}</td>
+                                        <td>{device.Model}</td>
+                                        <td>{device.First_Name} {device.Last_Name}</td>
+                                        <td>{new Date(device.Checkout_Date).toLocaleDateString()}</td>
+                                        <td>{new Date(device.Due_Date).toLocaleDateString()}</td>
+                                        <td>
+                                            <span className={`status-badge ${device.Is_Overdue ? 'overdue' : 'active'}`}>
+                                                {device.Is_Overdue ? 'Overdue' : 'Active'}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p className="no-data-message">No checked out devices found.</p>
+                    )}
+                </div>
+            </div>
+        );
+    };
+    
+    const renderPopularItemsReport = () => {
+        if (!reportData) return null;
+        
+        const { popularBooks, popularDevices, genreStats } = reportData;
+        
+        return (
+            <div className="popular-items-report">
+                <div className="table-container">
+                    <h3 className="table-title">Most Popular Books</h3>
+                    {popularBooks.length > 0 ? (
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Genre</th>
+                                    <th>Checkouts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {popularBooks.map((book, index) => (
+                                    <tr key={book.ISBN}>
+                                        <td className="rank-cell">{index + 1}</td>
+                                        <td>{book.Title}</td>
+                                        <td>{book.Author_Name}</td>
+                                        <td>{book.Genre}</td>
+                                        <td className="count-cell">{book.checkout_count}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p className="no-data-message">No popular books data available.</p>
+                    )}
+                </div>
+                
+                <div className="table-container">
+                    <h3 className="table-title">Most Popular Devices</h3>
+                    {popularDevices.length > 0 ? (
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Category</th>
+                                    <th>Model</th>
+                                    <th>Checkouts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {popularDevices.map((device, index) => (
+                                    <tr key={`${device.Category}-${device.Model}`}>
+                                        <td className="rank-cell">{index + 1}</td>
+                                        <td>{device.Category}</td>
+                                        <td>{device.Model}</td>
+                                        <td className="count-cell">{device.checkout_count}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p className="no-data-message">No popular devices data available.</p>
+                    )}
+                </div>
+                
+                <div className="table-container">
+                    <h3 className="table-title">Checkouts by Genre</h3>
+                    {genreStats.length > 0 ? (
+                        <table className="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Genre</th>
+                                    <th>Total Checkouts</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {genreStats.map((genre) => (
+                                    <tr key={genre.Genre}>
+                                        <td>{genre.Genre}</td>
+                                        <td className="count-cell">{genre.checkout_count}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    ) : (
+                        <p className="no-data-message">No genre checkout data available.</p>
+                    )}
+                </div>
+            </div>
+        );
+    };
+
+    const renderReportContent = () => {
+        if (error) {
+            return (
+                <div className="persistent-error-message">
+                    <span>{error}</span>
+                    <button className="clear-error-button" onClick={clearError}>
+                        Try Again
+                    </button>
+                </div>
+            );
+        }
+        
+        if (loading) {
+            return <div className="loading">Loading report data...</div>;
+        }
+        
+        if (!activeReport) {
+            return (
+                <div className="select-report-prompt">
+                    <h3>Please select a report from the dropdown above</h3>
+                    <p>Click on "Select a Report" to see available reports</p>
+                </div>
+            );
+        }
+        
+        switch (activeReport) {
+            case "overview":
+                return renderOverviewReport();
+            case "overdue":
+                return renderOverdueReport();
+            case "fines":
+                return renderFinesReport();
+            case "checkouts":
+                return renderCheckoutsReport();
+            case "popular":
+                return renderPopularItemsReport();
             default:
-                return timeFrame;
+                return null;
         }
     };
 
-    return (
-        <div className="librarian-page">
-            <Header />
-            
-            <div className="container">
-                <h1 className="page-title">Library Reports</h1>
-                
-                <div className="report-options">
-                    {reportOptions.map((option) => (
-                        <div 
-                            key={option.id}
-                            className={`report-card ${selectedReport === option.id ? 'selected' : ''}`}
-                            onClick={() => setSelectedReport(option.id)}
+// Update the return statement in ReportsPage component
+return (
+    <div className="librarian-page reports-page">
+        <Header />
+        <div className="container">
+            <h1 className="page-title">Library Reports</h1>
+            <div className="report-content">
+                <div className="reports-selector">
+                    <div className="dropdown-container">
+                        <button 
+                            className="report-dropdown-button" 
+                            onClick={toggleDropdown}
                         >
-                            <h3>{option.title}</h3>
-                            <p>{option.description}</p>
-                            
-                            {selectedReport === option.id && option.timeFrames.length > 0 && (
-                                <div className="time-frame-selector">
-                                    <label>Time Period:</label>
-                                    <select 
-                                        value={timeFrame}
-                                        onChange={(e) => setTimeFrame(e.target.value)}
-                                        className="form-select"
+                            {activeReport ? reportOptions.find(r => r.id === activeReport).name : "Select a Report"} ▼
+                        </button>
+                        
+                        {showDropdown && (
+                            <div className="report-dropdown-menu">
+                                {reportOptions.map((option) => (
+                                    <button
+                                        key={option.id}
+                                        className={`report-option ${activeReport === option.id ? 'active' : ''}`}
+                                        onClick={() => selectReport(option.id)}
                                     >
-                                        {option.timeFrames.map((tf) => (
-                                            <option key={tf} value={tf}>
-                                                {formatTimeFrame(tf)}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            )}
-                            
-                            {selectedReport === option.id && (
-                                <button 
-                                    className="btn btn-primary mt-4"
-                                    onClick={generateReport}
-                                    disabled={loading}
-                                >
-                                    {loading ? 'Generating...' : 'Generate Report'}
-                                </button>
-                            )}
-                        </div>
-                    ))}
-                </div>
-                
-                {error && <div className="alert alert-danger">{error}</div>}
-                
-                {loading ? (
-                    <div className="loading">Generating report...</div>
-                ) : (
-                    <div className="report-content">
-                        {renderReportContent()}
+                                        {option.name}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
                     </div>
-                )}
+                </div>
+                <div className="report-data-container">
+                    {renderReportContent()}
+                </div>
             </div>
         </div>
-    );
-};
+    </div>
+);
+}
 
 export default ReportsPage;

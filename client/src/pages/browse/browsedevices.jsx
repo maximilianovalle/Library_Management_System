@@ -22,6 +22,7 @@ const BrowseDevices = () => {
     const [devices, setDevices] = useState([]);
     const [userHolds, setUserHolds] = useState([]);
     const [showOnlyHeld, setShowOnlyHeld] = useState(false);
+    const [showOnlyAvailable, setShowOnlyAvailable] = useState(false);
 
     const fetchDevices = async (params = {}) => {
         try {
@@ -121,9 +122,16 @@ const BrowseDevices = () => {
         }
     };
 
-    const filteredDevices = showOnlyHeld
-        ? devices.filter(device => userHolds.includes(device.model))
-        : devices;
+    const filteredDevices = devices.filter(device => {
+        const isHeld = userHolds.includes(device.model);
+        const isAvailable = device.status.toLowerCase() === "available";
+    
+        if (showOnlyHeld) return isHeld;
+        if (showOnlyAvailable) return isAvailable;
+        return true; // Show all if none are checked
+    });
+    
+    
 
     return (
         <div>
@@ -152,26 +160,44 @@ const BrowseDevices = () => {
             </div>
 
             <div className="filters">
-                <p>Category Filters:</p>
-                {categoryChips.map((category) => (
-                    <button
-                        key={category}
-                        onClick={() => handleChipClick(category)}
-                        className="chip"
-                    >
-                        {category}
-                    </button>
-                ))}
+    <p>Category Filters:</p>
+    {categoryChips.map((category) => (
+        <button
+            key={category}
+            onClick={() => handleChipClick(category)}
+            className="chip"
+        >
+            {category}
+        </button>
+    ))}
 
-                <label className="toggle_held">
-                    <input
-                        type="checkbox"
-                        checked={showOnlyHeld}
-                        onChange={(e) => setShowOnlyHeld(e.target.checked)}
-                    />
-                    Show only held devices
-                </label>
-            </div>
+<label className="toggle_held">
+    <input
+        type="checkbox"
+        checked={showOnlyHeld}
+        onChange={(e) => {
+            const checked = e.target.checked;
+            setShowOnlyHeld(checked);
+            if (checked) setShowOnlyAvailable(false);
+        }}
+    />
+    Show only held devices
+</label>
+
+<label className="toggle_available">
+    <input
+        type="checkbox"
+        checked={showOnlyAvailable}
+        onChange={(e) => {
+            const checked = e.target.checked;
+            setShowOnlyAvailable(checked);
+            if (checked) setShowOnlyHeld(false);
+        }}
+    />
+    Show only available devices
+</label>
+</div>
+
 
             <div className="Display_container">
                 {filteredDevices.length > 0 ? (
