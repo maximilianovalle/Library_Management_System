@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './drop_down.css'
+import { FaChevronRight, FaChevronDown } from "react-icons/fa";
 
 function Dropdown({ options, onSelect }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,9 +34,18 @@ function Dropdown({ options, onSelect }) {
 
   return (
     <div className="dropdown" ref={dropdownRef}>
+
       <button className="dropdown-button" onClick={toggleDropdown}>
-        {selectedValue || 'Select an option'}
+        <div id="labelSpace">
+        {selectedValue || 'Search By'}
+        </div>
+        
+        <span class="dropdownIcon">
+          {isOpen ? <FaChevronDown/> : <FaChevronRight/>}
+        </span>
+
       </button>
+
       {isOpen && (
         <ul className="dropdown-menu">
           {options.map((option) => (

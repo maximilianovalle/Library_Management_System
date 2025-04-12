@@ -51,27 +51,27 @@ const BrowseBooks = () => {
     const faqItems = [
         {
             question: "How do I place a hold on a device?",
-            answer: "On the Browse Devices page, click 'Place Hold' next to an available item. The device will be reserved for 1 day and marked as 'Held by you'.",
+            answer: (<>On the <a href="/browsedevices">Browse Devices</a> page, click 'Place Hold' next to an available item. We will reserve this item for you for up to a day.</>),
         },
         {
             question: "Where can I view my checked-out books and devices?",
-            answer: "Go to your Account page. You’ll see a list of items you’ve checked out, their due dates, and any late fees owed.",
+            answer: (<>Navigate to your <a href="/checkedout">My Items</a> page. You'll be able to see a list of items you've checked out and their due dates.</>),
         },
         {
             question: "Can I return items online?",
-            answer: "Returns must be made in person at the library desk. Once scanned, your account will update and late fees (if any) will be applied automatically.",
+            answer: (<>Books may be returned online in your <a href="/checkedout">My Items</a> page, devices must be returned in person at the library help desk.</>),
         },
         {
             question: "What happens if I don’t pick up a held item?",
-            answer: "If not picked up in time, the item will become available again and removed from your hold list.",
+            answer: "If not picked up in time, the item will become available again and be removed from your hold list.",
         },
         {
             question: "How do I know if I have late fees?",
-            answer: "Late fees are shown on your Account page. They are calculated at check-in based on the return date and item type/condition.",
+            answer: (<>You can check your late fees in your <a href="/account">Account</a> page, if you have any questions or concerns regarding your fees, please contact our library help desk for assistance.</>),
         },
         {
             question: "Can I check out multiple devices at once?",
-            answer: "Students may borrow up to 2 devices and 3 books at a time. Faculty may borrow more. Limits reset after returns are completed.",
+            answer: "Check out amounts vary based on your role; students may borrow up to 2 devices and 3 books at a time. Faculty and alumni may borrow more.",
         },
     ];
 
@@ -94,7 +94,7 @@ const BrowseBooks = () => {
                     "Authorization": `Bearer ${token}`,
                 },
             });
-            alert("Book borrowed successfully!");
+            // alert("Book borrowed successfully!");
             setConfirmBorrow(null);
             window.location.reload();
 
@@ -147,35 +147,62 @@ const BrowseBooks = () => {
     };
 
     return (
+
         <div>
-            <HeaderAfter />
+
+        <HeaderAfter />
+
+        <div id="mainBrowseBooks">
+
+            <div className="library-info-section">
+                <div className="library-info-left">
+                <h1>Welcome to Cougar Library!</h1>
+                    <p>
+                        As a UH student, you get full access to our library services — no sign-up required. Use your account to browse our catalogue, place holds on devices, check out books, and track late fees all in one place. Whether you're in need a laptop for class or a book for research, we’ve got you covered. All devices and books are free to borrow, and faculty + alumni get extended borrow periods. Go Coogs!
+                    </p>
+                </div>
+                
+            </div>
+
             <div className="user_page">
+
                 <form className="search" onSubmit={handleSearch}>
                     <div className="dropdown">
                         <DropDown
                             options={browse_by}
+                            value={search_by}
                             onSelect={(selectedOption) => {
                                 setSearchBy(selectedOption);
                             }}
                         />
                     </div>
+
                     <input
                         className="search_bar"
                         type="text"
                         label="Search"
-                        placeholder="Search ..."
+                        placeholder="Search Book..."
                         value={search_value}
                         onChange={(e) => setSearchValue(e.target.value)}
                     />
-                    <button className="browse_button" type="submit">Search</button>
+                    
+                    <button className="browse_button" type="submit">Enter</button>
                 </form>
+               
                 <div className="books_container">
+
                     {error && <p>{error}</p>}
                     {loading && <p>Loading...</p>}
                     {books.length > 0 ? (
                         books.slice(0, visible).map((book, index) => (
-                            <div key={index} className="book_card">
-                                <h3>{book.Title}</h3>
+                            <div key={index} className="book_card" onClick={() => double_check_borrow(book)}>
+                            
+                                <div>
+                                    
+                                <h3 class="entryElement">
+                                    {book.Title.length > 42 ? `${book.Title.substring(0, 42)}...` : book.Title}
+                                </h3>
+
                                 <img
                                     className="book_image"
                                     src={`https://covers.openlibrary.org/b/isbn/${book.ISBN}-L.jpg?default=false`}
@@ -185,39 +212,29 @@ const BrowseBooks = () => {
                                         e.target.src = defaultCover;
                                     }}
                                 />
-                                <p>Author: {book.Name}</p>
-                                <p>ISBN: {book.ISBN}</p>
-                                <p>Genre: {book.Genre}</p>
-                                <p>Publication Year: {book.Publication_Year || "Unknown"}</p>
-                                <p>Available: {book.count}</p>
-                                <button className="borrow_button" onClick={() => double_check_borrow(book)}>Borrow :D</button>
+
+                                <p class="entryElement">{book.Name}, {book.Publication_Year}</p>
+
                                 </div>
+
+                                {/* <button className="borrow_button" onClick={() => double_check_borrow(book)}>Borrow</button> */}
+
+                            </div>
                         ))
                     ) : (
-                        <p>No books found. Try different search criteria.</p>
+                        <p>No books found. Try a different search...</p>
                     )}
+
                 </div>
+
                 {visible < books.length && (
                     <button className="load_more_button" onClick={handleLoadMore}>
                         Show more...
                     </button>
                 )}
-                {/* <div className="genre_container">
-                    <Genres />
-                </div> */}
             </div>
 
-            <div className="library-info-section">
-                <div className="library-info-left">
-                <h1>Welcome to Cougar Library!</h1>
-                    <p>
-                        As a UH student, you get full access to our library services — no sign-up required. Use your account to browse, place holds, check out books and devices, and track late fees in one place.
-                    </p>
-                    <p>
-                        Whether you need a laptop for class or a book for research, we’ve got you covered. All devices and books are free to borrow, with extended time limits for faculty.
-                    </p>
-                </div>
-                <div className="library-info-right">
+            <div className="library-info-right">
                     <h2>Frequently Asked Questions</h2>
                     {faqItems.map((item, index) => (
                         <div
@@ -240,29 +257,26 @@ const BrowseBooks = () => {
                         </div>
                     ))}
                 </div>
-            </div>
+
                 {confirm_borrow && (
                     <div className="modal-overlay" onClick={() => setConfirmBorrow(null)}>
+                    
                     <div className="modal-box" onClick={(e) => e.stopPropagation()}>
                         <span className="modal-close" onClick={() => setConfirmBorrow(null)}>&times;</span>
-                        <img
-                            src={`https://covers.openlibrary.org/b/isbn/${confirm_borrow.ISBN}-L.jpg?default=false`}
-                            alt={confirm_borrow.Title}
-                            onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = defaultCover;
-                            }}
-                            style={{ maxWidth: "150px", marginBottom: "1rem", borderRadius: "8px" }}
-                        />
-                        <p>Are you sure you want to borrow:</p>
-                        <h3 style={{ marginBottom: "1rem" }}>{confirm_borrow.Title}</h3>
+                        
+                        <h2 class="modalHeader">Borrow <em>{confirm_borrow.Title}</em>?</h2>
+
+                        <p>Book will be added to your checked out items.</p>
+
                         <div className="modal-buttons">
-                            <button className="confirm-button" onClick={handleBorrow}>Yes</button>
-                            <button className="cancel-button" onClick={() => setConfirmBorrow(null)}>No</button>
+                            <button className="confirm-button" onClick={handleBorrow}>Borrow Book</button>
+                            <button className="cancel-button" onClick={() => setConfirmBorrow(null)}>Cancel</button>
                         </div>
                     </div>
                 </div>
                     )}
+        </div>
+
         </div>
     );
 };
