@@ -144,7 +144,7 @@ const app = http
     return;
   }
   if(req.url === '/borrow_book' && req.method === 'PUT' && role === 2){
-    add_book_to_user(req,res);
+    add_book_to_user(req,res, userID);
     return;
   }
   if (req.url === '/hold' && req.method === 'POST' && role === 2) {
@@ -198,6 +198,7 @@ const app = http
     //   get_book_by_genre(req, res);
     //   return;
     // }
+
     if(req.url === '/borrow_book' && req.method === 'PUT' && role === 2){
       add_book_to_user(req,res, userID);
       return;

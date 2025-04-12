@@ -3,7 +3,7 @@ import axios from "axios";
 import './browsebooks.css';
 import DropDown from './components/drop_down';
 import HeaderAfter from "../../components/header/HeaderAfter";
-import Genres from "./genres";
+// import Genres from "./genres";
 import defaultCover from './book-not-found.png';
 
 import { FaPlus, FaMinus } from "react-icons/fa";
@@ -97,6 +97,8 @@ const BrowseBooks = () => {
                 },
             });
             alert("Book borrowed successfully!");
+            window.location.reload();
+
         } catch (error) {
             console.error("Error borrowing book:", error);
             alert("Failed to borrow book. Please try again.");
@@ -200,9 +202,9 @@ const BrowseBooks = () => {
                         Show more...
                     </button>
                 )}
-                <div className="genre_container">
+                {/* <div className="genre_container">
                     <Genres />
-                </div>
+                </div> */}
             </div>
 
             <div className="library-info-section">
