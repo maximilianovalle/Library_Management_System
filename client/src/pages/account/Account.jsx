@@ -92,7 +92,7 @@ const Account = () => {
 
             setTimeout(() => {
                 setFineAmnt(res2.data.fineAmntDue); // update fine amount
-            }, 250);
+            }, 400);
 
         } catch (error) {
             console.log("Error paying fine: ", error);
@@ -103,7 +103,7 @@ const Account = () => {
     const openModal = () => {
         setTimeout(() => {
             setShowCheckout(true);
-        }, 250); // delay in milliseconds (1000ms = 1 second)
+        }, 400); // delay in milliseconds (1000ms = 1 second)
     };
 
     // closes checkout modal
@@ -195,20 +195,20 @@ const Account = () => {
                 }}
             >
                 <div className="checkout-modal">
-                <div className="icon">
-                    <FaRegCheckCircle />
-                </div>
-                <div className="checkout-header">
-                    <h2>Payment Successful!</h2>
-                </div>
-                <div className="checkout-body">
-                    <p>Your payment of <strong>${prevFineAmnt}</strong> has been processed successfully through your linked ShastaBucks account. All related holds and restrictions have been removed.</p>
-                    <p id="subtext">Please see our help desk for help with any questions or concerns.</p>
-                    <button class="btn" onClick={() => {
-                            closeModal();
-                    }}>Ok</button>
-                    {/* <p id="subtext">Please see our help desk for help with any questions or concerns.</p> */}
-                </div>
+                    <div className="icon">
+                        <FaRegCheckCircle />
+                    </div>
+                    <div className="checkout-header">
+                        <h2>Payment Successful!</h2>
+                    </div>
+                    <div className="checkout-body">
+                        <p>Your payment of <strong>${prevFineAmnt}</strong> has been processed successfully through your linked ShastaBucks account. All related holds and restrictions have been removed.</p>
+                        <p id="subtext">Please see our help desk for help with any questions or concerns.</p>
+                        <button class="btn" onClick={() => {
+                                closeModal();
+                        }}>Ok</button>
+                        {/* <p id="subtext">Please see our help desk for help with any questions or concerns.</p> */}
+                    </div>
                 </div>
             </div>
 )}

@@ -12,6 +12,11 @@ const payFine = require("./account_info/payFine.js"); // payFine()
 const getGenres = require("./book_info/genres.js"); // getGenres()
 const getCheckedOutItems = require("./checkedOutItems/checkedOut.js");
 const holdDevice = require("./hold_item/hold_device.js"); //holdDevice()
+
+const returnBook = require("./checkedOutItems/returnBook.js");
+const removeHold = require("./checkedOutItems/removeHold.js");
+
+
 const getUserHolds = require("./hold_item/user_holds.js");
 const cancelHold = require("./hold_item/cancel_hold.js");
 const getReportsData = require("./reports/reports.js"); // getReportsData()
@@ -39,6 +44,16 @@ const app = http
     ); // specifies which headers the client can send in the request
     res.setHeader("Access-Control-Allow-Credentials", "true"); // cookies/sessions
 
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
+  
+  if(req.url === '/login' && req.method === 'POST') {
+    login(req, res);
+    return;
+  }
     console.log("\nIncoming Request:", req.method, req.url);
 
     if (req.method === "OPTIONS") {
@@ -89,6 +104,61 @@ const app = http
       return;
     }
 
+  // if ( browser sends a GET request to "/devices" and USER role )
+  if (req.url.startsWith('/devices') && req.method === 'GET' && role === 2) {
+    getDevices(req, res);  // call getDevices() to search devices
+    return;
+  }
+  
+  
+  // CheckedOut page
+  if (req.url === '/checkedout' && req.method === 'GET' && role === 2) {
+    console.log("Retrieving user checked out page info.");
+    getCheckedOutItems(req, res, userID);
+    console.log("Checked out page info retrieved.");
+    return;
+  }
+
+  if (req.url === '/returnItem' && req.method === 'PUT' && role === 2) {
+    console.log("Returning book...");
+    returnBook(req, res, userID);
+    console.log("Book returned!");
+  }
+
+  if (req.url === '/removeHold' && req.method === 'PUT' && role === 2) {
+    console.log("Removing hold...");
+    removeHold(req, res, userID);
+    console.log("Hold removed.");
+  }
+
+
+
+
+  if(req.url === '/genres' && req.method === 'GET' && role === 2){
+    getGenres(req, res);
+    return;
+  }
+  if(req.url === '/book_by_genre' && req.method === 'GET' && role === 2){
+    console.log("book by genre neow")
+    get_book_by_genre(req, res);
+    return;
+  }
+  if(req.url === '/borrow_book' && req.method === 'PUT' && role === 2){
+    add_book_to_user(req,res);
+    return;
+  }
+  if (req.url === '/hold' && req.method === 'POST' && role === 2) {
+    holdDevice(req, res);
+    return;
+  }
+  if (req.url === '/user/holds' && req.method === 'GET' && role === 2) {
+    getUserHolds(req, res);
+    return;
+  }
+  if (req.url === '/hold/cancel' && req.method === 'POST') {
+    cancelHold(req, res);
+    return;
+}
     // when /account "pay now" button clicked
     if (req.url === "/account" && req.method === "PUT" && role === 2) {
       console.log("Paying user fine amount.");

@@ -38,7 +38,10 @@ function App() {
       <Route path="/browsebooks" element={<BrowseBooks />} />
       <Route path="/browsedevices" element={<BrowseDevices />} />
       <Route path="/mybooks" element={<MyBooksPage/>} />
+
       <Route path="/checkedout" element={<CheckedOutPage />}/>
+      <Route path="/returnItem" element={<CheckedOutPage/>}/>
+      <Route path="/removeHold" element={<CheckedOutPage/>}/>
 
       
       {/* Librarian routes */}

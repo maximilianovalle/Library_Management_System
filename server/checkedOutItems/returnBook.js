@@ -1,0 +1,44 @@
+const pool = require("../database.js");
+
+module.exports = async function returnBook(req, res, userID) {
+
+    try {
+
+        let body = "";
+
+        req.on('data', (chunk) => {
+            body += chunk;
+        });
+
+        req.on("end", async () => {
+
+            try {
+
+                const { isbn, copyID } = JSON.parse(body);
+                console.log("ISBN: ", isbn);
+                console.log("CopyID: ", copyID);
+
+                if (!isbn || !copyID) {
+                    res.writeHead(400, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify({ message: "Missing Book ISBN or Copy ID" }));
+                    return;
+                }
+
+                const [result] = await pool.query("UPDATE borrow_record SET Return_Date = NOW() WHERE User_ID = ? AND ISBN = ? AND Book_Copy_ID = ?", [userID, isbn, copyID]);
+
+            } catch (error) {
+                console.log("Return book error: ", error);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ message: "Internal Server Error" }));
+                return;
+            }
+
+        });
+
+    } catch (error) {
+        console.log("Return book data chunk error: ", error);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ message: "Internal Server Error" }));
+        return;
+    }
+};
