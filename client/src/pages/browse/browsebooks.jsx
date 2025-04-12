@@ -190,7 +190,7 @@ const BrowseBooks = () => {
                                 <p>Genre: {book.Genre}</p>
                                 <p>Publication Year: {book.Publication_Year || "Unknown"}</p>
                                 <p>Available: {book.count}</p>
-                                <button className="borrow_button" onClick={() => double_check_borrow(book)}>Borrow :3</button>
+                                <button className="borrow_button" onClick={() => double_check_borrow(book)}>Borrow :D</button>
                                 </div>
                         ))
                     ) : (

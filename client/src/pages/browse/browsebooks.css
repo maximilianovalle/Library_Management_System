@@ -67,29 +67,11 @@
     margin: 1rem;
     border: 1px solid #000000;
 }
-/* .genre_container{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 2rem;
-}
-.genre_card{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin: 1rem;
-    padding: 1rem;
-    border-radius: 5px;
-    border: 1px solid #000000;
-    width: 200px;
-} */
-
 
 .borrow_button {
     background-color: #fa2e2e;
-    color: white;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
     border: none;
     padding: 6px 12px;
     border-radius: 6px;
