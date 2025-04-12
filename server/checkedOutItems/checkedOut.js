@@ -5,7 +5,7 @@ module.exports = async function getCheckedOutItems(req, res, userID) {
         const USER = userID;
 
         const [[checkedOutBooks], [checkedOutDevices], [onHoldDevices]] = await Promise.all([
-            pool.query("SELECT book.Title, book.Genre, author.Name, record.Checkout_Date, book.ISBN, record.Due_Date FROM borrow_record AS record, book, author WHERE record.User_ID = ? AND record.Return_Date IS NULL AND record.ISBN IS NOT NULL AND book.ISBN = record.ISBN AND author.Author_ID = book.Author_ID", [USER]),   // gets user checked out books
+            pool.query("SELECT book.Title, book.Genre, author.Name, record.Checkout_Date, book.ISBN, record.Book_Copy_ID, record.Due_Date FROM borrow_record AS record, book, author WHERE record.User_ID = ? AND record.Return_Date IS NULL AND record.ISBN IS NOT NULL AND book.ISBN = record.ISBN AND author.Author_ID = book.Author_ID", [USER]),   // gets user checked out books
 
             pool.query("SELECT Category, Model, Checkout_Date, Due_Date FROM borrow_record WHERE User_ID = ? AND Return_Date IS NULL AND Category IS NOT NULL", [USER]),    // gets user checked out devices
 
@@ -18,6 +18,7 @@ module.exports = async function getCheckedOutItems(req, res, userID) {
             genre: row.Genre,
             author: row.Name,
             isbn: row.ISBN,
+            copyID: row.Book_Copy_ID,
 
             checkedOut: row.Checkout_Date
             ? new Date(row.Checkout_Date).toLocaleDateString("en-US", {

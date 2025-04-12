@@ -15,6 +15,9 @@ const holdDevice = require("./hold_item/hold_device.js"); //holdDevice()
 const getUserHolds = require('./hold_item/user_holds.js');
 const cancelHold = require('./hold_item/cancel_hold.js');
 
+const returnBook = require("./checkedOutItems/returnBook.js");
+const removeHold = require("./checkedOutItems/removeHold.js");
+
 
 
 // creates HTTP server and listens for incoming requests
@@ -41,7 +44,7 @@ const app = http.createServer( async (req, res) => {
   }
   
   if(req.url === '/login' && req.method === 'POST') {
-    login(req, res);  // call login() function imported above
+    login(req, res);
     return;
   }
 
@@ -100,13 +103,29 @@ const app = http.createServer( async (req, res) => {
     return;
   }
   
-  // when /checkedout loads
+  
+  // CheckedOut page
   if (req.url === '/checkedout' && req.method === 'GET' && role === 2) {
-    console.log("Retrieving user checked out page info.")
+    console.log("Retrieving user checked out page info.");
     getCheckedOutItems(req, res, userID);
     console.log("Checked out page info retrieved.");
     return;
   }
+
+  if (req.url === '/returnItem' && req.method === 'PUT' && role === 2) {
+    console.log("Returning book...");
+    returnBook(req, res, userID);
+    console.log("Book returned!");
+  }
+
+  if (req.url === '/removeHold' && req.method === 'PUT' && role === 2) {
+    console.log("Removing hold...");
+    removeHold(req, res, userID);
+    console.log("Hold removed.");
+  }
+
+
+
 
   if(req.url === '/genres' && req.method === 'GET' && role === 2){
     getGenres(req, res);

@@ -53,6 +53,7 @@
 
 .carousel {
     max-width: 80%;
+    min-width: 60%;
     margin: 0px auto;
     height: 100%;
 }
@@ -82,6 +83,14 @@
 .bookEntry img, .deviceEntry img {
     max-height: 200px;
     margin: 12px 0px;
+}
+
+.bookEntry h3, .deviceEntry h3 {
+    text-align: center;
+}
+
+#bookImg {
+    border-radius: 8px;
 }
 
 .entryElement {
@@ -121,4 +130,73 @@
 
 #holdSubtext {
     margin: 8px 0px;
+}
+
+/* MODALS */
+
+.modalOverlay {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background: #00000080;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal {
+    background: #ffffff;
+    padding: 32px;
+
+    border-radius: 16px;
+    width: 95%;
+    max-width: 500px;
+
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    animation: slideUpFade 0.4s ease;
+    position: relative;
+    font-family: "Segoe UI", sans-serif;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.modalHeader {
+    width: 100%;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+}
+
+.btnContainer {
+    width: 80%;
+
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.cancelBtn {
+    background-color: white;
+    border: 1px solid #d6d6d6;
+    color: #2563eb;
+}
+
+.cancelBtn:hover {
+    background-color: #d6d6d6;
+    border: 1px solid #d6d6d6;
+    color: #0e2bcc;
+}
+
+#holdBtn {
+    background-color: #ec7200;
 }
