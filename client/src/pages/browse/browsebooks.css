@@ -153,6 +153,11 @@ a {
     background-color: darkred;
 }
 
+.bookGenreSubtext {
+    font-size: 14px;
+    margin-top: 2px;
+}
+
 .library-info-section {
     display: flex;
     flex-wrap: wrap;

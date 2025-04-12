@@ -158,7 +158,7 @@ const BrowseBooks = () => {
                 <div className="library-info-left">
                 <h1>Welcome to Cougar Library!</h1>
                     <p>
-                        As a UH student, you get full access to our library services — no sign-up required. Use your account to browse our catalogue, place holds on devices, check out books, and track late fees all in one place. Whether you're in need a laptop for class or a book for research, we’ve got you covered. All devices and books are free to borrow, and faculty + alumni get extended borrow periods. Go Coogs!
+                        As a UH student, you get full access to our library services — no sign-up required. Use your account to browse our catalogue, place holds on devices, check out books, and track late fees all in one place. Whether you're in need of a laptop for class or a book for research, we’ve got you covered. All devices and books are free to borrow, and faculty + alumni get extended borrow periods. Go Coogs!
                     </p>
                 </div>
                 
@@ -214,6 +214,7 @@ const BrowseBooks = () => {
                                 />
 
                                 <p class="entryElement">{book.Name}, {book.Publication_Year}</p>
+                                <p class="bookGenreSubtext entryElement"><em>{book.Genre}</em></p>
 
                                 </div>
 
