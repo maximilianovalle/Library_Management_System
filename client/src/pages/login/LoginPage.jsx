@@ -57,6 +57,21 @@ const Login = () => {
                 }, 1000);
             }
 
+            // if token received and MANAGER role
+            else if (res.data.token && res.data.role === 3) {
+                localStorage.setItem("token", res.data.token);
+                localStorage.setItem("userRole", res.data.role);
+                localStorage.setItem("userName", res.data.user);
+            
+                // Show success message
+                setMessage({ type: 'success', text: res.data.message });
+                
+                // Redirect after a short delay
+                setTimeout(() => {
+                    window.location.href = `/managerdashboard`;
+                }, 1000);
+            }
+
             // if token received and LIBRARIAN role
             else if (res.data.token && res.data.role === 1) {
                 localStorage.setItem("token", res.data.token);
@@ -70,7 +85,9 @@ const Login = () => {
                 setTimeout(() => {
                     window.location.href = `/librarian`;
                 }, 1000);
-            } else {
+            }
+            
+            else {
                 // Handle unexpected response format
                 setMessage({ type: 'error', text: 'Received unexpected response from server' });
                 console.error('Unexpected response:', res.data);

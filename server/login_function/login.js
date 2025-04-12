@@ -33,6 +33,20 @@ async function getAdmin(userID) {
     }
 }
 
+async function getManager(userID) {
+    try {
+        const [rows] = await pool.query("SELECT * FROM manager WHERE Manager_ID = ? AND Is_Active = 1", [userID]);
+    
+        if (rows.length === 0) {    // if no user found
+            return null;    // return null
+        }
+        return rows[0]; // else return the user
+
+    } catch (error) {
+        throw error
+    }
+}
+
 
 module.exports = async function login(req, res) {
     try {
@@ -64,10 +78,16 @@ module.exports = async function login(req, res) {
                     user = await getAdmin(userID, body);    // check if admin
                     role = 1;   // ADMIN ROLE = 1
                 }
+
+                if (!user) {
+                    user = await getManager(userID, body);  // check if manager
+                    role = 3;
+                }
+
                 // if ( user still does not exist )
                 if (!user) {
                     res.writeHead(401, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: 'Invalid User ID' }));
+                    res.end(JSON.stringify({ message: 'User could not be found' }));
                     return;
                 }
 
@@ -89,6 +109,16 @@ module.exports = async function login(req, res) {
                     });
 
                     console.log(" - User stored in memory.");
+                }
+
+                // if MANAGER role
+                else if (role == 3) {
+                    currSessions.set(sessionToken, {
+                        userID: user.Manager_ID,
+                        role: role,
+                    })
+
+                    console.log(" - Manager stored in memory.");
                 }
 
                 // if LIBRARIAN role, store session token + Librarian_ID +  to currSessions

@@ -14,6 +14,8 @@ import Login from './pages/login/LoginPage'
 import BrowseBooks from './pages/browse/browsebooks'
 import BrowseDevices from './pages/browse/browsedevices'
 
+import ManagerDashboard from './pages/manager/ManagerPage';
+
 import CheckedOutPage from './pages/checkedOutItems/checkedOut'
 
 import HoldsPage from './pages/librarian/HoldsPage'
@@ -42,6 +44,9 @@ function App() {
       <Route path="/checkedout" element={<CheckedOutPage />}/>
       <Route path="/returnItem" element={<CheckedOutPage/>}/>
       <Route path="/removeHold" element={<CheckedOutPage/>}/>
+
+      {/* Manager Routes */}
+      <Route path="/managerdashboard" element={<ManagerDashboard/>}/>
 
       
       {/* Librarian routes */}
