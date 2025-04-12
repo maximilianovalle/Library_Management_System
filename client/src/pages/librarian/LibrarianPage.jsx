@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-// import axios from "axios";
+import axios from "axios";
 import Header from "../../components/header/LibrarianHeader";
 import { Link } from "react-router-dom";
 import "./LibrarianPage.css";
@@ -63,13 +63,13 @@ const CalendarIcon = () => (
 
 const LibrarianDashboard = () => {
     const [stats, setStats] = useState({
-        totalBooks: 1247,
-        totalDevices: 89,
-        checkedOutBooks: 342,
-        checkedOutDevices: 38,
-        overdueItems: 17,
-        activeHolds: 29,
-        finesDue: 587.50
+        totalBooks: 0,
+        totalDevices: 0,
+        checkedOutBooks: 0,
+        checkedOutDevices: 0,
+        overdueItems: 0,
+        activeHolds: 0,
+        finesDue: 0
     });
     
     const [timeframe, setTimeframe] = useState("week");
@@ -142,15 +142,19 @@ const LibrarianDashboard = () => {
                 setTimeout(() => {
                     setLoading(false);
                 }, 1000);
-                
-                // In a real implementation, you would fetch data from your API:
-                /*
-                const statsResponse = await axios.get("https://library-management-system-gf9d.onrender.com/librarian/dashboard/stats", {
+                            
+                const statsResponse = await axios.get(`${process.env.REACT_APP_API_URL}/stats`, {
                     headers: {
                         "Authorization": `Bearer ${token}`
                     }
                 });
-                
+                const data = statsResponse.data;
+                if (Array.isArray(data.stats) && data.stats.length > 0) {
+                    setStats(data.stats[0]);
+                } else {
+                    console.error("Invalid stats data:", data);
+                }
+                /*
                 const activityResponse = await axios.get("https://library-management-system-gf9d.onrender.com/librarian/dashboard/activity", {
                     headers: {
                         "Authorization": `Bearer ${token}`
@@ -189,7 +193,6 @@ const LibrarianDashboard = () => {
             return `Yesterday at ${itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         }
         
-        // For other dates
         return `${itemDate.toLocaleDateString([], { month: 'short', day: 'numeric' })} at ${itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
     };
     

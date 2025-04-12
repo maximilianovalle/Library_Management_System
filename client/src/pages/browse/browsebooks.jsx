@@ -34,7 +34,7 @@ const BrowseBooks = () => {
     const [books, setBooks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [visible, setVisible] = useState(10);
+    const [visible, setVisible] = useState(5);
 
     const [modalContent, setModalContent] = useState(null);
 

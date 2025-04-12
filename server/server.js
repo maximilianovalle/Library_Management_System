@@ -15,8 +15,8 @@ const holdDevice = require("./hold_item/hold_device.js"); //holdDevice()
 const getUserHolds = require("./hold_item/user_holds.js");
 const cancelHold = require("./hold_item/cancel_hold.js");
 const getReportsData = require("./reports/reports.js"); // getReportsData()
-const add_book_to_user = require('./borrow_item/borrow_book.js');
-
+const add_book_to_user = require('./borrow_item/borrow_book.js'); // add_book_to_user()
+const getStats = require('./librarian_page/getStats.js') // getStats()
 // creates HTTP server and listens for incoming requests
 const app = http
   .createServer(async (req, res) => {
@@ -54,7 +54,6 @@ const app = http
 
     console.log("Authorizing token...");
 
-    // client sends request with authentication ("Authorization: Bearer [tokenString]")
     const token = req.headers.authorization?.split("Bearer ")[1]; // retrieves actual token string from request
 
     if (!token || !currSessions.has(token)) {
@@ -149,13 +148,20 @@ const app = http
       return;
     }
 
-    // Reports endpoint for librarians
+    //////// LIBRARIAN SIDE REQUESTS ////////
+
     if (req.url.startsWith("/reports") && req.method === "GET" && role === 1) {
       console.log("Fetching library reports data...");
       getReportsData(req, res);
       return;
     }
 
-    res.end(); // if request does not match any of the defined routes, ends response w/ no data
+    if(req.url === '/stats' && req.method === 'GET' && role === 1){
+      console.log("GIMME THE STATS NOEW")
+      getStats(req,res)
+    }
+
+
+    res.end();
   })
   .listen(8000, console.log("Server is running on port 8000")); // server is listening on port 8000 for incoming HTTP requests
