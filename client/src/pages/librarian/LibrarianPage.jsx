@@ -62,15 +62,13 @@ const CalendarIcon = () => (
 );
 
 const LibrarianDashboard = () => {
-    const [stats, setStats] = useState({
-        totalBooks: 0,
-        totalDevices: 0,
-        checkedOutBooks: 0,
-        checkedOutDevices: 0,
-        overdueItems: 0,
-        activeHolds: 0,
-        finesDue: 0
-    });
+    const [totalBooks, setTotalBooks] = useState(0);
+    const [totalDevices, setTotalDevices] = useState(0);
+    const [checkedOutBooks, setCheckedOutBooks] = useState(0);
+    const [checkedOutDevices, setCheckedOutDevices] = useState(0);
+    const [overdueItems, setOverdueItems] = useState(0);
+    const [activeHolds, setActiveHolds] = useState(0);
+    const [finesDue, setFinesDue] = useState(0);
     
     const [timeframe, setTimeframe] = useState("week");
     const [recentActivity, setRecentActivity] = useState([
@@ -149,11 +147,19 @@ const LibrarianDashboard = () => {
                     }
                 });
                 const data = statsResponse.data;
-                if (Array.isArray(data.stats) && data.stats.length > 0) {
-                    setStats(data.stats[0]);
-                } else {
-                    console.error("Invalid stats data:", data);
+                console.log(data)
+                try{
+                    setTotalBooks(data.totalBooks);
+                    setTotalDevices(data.totalDevices);
+                    setCheckedOutBooks(data.checkedOutBooks);
+                    setCheckedOutDevices(data.checkedOutDevices);
+                    setOverdueItems(data.overdueItems);
+                    setActiveHolds(data.activeHolds);
+                    setFinesDue(data.finesDue);
+                } catch(error) {
+                    console.error("Error fetching stats:", error);
                 }
+                
                 /*
                 const activityResponse = await axios.get("https://library-management-system-gf9d.onrender.com/librarian/dashboard/activity", {
                     headers: {
@@ -246,7 +252,7 @@ const LibrarianDashboard = () => {
                                 </div>
                                 <div className="stat-content">
                                     <h3>Total Books</h3>
-                                    <p className="stat-value">{stats.totalBooks.toLocaleString()}</p>
+                                    <p className="stat-value">{totalBooks.toLocaleString()}</p>
                                 </div>
                             </div>
                             
@@ -256,7 +262,7 @@ const LibrarianDashboard = () => {
                                 </div>
                                 <div className="stat-content">
                                     <h3>Total Devices</h3>
-                                    <p className="stat-value">{stats.totalDevices.toLocaleString()}</p>
+                                    <p className="stat-value">{totalDevices.toLocaleString()}</p>
                                 </div>
                             </div>
                             
@@ -266,9 +272,9 @@ const LibrarianDashboard = () => {
                                 </div>
                                 <div className="stat-content">
                                     <h3>Checked Out Books</h3>
-                                    <p className="stat-value">{stats.checkedOutBooks.toLocaleString()}</p>
+                                    <p className="stat-value">{checkedOutBooks.toLocaleString()}</p>
                                     <p className="stat-percentage">
-                                        {Math.round((stats.checkedOutBooks / stats.totalBooks) * 100)}% of inventory
+                                        {Math.round((checkedOutBooks / totalBooks) * 100)}% of inventory
                                     </p>
                                 </div>
                             </div>
@@ -279,9 +285,9 @@ const LibrarianDashboard = () => {
                                 </div>
                                 <div className="stat-content">
                                     <h3>Checked Out Devices</h3>
-                                    <p className="stat-value">{stats.checkedOutDevices.toLocaleString()}</p>
+                                    <p className="stat-value">{checkedOutDevices.toLocaleString()}</p>
                                     <p className="stat-percentage">
-                                        {Math.round((stats.checkedOutDevices / stats.totalDevices) * 100)}% of inventory
+                                        {Math.round((checkedOutDevices / totalDevices) * 100)}% of inventory
                                     </p>
                                 </div>
                             </div>
@@ -292,7 +298,7 @@ const LibrarianDashboard = () => {
                                 </div>
                                 <div className="stat-content">
                                     <h3>Overdue Items</h3>
-                                    <p className="stat-value">{stats.overdueItems.toLocaleString()}</p>
+                                    <p className="stat-value">{overdueItems.toLocaleString()}</p>
                                     <Link to="/librarian/overdue" className="stat-link">View details</Link>
                                 </div>
                             </div>
@@ -303,7 +309,7 @@ const LibrarianDashboard = () => {
                                 </div>
                                 <div className="stat-content">
                                     <h3>Active Holds</h3>
-                                    <p className="stat-value">{stats.activeHolds.toLocaleString()}</p>
+                                    <p className="stat-value">{activeHolds.toLocaleString()}</p>
                                     <Link to="/librarian/holds" className="stat-link">Manage holds</Link>
                                 </div>
                             </div>
@@ -314,7 +320,9 @@ const LibrarianDashboard = () => {
                                 </div>
                                 <div className="stat-content">
                                     <h3>Fines Due</h3>
-                                    <p className="stat-value">${stats.finesDue.toFixed(2)}</p>
+                                    <p className="stat-value">
+                                        ${typeof finesDue === 'number' ? finesDue.toFixed(2) : Number(finesDue || 0).toFixed(2)}
+                                    </p>
                                     <Link to="/librarian/fines" className="stat-link">View all fines</Link>
                                 </div>
                             </div>

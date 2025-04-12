@@ -4,7 +4,6 @@ html, body {
     padding: 0;
     overflow-x: hidden;
 }
-
 .login-page {
     min-height: 100vh;
     width: 100vw;
@@ -147,6 +146,7 @@ html, body {
 }
 
 .login-button {
+    position: relative;
     width: 100%;
     padding: 0.875rem;
     background: linear-gradient(to right, #dc2626, #ef4444);
@@ -174,26 +174,6 @@ html, body {
     opacity: 0.7;
     cursor: not-allowed;
     position: relative;
-}
-
-.login-button.loading::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    right: 12px;
-    transform: translateY(-50%);
-    width: 16px;
-    height: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
 }
 
 .login-message {
@@ -237,8 +217,6 @@ html, body {
         padding: 1.5rem 1rem;
     }
 }
-
-/* Remove default blue autofill background */
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {

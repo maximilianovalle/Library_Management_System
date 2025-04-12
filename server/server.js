@@ -104,61 +104,58 @@ const app = http
       return;
     }
 
-  // if ( browser sends a GET request to "/devices" and USER role )
-  if (req.url.startsWith('/devices') && req.method === 'GET' && role === 2) {
-    getDevices(req, res);  // call getDevices() to search devices
-    return;
-  }
-  
-  
-  // CheckedOut page
-  if (req.url === '/checkedout' && req.method === 'GET' && role === 2) {
-    console.log("Retrieving user checked out page info.");
-    getCheckedOutItems(req, res, userID);
-    console.log("Checked out page info retrieved.");
-    return;
-  }
+    // if ( browser sends a GET request to "/devices" and USER role )
+    if (req.url.startsWith('/devices') && req.method === 'GET' && role === 2) {
+      getDevices(req, res);  // call getDevices() to search devices
+      return;
+    }
+    
+    
+    // CheckedOut page
+    if (req.url === '/checkedout' && req.method === 'GET' && role === 2) {
+      console.log("Retrieving user checked out page info.");
+      getCheckedOutItems(req, res, userID);
+      console.log("Checked out page info retrieved.");
+      return;
+    }
 
-  if (req.url === '/returnItem' && req.method === 'PUT' && role === 2) {
-    console.log("Returning book...");
-    returnBook(req, res, userID);
-    console.log("Book returned!");
-  }
+    if (req.url === '/returnItem' && req.method === 'PUT' && role === 2) {
+      console.log("Returning book...");
+      returnBook(req, res, userID);
+      console.log("Book returned!");
+    }
 
-  if (req.url === '/removeHold' && req.method === 'PUT' && role === 2) {
-    console.log("Removing hold...");
-    removeHold(req, res, userID);
-    console.log("Hold removed.");
-  }
+    if (req.url === '/removeHold' && req.method === 'PUT' && role === 2) {
+      console.log("Removing hold...");
+      removeHold(req, res, userID);
+      console.log("Hold removed.");
+    }
 
-
-
-
-  if(req.url === '/genres' && req.method === 'GET' && role === 2){
-    getGenres(req, res);
-    return;
-  }
-  if(req.url === '/book_by_genre' && req.method === 'GET' && role === 2){
-    console.log("book by genre neow")
-    get_book_by_genre(req, res);
-    return;
-  }
-  if(req.url === '/borrow_book' && req.method === 'PUT' && role === 2){
-    add_book_to_user(req,res, userID);
-    return;
-  }
-  if (req.url === '/hold' && req.method === 'POST' && role === 2) {
-    holdDevice(req, res);
-    return;
-  }
-  if (req.url === '/user/holds' && req.method === 'GET' && role === 2) {
-    getUserHolds(req, res);
-    return;
-  }
-  if (req.url === '/hold/cancel' && req.method === 'POST') {
-    cancelHold(req, res);
-    return;
-}
+    if(req.url === '/genres' && req.method === 'GET' && role === 2){
+      getGenres(req, res);
+      return;
+    }
+    if(req.url === '/book_by_genre' && req.method === 'GET' && role === 2){
+      console.log("book by genre neow")
+      get_book_by_genre(req, res);
+      return;
+    }
+    if(req.url === '/borrow_book' && req.method === 'PUT' && role === 2){
+      add_book_to_user(req,res, userID);
+      return;
+    }
+    if (req.url === '/hold' && req.method === 'POST' && role === 2) {
+      holdDevice(req, res);
+      return;
+    }
+    if (req.url === '/user/holds' && req.method === 'GET' && role === 2) {
+      getUserHolds(req, res);
+      return;
+    }
+    if (req.url === '/hold/cancel' && req.method === 'POST') {
+      cancelHold(req, res);
+      return;
+    }
     // when /account "pay now" button clicked
     if (req.url === "/account" && req.method === "PUT" && role === 2) {
       console.log("Paying user fine amount.");
@@ -230,6 +227,7 @@ const app = http
     if(req.url === '/stats' && req.method === 'GET' && role === 1){
       console.log("GIMME THE STATS NOEW")
       getStats(req,res)
+      return;
     }
 
 

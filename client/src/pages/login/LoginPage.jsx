@@ -143,7 +143,7 @@ const Login = () => {
                     
                     <button 
                         type="submit" 
-                        className={`login-button ${isLoading ? 'loading' : ''}`}
+                        className={`login-button`}
                         disabled={isLoading}
                     >
                         {isLoading ? 'Signing In...' : 'Sign In'}
