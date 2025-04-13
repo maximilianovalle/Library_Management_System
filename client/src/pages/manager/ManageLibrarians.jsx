@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Header from "../../components/header/ManagerHeader";
 import axios from "axios";
 
-const ManagerDashboard = () => {
+const ManageLibrarians = () => {
     return (
         <div>
             <Header />
@@ -10,4 +10,4 @@ const ManagerDashboard = () => {
     )
 }
 
-export default ManagerDashboard;
+export default ManageLibrarians;
