@@ -22,6 +22,7 @@ const cancelHold = require("./hold_item/cancel_hold.js");
 const getReportsData = require("./reports/reports.js"); // getReportsData()
 const add_book_to_user = require('./borrow_item/borrow_book.js'); // add_book_to_user()
 const getStats = require('./librarian_page/getStats.js') // getStats()
+const librarian_info = require('./librarian_page/librarian_info.js')
 // creates HTTP server and listens for incoming requests
 const app = http
   .createServer(async (req, res) => {
@@ -227,6 +228,11 @@ const app = http
     if(req.url === '/stats' && req.method === 'GET' && role === 1){
       console.log("GIMME THE STATS NOEW")
       getStats(req,res)
+      return;
+    }
+    
+    if(req.url === '/librarian_account' && req.method === 'GET' && role === 1){
+      librarian_info(req, res, userID)
       return;
     }
 

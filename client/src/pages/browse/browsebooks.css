@@ -307,24 +307,24 @@ a {
   }
   
   .confirm-button {
-    background-color: #2563eb; /* red */
+    background-color: #ff7979; 
     color: #fff;
   }
   
   .confirm-button:hover {
-    background-color: #1e40af; /* darker red */
+    background-color: #ff4141;
   }
   
   .cancel-button {
     background-color: white;
     border: 1px solid #d6d6d6;
-    color: #2563eb;
+    color: #ff7979;
   }
   
   .cancel-button:hover {
     background-color: #d6d6d6;
     border: 1px solid #d6d6d6;
-    color: #0e2bcc;
+    color: #ff4141;
   }
   
   .modal-close {

@@ -264,14 +264,23 @@ const BrowseBooks = () => {
                     
                     <div className="modal-box" onClick={(e) => e.stopPropagation()}>
                         <span className="modal-close" onClick={() => setConfirmBorrow(null)}>&times;</span>
-                        
+                        <img
+                            src={`https://covers.openlibrary.org/b/isbn/${confirm_borrow.ISBN}-L.jpg?default=false`}
+                            alt={confirm_borrow.Title}
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.src = defaultCover;
+                            }}
+                            style={{ maxWidth: "150px", marginBottom: "1rem", borderRadius: "8px" }}
+                        />
                         <h2 class="modalHeader">Borrow <em>{confirm_borrow.Title}</em>?</h2>
 
                         <p>Book will be added to your checked out items.</p>
 
                         <div className="modal-buttons">
-                            <button className="confirm-button" onClick={handleBorrow}>Borrow Book</button>
                             <button className="cancel-button" onClick={() => setConfirmBorrow(null)}>Cancel</button>
+
+                            <button className="confirm-button" onClick={handleBorrow}>Borrow Book</button>
                         </div>
                     </div>
                 </div>

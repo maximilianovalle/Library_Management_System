@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { FaBook, FaTabletAlt, FaUsers, FaChartBar } from 'react-icons/fa';
 import axios from "axios";
 import Header from "../../components/header/LibrarianHeader";
 import { Link } from "react-router-dom";
@@ -62,6 +63,9 @@ const CalendarIcon = () => (
 );
 
 const LibrarianDashboard = () => {
+    const [librarian_name_first, setLibrarian_Name_First] = useState()
+    const [librarian_name_last, setLibrarian_Name_Last] = useState()
+
     const [totalBooks, setTotalBooks] = useState(0);
     const [totalDevices, setTotalDevices] = useState(0);
     const [checkedOutBooks, setCheckedOutBooks] = useState(0);
@@ -114,13 +118,7 @@ const LibrarianDashboard = () => {
         }
     ]);
     
-    const [popularBooks, setPopularBooks] = useState([
-        { title: "Dune", author: "Frank Herbert", checkouts: 24 },
-        { title: "The Alchemist", author: "Paulo Coelho", checkouts: 19 },
-        { title: "1984", author: "George Orwell", checkouts: 17 },
-        { title: "To Kill a Mockingbird", author: "Harper Lee", checkouts: 15 },
-        { title: "The Great Gatsby", author: "F. Scott Fitzgerald", checkouts: 13 }
-    ]);
+    const [popularBooks, setPopularBooks] = useState([]);
     
     const [loading, setLoading] = useState(false);
 
@@ -170,6 +168,24 @@ const LibrarianDashboard = () => {
                 setStats(statsResponse.data);
                 setRecentActivity(activityResponse.data.activities || []);
                 */
+               const popular_books_response = await axios.get(`${process.env.REACT_APP_API_URL}/reports?type=popular`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+                console.log(popular_books_response.data.popularBooks)
+                setPopularBooks(popular_books_response.data.popularBooks)
+
+
+                const librarian_info_response =  await axios.get(`${process.env.REACT_APP_API_URL}/librarian_account`, {
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+                console.log(librarian_info_response.data)
+                setLibrarian_Name_First(librarian_info_response.data.firstName)
+                setLibrarian_Name_Last(librarian_info_response.data.lastName)
+
             } catch (error) {
                 console.error("Error fetching dashboard data:", error);
             } finally {
@@ -229,7 +245,7 @@ const LibrarianDashboard = () => {
                     <h1 className="dashboard-title">Librarian Dashboard</h1>
                     <div className="dashboard-welcome">
                         <div className="welcome-message">
-                            <h2>Welcome back</h2>
+                            <h2>Welcome back, {librarian_name_first} {librarian_name_last}</h2>
                             <p>Here's what's happening at your library today</p>
                         </div>
                         <div className="current-date">
@@ -335,19 +351,19 @@ const LibrarianDashboard = () => {
                                 </div>
                                 <div className="quick-actions">
                                     <Link to="/librarian/manage-books/add" className="action-button add-book">
-                                        <BookIcon />
+                                        <FaBook className="icon"/>
                                         <span>Add New Book</span>
                                     </Link>
                                     <Link to="/librarian/manage-devices/add" className="action-button add-device">
-                                        <DeviceIcon />
+                                        <FaTabletAlt className="icon"/>
                                         <span>Add New Device</span>
                                     </Link>
                                     <Link to="/librarian/users/search" className="action-button search-user">
-                                        <UsersIcon />
+                                        <FaUsers className="icon"/>
                                         <span>Search Users</span>
                                     </Link>
                                     <Link to="/librarian/reports" className="action-button generate-report">
-                                        <ChartIcon />
+                                        <FaChartBar className="icon"/>
                                         <span>Generate Reports</span>
                                     </Link>
                                 </div>
@@ -412,15 +428,15 @@ const LibrarianDashboard = () => {
                                     </div>
                                     
                                     <div className="popular-books">
-                                        {popularBooks.map((book, index) => (
+                                        {popularBooks.slice(0, 10).map((book, index) => (
                                             <div key={index} className="popular-book-item">
                                                 <div className="book-rank">{index + 1}</div>
                                                 <div className="book-info">
-                                                    <h4>{book.title}</h4>
-                                                    <p>{book.author}</p>
+                                                    <h4>{book.Title}</h4>
+                                                    <p>{book.Author_Name}</p>
                                                 </div>
                                                 <div className="book-checkouts">
-                                                    <span className="checkouts-value">{book.checkouts}</span>
+                                                    <span className="checkouts-value">{book.checkout_count}</span>
                                                     <span className="checkouts-label">checkouts</span>
                                                 </div>
                                             </div>
@@ -428,7 +444,7 @@ const LibrarianDashboard = () => {
                                     </div>
                                     
                                     <div className="view-all-link">
-                                        <Link to="/librarian/reports/popular-books">View full report</Link>
+                                        <Link to="/librarian/reports">View full report</Link>
                                     </div>
                                 </div>
                             </div>

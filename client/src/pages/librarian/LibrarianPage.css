@@ -342,7 +342,7 @@
 
 .timeframe-selector button.active {
     background-color: var(--primary);
-    color: white;
+    color: #f03838;
 }
 
 .popular-books {
@@ -364,7 +364,7 @@
 .book-rank {
     font-size: 1.25rem;
     font-weight: 700;
-    background-color: rgba(79, 70, 229, 0.1);
+    background-color: rgba(244, 34, 34, 0.1);
     color: var(--primary);
     width: 36px;
     height: 36px;
@@ -398,7 +398,7 @@
     flex-direction: column;
     align-items: center;
     padding: 0.5rem 0.75rem;
-    background-color: rgba(79, 70, 229, 0.1);
+    background-color: rgba(255, 255, 255, 0.375);
     border-radius: 8px;
 }
 
@@ -501,3 +501,11 @@
         align-self: flex-start;
     }
 }
+
+
+/* FOR THE MANAGE PART OF THE DASH */
+.icon {
+    width: 24px;
+    height: 24px;
+    color: #ff7979;
+  }
