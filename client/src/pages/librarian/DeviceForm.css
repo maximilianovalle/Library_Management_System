@@ -1,0 +1,64 @@
+.book-form-container {
+    background-color: #ffffff;
+    padding: 2rem;
+    margin-top: 2rem;
+    border-radius: 1rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+  
+  .book-form-container h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1e293b;
+  }
+  
+  .book-form-container label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #334155;
+  }
+  
+  .book-form-container input[type="text"],
+  .book-form-container select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  
+  .book-form-container input[type="text"]:focus,
+  .book-form-container select:focus {
+    border-color: #3b82f6;
+  }
+  
+  .book-form-container button {
+    background-color: #2563eb;
+    color: white;
+    padding: 0.5rem 1.25rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .book-form-container button:hover {
+    background-color: #1e40af;
+  }
+  
+  .text-red-500 {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-top: -0.5rem;
+    margin-bottom: 0.75rem;
+  }
+  

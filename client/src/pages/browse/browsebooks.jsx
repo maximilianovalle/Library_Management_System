@@ -215,6 +215,8 @@ const BrowseBooks = () => {
 
                                 <p class="entryElement">{book.Name}, {book.Publication_Year}</p>
                                 <p class="bookGenreSubtext entryElement"><em>{book.Genre}</em></p>
+                                <br></br>
+                                <p class="entryElement"> Available: {book.count}</p>
 
                                 </div>
 
