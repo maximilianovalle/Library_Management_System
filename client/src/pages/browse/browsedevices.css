@@ -71,11 +71,16 @@
 }
 
 .device_list {
-    list-style: none;
-    padding: 0;
-    max-width: 700px;
-    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+    padding: 20px;
 }
+
+@keyframes fade-in {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
 
 .device_card {
     background-color: #ffffff;
@@ -84,7 +89,8 @@
     margin-bottom: 15px;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: transform 0.2s ease;
+    transition: box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+    animation: fade-in 0.5s ease;
 }
 
 .device_card:hover {
@@ -213,3 +219,5 @@
     cursor: pointer;
     user-select: none;
 }
+
+
