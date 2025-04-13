@@ -23,6 +23,9 @@ const getReportsData = require("./reports/reports.js"); // getReportsData()
 const add_book_to_user = require('./borrow_item/borrow_book.js'); // add_book_to_user()
 const getStats = require('./librarian_page/getStats.js') // getStats()
 const librarian_info = require('./librarian_page/librarian_info.js')
+
+const addLibrarian = require('./manager_page/add_librarian.js');
+
 // creates HTTP server and listens for incoming requests
 const app = http
   .createServer(async (req, res) => {
@@ -236,6 +239,11 @@ const app = http
       return;
     }
 
+    //////// MANAGER SIDE REQUESTS ////////
+    if(req.url === '/librarian_account' && req.method === 'GET' && role === 1){
+      addLibrarian(req, res, userID)
+      return;
+    }
 
     res.end();
   })
