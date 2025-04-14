@@ -61,7 +61,7 @@ const ManagerDashboard = () => {
 
       <div className="dashboard-container">
 
-        <div class="dashboard-header">
+        {/* <div class="dashboard-header">
           <h1 class="dashboard-title">Manager Dashboard</h1>
 
           <div class="dashboard-welcome">
@@ -74,7 +74,7 @@ const ManagerDashboard = () => {
                 {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </div>
           </div>
-        </div>
+        </div> */}
 
         {loading ? (
           <div className="dashboard-loading">
@@ -83,6 +83,21 @@ const ManagerDashboard = () => {
           </div>
         ) : (
           <>
+
+            <div class="dashboard-header">
+              <h1 id="dashboardTitle" class="dashboard-title">Manager Dashboard</h1>
+
+              <div class="dashboard-welcome">
+                <div className="welcome-message">
+                  <h2>Welcome back, {firstName} {lastName}</h2>
+                  <p>Here's what's happening at your library today</p>
+                </div>
+
+                <div className="current-date">
+                  {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                </div>
+              </div>
+            </div>
 
             <div class="dashboard-stats-grid">
 

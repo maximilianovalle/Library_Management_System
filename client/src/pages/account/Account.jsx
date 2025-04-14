@@ -22,10 +22,13 @@ const Account = () => {
     const [fineAmntDue, setFineAmnt] = useState("");
     const [prevFineAmnt, setPrevFine] = useState("");
 
+    const [loading, setLoading] = useState(false);
+
     // triggered once when the page loads
     useEffect(() => {
         const fetchName = async () => {
             try {
+                setLoading(true);
                 const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
 
                 // if ( no token )
@@ -34,6 +37,10 @@ const Account = () => {
                     window.location.href = "/login";
                     return;
                 }
+
+                setTimeout(() => {
+                    setLoading(false);
+                }, 1000);
 
                 // sends a GET request to /account including token
                 const res = await axios.get(`${process.env.REACT_APP_API_URL}/account`, {
@@ -57,6 +64,8 @@ const Account = () => {
 
             } catch (error) {
                 console.error("Error fetching account data:", error);
+            } finally {
+                setLoading(false);
             }
         }
 
@@ -118,6 +127,14 @@ const Account = () => {
 
             {/* main content - my code ----- */}
             <div id="main">
+                
+            {loading ? (
+            <div className="dashboard-loading">
+                <div className="spinner"></div>
+                <p>Loading dashboard data...</p>
+            </div>
+            ) : (
+            <>
 
                 {/* user info */}
                 <div id="userInfo">
@@ -183,6 +200,7 @@ const Account = () => {
                         <p>No devices to show! Try returning a checked out device...</p>
                     )}
                 </div>
+                </>)}
             </div>
 
             {showCheckout && (

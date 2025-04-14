@@ -197,7 +197,7 @@ const BrowseBooks = () => {
                         books.slice(0, visible).map((book, index) => (
                             <div key={index} className="book_card" onClick={() => double_check_borrow(book)}>
                             
-                                <div>
+                                {/* <div> */}
                                     
                                 <h3 class="entryElement">
                                     {book.Title.length > 42 ? `${book.Title.substring(0, 42)}...` : book.Title}
@@ -218,7 +218,7 @@ const BrowseBooks = () => {
                                 <br></br>
                                 <p class="entryElement"> Available: {book.count}</p>
 
-                                </div>
+                                {/* </div> */}
 
                                 {/* <button className="borrow_button" onClick={() => double_check_borrow(book)}>Borrow</button> */}
 

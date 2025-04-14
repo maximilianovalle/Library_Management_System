@@ -55,34 +55,34 @@ const CheckedOutPage = () => {
     console.log("Current Date: ", currDate);
 
 
+    const fetchItems = async () => {
+        try {
+            const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
+
+            if (!token) {
+                console.error("No token found. Redirecting to login...");
+                window.location.href = "/login";
+                return;
+            }
+
+            // /checkedOut get request
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/checkedout`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            // receive JSON from checkedOut.js
+            setBooks(res.data.checkedOutBooksArr);
+            setDevices(res.data.checkedOutDevicesArr);
+            setHoldDevices(res.data.heldDevicesArr);
+        } catch (error) {
+            console.error("Error fetching books:", error);
+        }
+    };
+
     // triggered once when the page loads
     useEffect(() => {
-        const fetchItems = async () => {
-            try {
-                const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
-
-                if (!token) {
-                    console.error("No token found. Redirecting to login...");
-                    window.location.href = "/login";
-                    return;
-                }
-
-                // /checkedOut get request
-                const res = await axios.get(`${process.env.REACT_APP_API_URL}/checkedout`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                });
-
-                // receive JSON from checkedOut.js
-                setBooks(res.data.checkedOutBooksArr);
-                setDevices(res.data.checkedOutDevicesArr);
-                setHoldDevices(res.data.heldDevicesArr);
-            } catch (error) {
-                console.error("Error fetching books:", error);
-            }
-        };
-
         fetchItems();
     }, []);
 
@@ -128,7 +128,8 @@ const CheckedOutPage = () => {
                 },
             });
 
-            window.location.reload();
+            // window.location.reload();
+            await fetchItems();
 
         } catch (error) {
             console.log("Error returning book: ", error);
@@ -157,7 +158,8 @@ const CheckedOutPage = () => {
                 },
             });
 
-            window.location.reload();
+            // window.location.reload();
+            await fetchItems();
 
         } catch (error) {
             console.error("Error removing hold: ", error);

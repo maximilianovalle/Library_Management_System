@@ -10,7 +10,9 @@
   }
 
 #dashboardTitle {
-  color: #dc3545;
+  /* background-color: #dc3545; */
+  border-bottom: 2px solid #e5e7eb;
+  width: 100%;
 }
   
   .dashboard-header h1 {

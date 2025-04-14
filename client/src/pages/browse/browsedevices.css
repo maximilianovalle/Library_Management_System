@@ -14,6 +14,21 @@
     margin-bottom: 20px;
 }
 
+#searchDropdown {
+    width: 200px;
+    height: 54px;
+    padding: 16px;
+}
+
+.search-area {
+    /* background-color: red; */
+    display: flex;
+    width: 100%;
+    padding: 0;
+    margin: 32px 0px 0px 0px;
+    box-sizing: border-box;
+}
+
 .search_bar {
     padding: 10px;
     font-size: 1rem;
@@ -23,7 +38,9 @@
 }
 
 .search_button {
-    padding: 10px 20px;
+    /* padding: 10px 20px; */
+    width: 120px;
+    padding: 16px;
     font-size: 1rem;
     border: none;
     border-radius: 5px;
@@ -39,7 +56,8 @@
 
 .filters {
     text-align: center;
-    margin-top: 10px;
+    /* margin-top: 10px; */
+    /* margin: 0px; */
 }
 
 .chip {
@@ -77,6 +95,10 @@
     padding: 20px;
 }
 
+#leftDevice {
+    background-color: #0077cc;
+}
+
 @keyframes fade-in {
     0% { opacity: 0; transform: translateY(10px); }
     100% { opacity: 1; transform: translateY(0); }
@@ -85,6 +107,7 @@
   #devicesMainBody {
     max-width: 1000px;
     margin: 0px auto;
+    animation: fade-in 0.5s ease;
   }
 
 .device_card {
@@ -124,6 +147,10 @@
 }
 
 .device_card {
+    max-height: 400px;
+    max-width: 500px;
+    /* margin: 0px auto; */
+    text-align: center;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -137,11 +164,16 @@
 
 .device_info {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 50%;
 }
 
 .device_image {
-    width: 100px;
-    height: auto;
+    height: 100px;
+    width: auto;
     margin-left: 1rem;
     border-radius: 8px;
 }
@@ -156,6 +188,7 @@
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.3s ease;
+    max-width: 80%;
 }
 
 .hold_button:hover {
@@ -184,8 +217,8 @@
 }
 
 .filters {
-    margin: 30px auto;
-    padding: 1rem;
+    margin: 0px auto;
+    /* padding: 1rem; */
     border-radius: 12px;
     width: fit-content;
 }
@@ -217,6 +250,7 @@
 .toggle_available {
     font-size: 0.95rem;
     display: flex;
+    justify-content: center;
     align-items: center;
     gap: 6px;
     padding: 6px 12px;
