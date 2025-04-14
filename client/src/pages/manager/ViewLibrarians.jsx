@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Header from "../../components/header/ManagerHeader";
 import "./ViewLibrarians.css";
 
@@ -10,6 +11,8 @@ const ViewLibrarians = () => {
   const [toast, setToast] = useState({ message: "", type: "" });
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchLibrarians();
@@ -85,11 +88,10 @@ const ViewLibrarians = () => {
     <div>
       <Header />
       <div className="manage-librarians-container">
+        <button className="back-btn" onClick={() => navigate("/manage-librarians")}>←</button>
         <h1 className="title">All Librarians</h1>
 
-        {toast.message && (
-          <div className={`toast ${toast.type}`}>{toast.message}</div>
-        )}
+        {toast.message && <div className={`toast ${toast.type}`}>{toast.message}</div>}
 
         {showModal && (
           <div className="modal-overlay">
@@ -120,7 +122,12 @@ const ViewLibrarians = () => {
           <div>
             {librarians.length > 0 ? librarians.map((lib, idx) => (
               <div key={idx} className="librarian-row">
-                <span>{lib.First_Name} {lib.Last_Name} - {lib.Position} in {lib.Department}</span>
+                <div className="card-header">
+                  <span className="position-badge">
+                    {lib.Position} {!lib.End_Date && <span className="active-indicator" title="Current Employee">*</span>}
+                  </span>
+                </div>
+                <span>{lib.First_Name} {lib.Last_Name} - {lib.Department}</span>
                 <span>Hired: {lib.Hire_Date?.split("T")[0]}</span>
                 {lib.End_Date && <span>Ended: {lib.End_Date?.split("T")[0]}</span>}
                 <div className="actions">

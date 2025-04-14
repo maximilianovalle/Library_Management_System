@@ -180,4 +180,46 @@
     from { opacity: 1; }
     to { opacity: 0; }
   }
+
+  .back-btn {
+    background: none;
+    border: none;
+    color: #2d3748;
+    font-size: 1.4rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .card-header {
+    display: flex;
+    justify-content: flex-end;
+  }
+  
+  .position-badge {
+    font-weight: 600;
+    background-color: #f0f4f8;
+    padding: 6px 12px;
+    border-radius: 999px;
+    color: #1a202c;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+
+  .back-btn {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  
+  
+  
+  
   
