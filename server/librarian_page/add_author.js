@@ -1,28 +1,24 @@
 const pool = require('../database');
 
-module.exports = async function add_author(req, res) {
-    let body = "";
+async function getOrAddAuthorId(name, bio = null) {
+    const [existing] = await pool.query(
+        "SELECT Author_ID FROM Author WHERE LOWER(Name) = LOWER(?)",
+        [name]
+    );
 
-    req.on("data", (chunk) => {
-        body += chunk;
-    });
+    if (existing.length > 0) {
+        return existing[0].Author_ID;
+    }
 
-    req.on("end", async () => {
-        try {
-            const {name, bio} = JSON.parse(body);
-            const [lastAuthor] = await pool.query("SELECT MAX(Author_ID) as last FROM Author");
-            const authorId = (lastAuthor[0].last || 6000000) + 1;
-            await pool.query("INSERT INTO Author (Author_ID, Name, Bio) VALUES (?, ?, ?)", 
-            [authorId, name, bio || null]);
+    const [last] = await pool.query("SELECT MAX(Author_ID) as last FROM Author");
+    const newId = (last[0].last || 6000000) + 1;
 
-            res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Author added successfully' }));
+    await pool.query(
+        "INSERT INTO Author (Author_ID, Name, Bio) VALUES (?, ?, ?)",
+        [newId, name, bio]
+    );
 
-        } catch (err) {
-            console.error(err);
-
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'Failed to add author' }));
-        }
-    });
+    return newId;
 }
+
+module.exports = getOrAddAuthorId;
