@@ -21,6 +21,7 @@ import ManageFinesPage from './pages/librarian/FinesPage'
 
 import ManagerDashboard from './pages/manager/ManagerPage';
 import ManageLibrarians from './pages/manager/ManageLibrarians';
+import ViewLibrarians from './pages/manager/ViewLibrarians';
 
 // import FinesPage from './pages/librarian/UserManagement'
 // import ActivityPage from './pages/librarian/UserManagement'
@@ -51,6 +52,7 @@ function App() {
       {/* Manager Routes */}
       <Route path="/manager" element={<ManagerDashboard/>}/>
       <Route path="/manage-librarians" element={<ManageLibrarians/>}/>
+      <Route path="/view-librarians" element={<ViewLibrarians/>}/>
 
       
       {/* Librarian routes */}
