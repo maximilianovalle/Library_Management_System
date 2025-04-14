@@ -116,6 +116,11 @@
   .toast.error {
     background-color: #e53e3e;
   }
+
+  .toast.info {
+    background-color: #3182ce;
+    color: white;
+  }  
   
   .modal-overlay {
     position: fixed;
