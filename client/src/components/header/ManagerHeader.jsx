@@ -8,9 +8,9 @@ const ManagerHeader = () => {
     const navItems = [
         { title: "Dashboard", link: "/manager" },
         { title: "Manage Librarians", link: "/manage-librarians" },
-        { title: "Manage Devices", link: "/librarian/manage-devices" },
-        { title: "Holds", link: "/librarian/holds" },
-        { title: "Fines", link: "/librarian/fines" }
+        { title: "Manintence", link: "/manager" },
+        { title: "Reports", link: "/manager" },
+        { title: "????", link: "/manager" }
     ];
 
     const handleLogout = () => {
