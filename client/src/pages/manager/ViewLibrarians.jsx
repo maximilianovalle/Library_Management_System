@@ -40,14 +40,14 @@ const ViewLibrarians = () => {
     setFormData({
       ...lib,
       Hire_Date: lib.Hire_Date?.split("T")[0] || getToday(),
-      End_Date: lib.Is_Active === 1 ? "" : lib.End_Date?.split("T")[0] || getToday()
+      End_Date: lib.Is_Active === 1 ? "" : lib.End_Date?.split("T")[0] || getToday(),
     });
   };
 
   const handleChange = (e) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -63,7 +63,7 @@ const ViewLibrarians = () => {
       fetchLibrarians();
     } catch (error) {
       console.error("Update failed:", error);
-      showToast(`${formData.First_Name} ${formData.Last_Name} updated successfully!`, "success");
+      showToast("Failed to update librarian", "error");
     }
   };
 
@@ -97,7 +97,9 @@ const ViewLibrarians = () => {
     <div>
       <Header />
       <div className="manage-librarians-container">
-        <button className="back-btn" onClick={() => navigate(-1)}>←</button>
+        <button className="back-btn" onClick={() => navigate(-1)}>
+          ←
+        </button>
         <h1 className="title">All Librarians</h1>
 
         {toast.message && <div className={`toast ${toast.type}`}>{toast.message}</div>}
@@ -106,15 +108,21 @@ const ViewLibrarians = () => {
           <div className="modal-overlay">
             <div className="modal-content">
               <h3>Are you sure you want to delete this librarian?</h3>
-              <button className="confirm-btn" onClick={handleDelete}>Yes, Delete</button>
-              <button className="cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
+              <button className="confirm-btn" onClick={handleDelete}>
+                Yes, Delete
+              </button>
+              <button className="cancel-btn" onClick={() => setShowModal(false)}>
+                Cancel
+              </button>
             </div>
           </div>
         )}
 
         {editingId ? (
           <div className="edit-modal">
-            <button className="close-btn" onClick={() => setEditingId(null)}>×</button>
+            <button className="close-btn" onClick={() => setEditingId(null)}>
+              ×
+            </button>
             <form onSubmit={handleUpdate} className="librarian-form" autoComplete="off">
               {Object.entries(formData).map(([key, value]) => (
                 <input
@@ -125,7 +133,7 @@ const ViewLibrarians = () => {
                   placeholder={
                     key === "Is_Active"
                       ? "0 is inactive, 1 is active"
-                      : key.replace(/_/g, ' ')
+                      : key.replace(/_/g, " ")
                   }
                   type={key.toLowerCase().includes("date") ? "date" : "text"}
                   required={key !== "End_Date" && key !== "Pay_Rate"}
@@ -136,22 +144,34 @@ const ViewLibrarians = () => {
           </div>
         ) : (
           <div>
-            {librarians.length > 0 ? librarians.map((lib, idx) => (
-              <div key={idx} className="librarian-row">
-                <div className="card-header">
-                  <span className="position-badge">
-                    {lib.Position} {!lib.End_Date && <span className="active-indicator" title="Current Employee">*</span>}
+            {librarians.length > 0 ? (
+              librarians.map((lib, idx) => (
+                <div key={idx} className="librarian-row">
+                  <div className="card-header">
+                    <span className="position-badge">
+                      {lib.Position} {!lib.End_Date && (
+                        <span className="active-indicator" title="Current Employee">*</span>
+                      )}
+                    </span>
+                  </div>
+                  <span>
+                    {lib.First_Name} {lib.Last_Name} - {lib.Department}
                   </span>
+                  <span>Hired: {lib.Hire_Date?.split("T")[0]}</span>
+                  {lib.End_Date && <span>Ended: {lib.End_Date?.split("T")[0]}</span>}
+                  <div className="actions">
+                    <button className="edit-btn" onClick={() => handleEdit(lib)}>
+                      Edit
+                    </button>
+                    <button className="delete-btn" onClick={() => confirmDelete(lib.Librarian_ID)}>
+                      Delete
+                    </button>
+                  </div>
                 </div>
-                <span>{lib.First_Name} {lib.Last_Name} - {lib.Department}</span>
-                <span>Hired: {lib.Hire_Date?.split("T")[0]}</span>
-                {lib.End_Date && <span>Ended: {lib.End_Date?.split("T")[0]}</span>}
-                <div className="actions">
-                  <button className="edit-btn" onClick={() => handleEdit(lib)}>Edit</button>
-                  <button className="delete-btn" onClick={() => confirmDelete(lib.Librarian_ID)}>Delete</button>
-                </div>
-              </div>
-            )) : <p>No librarians found.</p>}
+              ))
+            ) : (
+              <p>No librarians found.</p>
+            )}
           </div>
         )}
       </div>
