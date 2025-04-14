@@ -19,9 +19,10 @@ import Login from './pages/login/LoginPage'
 import HoldsPage from './pages/librarian/HoldsPage'
 import ManageFinesPage from './pages/librarian/FinesPage'
 
-import ManagerDashboard from './pages/manager/ManagerPage';
+import ManagerDashboard from './pages/manager/ManagerDashboard';
 import ManageLibrarians from './pages/manager/ManageLibrarians';
 import ViewLibrarians from './pages/manager/ViewLibrarians';
+import ViewReports from './pages/manager/ReportsPage';
 
 // import FinesPage from './pages/librarian/UserManagement'
 // import ActivityPage from './pages/librarian/UserManagement'
@@ -53,6 +54,7 @@ function App() {
       <Route path="/manager" element={<ManagerDashboard/>}/>
       <Route path="/manage-librarians" element={<ManageLibrarians/>}/>
       <Route path="/view-librarians" element={<ViewLibrarians/>}/>
+      <Route path="/reports" element={<ViewReports/>}/>
 
       
       {/* Librarian routes */}
