@@ -30,6 +30,11 @@ const addLibrarian = require('./manager_page/add_librarian.js');
 const viewLibrarians = require('./manager_page/view_librarian.js');
 const updateLibrarian = require('./manager_page/update_librarian.js');
 const deleteLibrarian = require('./manager_page/delete_librarian.js');
+const getUnreadMaintenanceNotifs = require('./manager_page/get_unread_maintenance_notifs.js');
+const markMaintenanceNotifsRead = require('./manager_page/mark_read_maintenance_notifs.js');
+const getMaintenanceItems = require('./manager_page/get_maintenance_items.js');
+const resolveMaintenanceItem = require('./manager_page/resolve_maintenance_items.js');
+
 
 
 // creates HTTP server and listens for incoming requests
@@ -277,6 +282,25 @@ const app = http
     if (req.url.startsWith('/delete_librarians') && req.method === 'DELETE' && role === 3) {
       deleteLibrarian(req, res);
       return
+    }
+
+    if (req.url === '/maintenance-notifications/unread' && req.method === 'GET' && role === 3) {
+      getUnreadMaintenanceNotifs(req, res);
+      return;
+    }
+
+    if (req.url === '/maintenance-notifications/mark-read' && req.method === 'POST' && role === 3) {
+      markMaintenanceNotifsRead(req, res);
+      return;
+    }
+
+    if (req.url === '/maintenance-items' && req.method === 'GET' && role === 3) {
+      getMaintenanceItems(req, res);
+      return;
+    }
+    if (req.url === '/resolve-maintenance' && req.method === 'POST' && role === 3) {
+      resolveMaintenanceItem(req, res);
+      return;
     }
 
     res.writeHead(404, { "Content-Type": "application/json" });
