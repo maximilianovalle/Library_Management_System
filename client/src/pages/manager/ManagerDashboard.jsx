@@ -12,9 +12,12 @@ const ManagerDashboard = () => {
   const [activeLibrarians, setActiveLibrarians] = useState(0);
   const [recentChanges, setRecentChanges] = useState([]);
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
 
         // if ( no token )
@@ -23,6 +26,10 @@ const ManagerDashboard = () => {
             window.location.href = "/login";
             return;
         }
+
+        setTimeout(() => {
+          setLoading(false);
+      }, 1000);
 
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/manager`, {
           headers: {
@@ -36,6 +43,8 @@ const ManagerDashboard = () => {
 
       } catch (error) {
         console.error("Error fetching dashboard data: ", error);
+      } finally {
+        setLoading(false);
       }
     }
 
@@ -52,58 +61,84 @@ const ManagerDashboard = () => {
 
       <div className="dashboard-container">
 
-        <h1>Manager Dashboard</h1>
+        <div class="dashboard-header">
+          <h1 class="dashboard-title">Manager Dashboard</h1>
 
-        <div class="dashboard-welcome">
-          <div className="welcome-message">
-            <h2>Welcome back, {firstName} {lastName}</h2>
-            <p>Here's what's happening at your library today</p>
-          </div>
+          <div class="dashboard-welcome">
+            <div className="welcome-message">
+              <h2>Welcome back, {firstName} {lastName}</h2>
+              <p>Here's what's happening at your library today</p>
+            </div>
 
-          <div className="current-date">
-              {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-          </div>
-        </div>
-
-        <div class="dashboard-stats-grid">
-
-          <div className="stat-card">
-            <FaUserTie className="stat-icon" />
-
-            <div class="stat-content">
-              <h3>Active Librarians</h3>
-              <p class="stat-value">{activeLibrarians}</p>
+            <div className="current-date">
+                {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </div>
           </div>
-
         </div>
 
-        <div className="quick-links">
+        {loading ? (
+          <div className="dashboard-loading">
+              <div className="spinner"></div>
+              <p>Loading dashboard data...</p>
+          </div>
+        ) : (
+          <>
 
-          <Link to="/view-librarians" className="quick-link">
-            <FaClipboardList className="icon" /> View Librarians
-          </Link>
-          <Link to="/reports" className="quick-link">
-            <FaChartPie className="icon" /> View Reports
-          </Link>
+            <div class="dashboard-stats-grid">
 
+              <div className="stat-card">
+                <div class="stat-icon">
+                <FaUserTie/>
+                </div>
+
+                <div class="stat-content">
+                  <h3>Active Librarians</h3>
+                  <p class="stat-value">{activeLibrarians}</p>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="dashboard-content">
+
+              <div class="dashboard-section">
+
+                <div className="section-header">
+                  <h2>Quick Actions</h2>
+                </div>
+
+                <div id="actionLinks" class="quick-actions">
+                  <Link to="/view-librarians" className="action-button add-book">
+                  <FaClipboardList className="icon" />View Librarians
+                  </Link>
+
+                  <Link to="/reports" className="action-button add-device">
+                  <FaChartPie className="icon" />View Reports
+                  </Link>
+                </div>
+
+              </div>
+
+            </div>
+
+            <div className="activity-log">
+
+              <h2>Recent Updates</h2>
+              {recentChanges.length > 0 ? (
+                <ul>
+                  {recentChanges.map((change, index) => (
+                    <li key={index}>{change}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No recent updates.</p>
+              )}
+
+            </div>
+
+          </>
+        )}
         </div>
-
-        <div className="activity-log">
-
-          <h2>Recent Updates</h2>
-          {recentChanges.length > 0 ? (
-            <ul>
-              {recentChanges.map((change, index) => (
-                <li key={index}>{change}</li>
-              ))}
-            </ul>
-          ) : (
-            <p>No recent updates.</p>
-          )}
-
-        </div>
-      </div>
     </div>
   );
 };

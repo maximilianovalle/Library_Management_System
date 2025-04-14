@@ -351,9 +351,11 @@ const LibrarianDashboard = () => {
                         
                         <div className="dashboard-content">
                             <div className="dashboard-section">
+
                                 <div className="section-header">
                                     <h2>Quick Actions</h2>
                                 </div>
+
                                 <div className="quick-actions">
                                     <Link to="/librarian/manage-books/add" className="action-button add-book">
                                         <FaBook className="icon"/>
@@ -372,6 +374,7 @@ const LibrarianDashboard = () => {
                                         <span>Generate Reports</span>
                                     </Link>
                                 </div>
+                                
                             </div>
                             
                             <div className="dashboard-bottom-row">
