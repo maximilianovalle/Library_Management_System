@@ -405,30 +405,10 @@ const LibrarianDashboard = () => {
                                 <div className="dashboard-section popular-section">
                                     <div className="section-header">
                                         <h2>Popular Books</h2>
-                                        <div className="timeframe-selector">
-                                            <button 
-                                                className={timeframe === "week" ? "active" : ""}
-                                                onClick={() => handleTimeframeChange("week")}
-                                            >
-                                                Week
-                                            </button>
-                                            <button 
-                                                className={timeframe === "month" ? "active" : ""}
-                                                onClick={() => handleTimeframeChange("month")}
-                                            >
-                                                Month
-                                            </button>
-                                            <button 
-                                                className={timeframe === "year" ? "active" : ""}
-                                                onClick={() => handleTimeframeChange("year")}
-                                            >
-                                                Year
-                                            </button>
-                                        </div>
                                     </div>
                                     
                                     <div className="popular-books">
-                                        {popularBooks.slice(0, 10).map((book, index) => (
+                                        {popularBooks.slice(0, 5).map((book, index) => (
                                             <div key={index} className="popular-book-item">
                                                 <div className="book-rank">{index + 1}</div>
                                                 <div className="book-info">

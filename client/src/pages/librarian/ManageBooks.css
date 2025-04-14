@@ -7,7 +7,7 @@
   }
   
   .button-group button {
-    background-color: #fc5c5c; /* Teal */
+    background-color: #fc5c5c;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -19,13 +19,9 @@
   }
   
   .button-group button:hover {
-    background-color: #285e61; /* Darker Teal */
+    background-color: #ff2020;
   }
-  
-  .button-group button:focus {
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(44, 122, 123, 0.4);
-  }
+ 
   .title {
     text-align: center;
     font-size: 2rem;

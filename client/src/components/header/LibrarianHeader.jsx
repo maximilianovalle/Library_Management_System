@@ -10,7 +10,8 @@ const LibrarianHeader = () => {
         { title: "Manage Books", link: "/librarian/manage-books" },
         { title: "Manage Devices", link: "/librarian/manage-devices" },
         { title: "Holds", link: "/librarian/holds" },
-        { title: "Fines", link: "/librarian/fines" }
+        { title: "Fines", link: "/librarian/fines" },
+        { title: "Account", link: "/librarian_account" }
     ];
 
     const handleLogout = () => {

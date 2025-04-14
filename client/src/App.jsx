@@ -18,6 +18,7 @@ import MyBooksPage from './pages/checkedOutItems/checkedOut'
 import Login from './pages/login/LoginPage'
 import HoldsPage from './pages/librarian/HoldsPage'
 import ManageFinesPage from './pages/librarian/FinesPage'
+import LibrarianAccount from './pages/librarian/LibrarianAccount'
 
 import ManagerDashboard from './pages/manager/ManagerPage';
 import ManageLibrarians from './pages/manager/ManageLibrarians';
@@ -65,6 +66,7 @@ function App() {
       <Route path="/librarian/reports" element={<ReportsPage/>} />
       <Route path="/librarian/fines" element={<ManageFinesPage/>} />
       <Route path="/librarian/holds" element={<HoldsPage />} />
+      <Route path="/librarian_account" element={<LibrarianAccount/>}/>
       {/*  <Route path="/librarian/fines" element={<FinesPage />} />
       <Route path="/librarian/activity" element={<ActivityPage />} />
       <Route path="/librarian/reports/popular-books" element={<PopularBooksReport />} />
