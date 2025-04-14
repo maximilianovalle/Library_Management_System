@@ -290,11 +290,15 @@
 
 .activity-content {
     flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .activity-text {
     margin: 0;
     line-height: 1.5;
+    max-width: 65%;
 }
 
 .user-name {

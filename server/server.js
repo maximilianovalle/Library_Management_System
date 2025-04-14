@@ -26,6 +26,7 @@ const librarian_info = require('./librarian_page/librarian_info.js')
 const add_books = require('./librarian_page/add_books.js')
 const add_author = require('./librarian_page/add_author.js')
 
+const getManagerDashboardInfo = require('./manager_page/getManagerDashboardInfo.js');
 const addLibrarian = require('./manager_page/add_librarian.js');
 const viewLibrarians = require('./manager_page/view_librarian.js');
 const updateLibrarian = require('./manager_page/update_librarian.js');
@@ -205,12 +206,6 @@ const app = http
       return;
     }
 
-    // if (req.url === "/book_by_genre" && req.method === "GET" && role === 2) {
-    //   console.log("book by genre neow");
-    //   get_book_by_genre(req, res);
-    //   return;
-    // }
-
     if(req.url === '/borrow_book' && req.method === 'PUT' && role === 2){
       add_book_to_user(req,res, userID);
       return;
@@ -264,6 +259,15 @@ const app = http
     }
 
     //////// MANAGER SIDE REQUESTS ////////
+
+    if (req.url === '/manager' && req.method === 'GET' && role === 3) {
+      console.log("Getting dashboard info...");
+      getManagerDashboardInfo(req, res, userID);
+      console.log("Dashboard info receved.");
+      return;
+    }
+
+
     if(req.url === '/add_librarian' && req.method === 'POST' && role === 3){
       addLibrarian(req, res, userID)
       return;

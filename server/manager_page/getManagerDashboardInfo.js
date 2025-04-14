@@ -1,0 +1,37 @@
+const pool = require('../database.js');
+
+module.exports = async function getManagerDashboardInfo(req, res, userID) {
+    try {
+        const [[managerInfo], [totalLibrarians]] = await Promise.all([
+            pool.query("SELECT * FROM manager WHERE Manager_ID = ?", [userID]),
+
+            pool.query("SELECT COUNT(*) FROM librarian WHERE End_Date IS NULL"),
+        ]);
+
+        if (managerInfo.length === 0) {    // if no user found
+            console.log("User not found in database.");
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ message: 'Missing User' }));
+            return;
+        }
+
+        let firstName = managerInfo[0].First_Name;
+        let lastName = managerInfo[0].Last_Name;
+        // let activeLibrarians = totalLibrarians.length;
+        console.log("Active librarians: ", totalLibrarians[0]['COUNT(*)']);
+
+        console.log("Manager Name: ", firstName, lastName);
+
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({
+            firstName: firstName,
+            lastName: lastName,
+            activeLibrarians: totalLibrarians[0]['COUNT(*)'],
+        }));
+
+    } catch (error) {
+        res.writeHead(500, { 'Content-Type': 'application/json' }); // HTTP 500: Internal Server Error
+        res.end(JSON.stringify({ message: 'Internal Server Error' }));
+        return;
+    }
+}

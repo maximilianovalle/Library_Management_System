@@ -6,85 +6,91 @@ import { Link } from "react-router-dom";
 import "./ManagerDashboard.css";
 
 const ManagerDashboard = () => {
-  const [managerName, setManagerName] = useState("");
-  const [totalLibrarians, setTotalLibrarians] = useState(0);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+
   const [activeLibrarians, setActiveLibrarians] = useState(0);
-  const [inactiveLibrarians, setInactiveLibrarians] = useState(0);
   const [recentChanges, setRecentChanges] = useState([]);
 
   useEffect(() => {
-    // const fetchDashboardData = async () => {
-    //   try {
-    //     const token = localStorage.getItem("token");
-    //     if (!token) {
-    //       window.location.href = "/login";
-    //       return;
-    //     }
+    const fetchDashboardData = async () => {
+      try {
+        const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
 
-    //     const res = await axios.get(`${process.env.REACT_APP_API_URL}/manager`, {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     });
+        // if ( no token )
+        if (!token) {
+            console.error("No token found. Redirecting to login...");
+            window.location.href = "/login";
+            return;
+        }
 
-    //     const data = res.data;
-    //     console.log(data)
-    //     setManagerName(data.managerName);
-    //     setTotalLibrarians(data.totalLibrarians);
-    //     setActiveLibrarians(data.activeLibrarians);
-    //     setInactiveLibrarians(data.inactiveLibrarians);
-    //     setRecentChanges(data.recentChanges);
-    //   } catch (err) {
-    //     console.error("Dashboard fetch error:", err);
-    //   }
-    // };
+        const res = await axios.get(`${process.env.REACT_APP_API_URL}/manager`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
 
-    // fetchDashboardData();
+        setFirstName(res.data.firstName);
+        setLastName(res.data.lastName);
+        setActiveLibrarians(res.data.activeLibrarians);
+
+      } catch (error) {
+        console.error("Error fetching dashboard data: ", error);
+      }
+    }
+
+    fetchDashboardData();
+
   }, []);
 
+
+  // HTML
   return (
     <div className="manager-dashboard">
+
       <Header />
+
       <div className="dashboard-container">
-        <div className="dashboard-header">
-          <h1>Manager Dashboard</h1>
-          <p>Welcome back, {managerName}</p>
+
+        <h1>Manager Dashboard</h1>
+
+        <div class="dashboard-welcome">
+          <div className="welcome-message">
+            <h2>Welcome back, {firstName} {lastName}</h2>
+            <p>Here's what's happening at your library today</p>
+          </div>
+
+          <div className="current-date">
+              {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+          </div>
         </div>
 
-        <div className="stats-grid">
+        <div class="dashboard-stats-grid">
+
           <div className="stat-card">
-            <FaUsersCog className="icon" />
-            <div>
-              <h3>Total Librarians</h3>
-              <p>{totalLibrarians}</p>
-            </div>
-          </div>
-          <div className="stat-card">
-            <FaUserTie className="icon" />
-            <div>
+            <FaUserTie className="stat-icon" />
+
+            <div class="stat-content">
               <h3>Active Librarians</h3>
-              <p>{activeLibrarians}</p>
+              <p class="stat-value">{activeLibrarians}</p>
             </div>
           </div>
-          <div className="stat-card">
-            <FaUserTie className="icon inactive" />
-            <div>
-              <h3>Inactive Librarians</h3>
-              <p>{inactiveLibrarians}</p>
-            </div>
-          </div>
+
         </div>
 
         <div className="quick-links">
+
           <Link to="/view-librarians" className="quick-link">
             <FaClipboardList className="icon" /> View Librarians
           </Link>
           <Link to="/reports" className="quick-link">
             <FaChartPie className="icon" /> View Reports
           </Link>
+
         </div>
 
         <div className="activity-log">
+
           <h2>Recent Updates</h2>
           {recentChanges.length > 0 ? (
             <ul>
@@ -95,6 +101,7 @@ const ManagerDashboard = () => {
           ) : (
             <p>No recent updates.</p>
           )}
+
         </div>
       </div>
     </div>

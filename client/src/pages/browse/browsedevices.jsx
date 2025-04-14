@@ -137,6 +137,8 @@ const BrowseDevices = () => {
         <div>
             <HeaderAfter />
 
+            <div id="devicesMainBody">
+
             <div className="search-area">
                 <form className="search" onSubmit={handleSearch}>
                     <input
@@ -248,6 +250,7 @@ const BrowseDevices = () => {
                 ) : (
                     <p>No devices found. Try a different search.</p>
                 )}
+                </div>
             </div>
         </div>
     );

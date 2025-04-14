@@ -245,11 +245,14 @@ const LibrarianDashboard = () => {
             <div className="dashboard-container">
                 <div className="dashboard-header">
                     <h1 className="dashboard-title">Librarian Dashboard</h1>
+                    
                     <div className="dashboard-welcome">
+
                         <div className="welcome-message">
                             <h2>Welcome back, {librarian_name_first} {librarian_name_last}</h2>
                             <p>Here's what's happening at your library today</p>
                         </div>
+
                         <div className="current-date">
                             {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                         </div>
@@ -386,9 +389,11 @@ const LibrarianDashboard = () => {
                                                     </div>
                                                     <div className="activity-content">
                                                         <p className="activity-text">
-                                                            <span className="user-name">{activity.username}</span> 
-                                                            <span className="activity-action">{activity.action}</span> 
+
+                                                            <span className="user-name">{activity.username}</span> <br />
+                                                            <span className="activity-action">{activity.action}: </span> 
                                                             <span className="activity-item-name">{activity.item}</span>
+
                                                         </p>
                                                         <p className="activity-time">{formatTime(activity.timestamp)}</p>
                                                     </div>

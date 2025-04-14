@@ -82,6 +82,11 @@
     100% { opacity: 1; transform: translateY(0); }
   }
 
+  #devicesMainBody {
+    max-width: 1000px;
+    margin: 0px auto;
+  }
+
 .device_card {
     background-color: #ffffff;
     border: 1px solid #ddd;
