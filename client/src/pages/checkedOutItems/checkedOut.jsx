@@ -73,9 +73,9 @@ const CheckedOutPage = () => {
             });
 
             // receive JSON from checkedOut.js
-            setBooks(res.data.checkedOutBooksArr);
-            setDevices(res.data.checkedOutDevicesArr);
-            setHoldDevices(res.data.heldDevicesArr);
+            setBooks([...res.data.checkedOutBooksArr]);
+            setDevices([...res.data.checkedOutDevicesArr]);
+            setHoldDevices([...res.data.heldDevicesArr]);
         } catch (error) {
             console.error("Error fetching books:", error);
         }
@@ -83,7 +83,11 @@ const CheckedOutPage = () => {
 
     // triggered once when the page loads
     useEffect(() => {
-        fetchItems();
+        const init = async () => {
+            fetchItems();
+        }
+
+        init();
     }, []);
 
 
@@ -129,7 +133,9 @@ const CheckedOutPage = () => {
             });
 
             // window.location.reload();
-            await fetchItems();
+            // setAffectedIndex("");
+            // fetchItems();
+            // closeReturnModal();
 
         } catch (error) {
             console.log("Error returning book: ", error);
@@ -158,8 +164,11 @@ const CheckedOutPage = () => {
                 },
             });
 
+            
             // window.location.reload();
-            await fetchItems();
+            // setAffectedIndex("");
+            // fetchItems();
+            // closeCancelModal();
 
         } catch (error) {
             console.error("Error removing hold: ", error);
@@ -306,6 +315,7 @@ const CheckedOutPage = () => {
                                 <button class="btn" onClick={() => {
                                     returnBook();
                                     closeReturnModal();
+                                    window.location.reload();
                                 }}>Return Book</button>
                                 <button class="cancelBtn btn" onClick={closeReturnModal}>Cancel</button>
                             </div>
@@ -333,6 +343,7 @@ const CheckedOutPage = () => {
                                 <button id="holdBtn" class="btn" onClick={() => {
                                     removeHold();
                                     closeCancelModal();
+                                    window.location.reload();
                                 }}>Remove Hold</button>
                                 <button class="cancelBtn btn" onClick={closeCancelModal}>Cancel</button>
                             </div>
