@@ -23,6 +23,8 @@ const getReportsData = require("./reports/reports.js"); // getReportsData()
 const add_book_to_user = require('./borrow_item/borrow_book.js'); // add_book_to_user()
 const getStats = require('./librarian_page/getStats.js') // getStats()
 const librarian_info = require('./librarian_page/librarian_info.js')
+const add_books = require('./librarian_page/add_books.js')
+const add_author = require('./librarian_page/add_author.js')
 
 const addLibrarian = require('./manager_page/add_librarian.js');
 const viewLibrarians = require('./manager_page/view_librarian.js');
@@ -239,7 +241,20 @@ const app = http
     }
     
     if(req.url === '/librarian_account' && req.method === 'GET' && role === 1){
+      console.log("Hand over the info.")
       librarian_info(req, res, userID)
+      return;
+    }
+
+    if(req.url === '/addbooks' && req.method === 'POST' && role ===1){
+      console.log("ADD BOOKS NEWO")
+      add_books(req, res)
+      return;
+    }
+
+    if(req.url === '/addauthor' && req.method === 'POST' && role === 1){
+      console.log("ADD AUTHOR NEWO")
+      add_author(req, res)
       return;
     }
 

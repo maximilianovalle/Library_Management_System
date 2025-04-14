@@ -1,64 +1,69 @@
 .book-form-container {
-    background-color: #ffffff;
-    padding: 2rem;
-    margin-top: 2rem;
-    border-radius: 1rem;
-    max-width: 500px;
-    margin-left: auto;
-    margin-right: auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  }
-  
-  .book-form-container h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    color: #1e293b;
-  }
-  
-  .book-form-container label {
-    display: block;
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-    color: #334155;
-  }
-  
-  .book-form-container input[type="text"],
-  .book-form-container select {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    margin-bottom: 1rem;
-    border: 1px solid #cbd5e1;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  
-  .book-form-container input[type="text"]:focus,
-  .book-form-container select:focus {
-    border-color: #3b82f6;
-  }
-  
-  .book-form-container button {
-    background-color: #2563eb;
-    color: white;
-    padding: 0.5rem 1.25rem;
-    border: none;
-    border-radius: 0.5rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .book-form-container button:hover {
-    background-color: #1e40af;
-  }
-  
-  .text-red-500 {
-    color: #ef4444;
-    font-size: 0.875rem;
-    margin-top: -0.5rem;
-    margin-bottom: 0.75rem;
-  }
-  
+  background-color: #fff;
+  padding: 4rem;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 900px;
+  min-width: 350px;
+  font-family: 'Times New Roman', Times, serif;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.book-form-container h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #000000;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.book-form-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.book-form-container label {
+  color: #000000;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.book-form-container input {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+
+.book-form-container input:focus {
+  border-color: #6366f1;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.book-form-container .text-red-500 {
+  color: #ef4444;
+  font-size: 0.875rem;
+}
+
+.book-form-container button {
+  background-color: #ff4e4e;
+  color: #fff;
+  padding: 0.5rem 1.25rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+.book-form-container button:hover {
+  background-color: #ff0000;
+  cursor: pointer;
+}
