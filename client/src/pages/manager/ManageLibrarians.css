@@ -32,7 +32,7 @@
 }
 
 .button-group button:hover {
-  background-color: #285e61;
+  background-color: darkred;
 }
 
 .button-group button:focus {

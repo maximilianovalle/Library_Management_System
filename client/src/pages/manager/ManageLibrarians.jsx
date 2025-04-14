@@ -74,7 +74,7 @@ const ManageLibrarians = () => {
 
         <div className="form-section">
           {activeTab === "add" && (
-            <form onSubmit={handleAdd} className="librarian-form">
+            <form onSubmit={handleAdd} className="librarian-form" autoComplete="off">
               {Object.entries(formData).map(([key, value]) => (
                 <input
                   key={key}
