@@ -252,11 +252,11 @@ const app = http
       return;
     }
 
-    if(req.url === '/addauthor' && req.method === 'POST' && role === 1){
-      console.log("ADD AUTHOR NEWO")
-      add_author(req, res)
-      return;
-    }
+    // if(req.url === '/addauthor' && req.method === 'POST' && role === 1){
+    //   console.log("ADD AUTHOR NEWO")
+    //   add_author(req, res)
+    //   return;
+    // }
 
     //////// MANAGER SIDE REQUESTS ////////
 

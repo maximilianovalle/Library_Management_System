@@ -57,20 +57,20 @@ const BookForm = () => {
       }
       console.log("Submitting book:", bookData);
 
-      const author_res = await axios.post(`${process.env.REACT_APP_API_URL}/addauthor`, { name: author , bio: null}, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      });
+      // const author_res = await axios.post(`${process.env.REACT_APP_API_URL}/addauthor`, { name: author , bio: null}, {
+      //   headers: {
+      //     "Authorization": `Bearer ${token}`
+      //   }
+      // });
 
-      if (author_res.data.error) {
-        console.error("Error adding author:", author_res.data.error);
-        alert("Failed to add author. Please try again.");
-        setLoading(false);
-        return;
-      }
+      // if (author_res.data.error) {
+      //   console.error("Error adding author:", author_res.data.error);
+      //   alert("Failed to add author. Please try again.");
+      //   setLoading(false);
+      //   return;
+      // }
       
-      console.log(author_res.data.message);
+      // console.log(author_res.data.message);
 
       const add_book_res = await axios.post(`${process.env.REACT_APP_API_URL}/addbooks`, bookData, {
         headers: {

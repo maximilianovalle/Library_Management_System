@@ -1,4 +1,5 @@
-const pool = require('../database'); // Assuming the database pool is already set up
+const pool = require('../database');
+const getOrAddAuthorId = require('./add_author'); // adjust path as needed
 
 module.exports = async function add_books(req, res) {
     let body = "";
@@ -9,34 +10,32 @@ module.exports = async function add_books(req, res) {
 
     req.on("end", async () => {
         try {
-            let { title, category_id, genre, isbn, publication_year, author, image_url, copies } = JSON.parse(body);
-            if (!category_id) {
-                category_id = null;
-            }
-            const authorResult = await pool.query('SELECT Author_ID FROM author WHERE Name = ?', [author]);
-            
-            let author_id;
-            if (authorResult.length === 0) {
-                const insertAuthorResult = await pool.query(
-                    'INSERT INTO author (Name) VALUES (?)',
-                    [author]
-                );
-                author_id = insertAuthorResult.insertId;
-            } else {
-                author_id = authorResult[0].Author_ID;
-            }
+            let {
+                title,
+                category_id,
+                genre,
+                isbn,
+                publication_year,
+                author,
+                bio,
+                image_url,
+                copies
+            } = JSON.parse(body);
 
-            const insertBookResult = await pool.query(
+            if (!category_id) category_id = null;
+
+            const author_id = await getOrAddAuthorId(author, bio);
+
+            await pool.query(
                 'INSERT INTO book (Title, Category_ID, Genre, ISBN, Publication_Year, Author_ID, Image_URL) VALUES (?, ?, ?, ?, ?, ?, ?)',
                 [title, category_id, genre, isbn, publication_year, author_id, image_url]
             );
 
-            const book_isbn = insertBookResult.insertId;
-
-            for (let i = 0; i < copies; i++) {
+            for (let i = 1; i <= copies; i++) {
+                console.log(i)
                 await pool.query(
-                    'INSERT INTO book_copies (ISBN, Book_Condition, Book_Status) VALUES (?, ?, ?)',
-                    [book_isbn, 'Good Condition', 'Available']
+                    'INSERT INTO book_copies (Copy_ID, ISBN, Book_Condition, Book_Status) VALUES (?, ?, ?, ?)',
+                    [i, isbn, 'Good Condition', 'Available']
                 );
             }
 
@@ -45,7 +44,6 @@ module.exports = async function add_books(req, res) {
 
         } catch (err) {
             console.error(err);
-
             res.writeHead(500, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ error: 'Failed to add book' }));
         }
