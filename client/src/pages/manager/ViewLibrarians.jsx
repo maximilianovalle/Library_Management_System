@@ -37,7 +37,11 @@ const ViewLibrarians = () => {
 
   const handleEdit = (lib) => {
     setEditingId(lib.Librarian_ID);
-    setFormData(lib);
+    setFormData({
+      ...lib,
+      Hire_Date: lib.Hire_Date?.split("T")[0] || getToday(),
+      End_Date: lib.Is_Active === 1 ? "" : lib.End_Date?.split("T")[0] || getToday()
+    });
   };
 
   const handleChange = (e) => {
@@ -84,11 +88,16 @@ const ViewLibrarians = () => {
     }
   };
 
+  const getToday = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  };
+
   return (
     <div>
       <Header />
       <div className="manage-librarians-container">
-        <button className="back-btn" onClick={() => navigate("/manage-librarians")}>←</button>
+        <button className="back-btn" onClick={() => navigate(-1)}>←</button>
         <h1 className="title">All Librarians</h1>
 
         {toast.message && <div className={`toast ${toast.type}`}>{toast.message}</div>}
@@ -104,20 +113,27 @@ const ViewLibrarians = () => {
         )}
 
         {editingId ? (
-          <form onSubmit={handleUpdate} className="librarian-form">
-            {Object.entries(formData).map(([key, value]) => (
-              <input
-                key={key}
-                name={key}
-                value={value || ""}
-                onChange={handleChange}
-                placeholder={key.replace(/_/g, ' ')}
-                type={key.toLowerCase().includes("date") ? "date" : "text"}
-                required={key !== "End_Date" && key !== "Pay_Rate"}
-              />
-            ))}
-            <button type="submit">Update Librarian</button>
-          </form>
+          <div className="edit-modal">
+            <button className="close-btn" onClick={() => setEditingId(null)}>×</button>
+            <form onSubmit={handleUpdate} className="librarian-form" autoComplete="off">
+              {Object.entries(formData).map(([key, value]) => (
+                <input
+                  key={key}
+                  name={key}
+                  value={value || ""}
+                  onChange={handleChange}
+                  placeholder={
+                    key === "Is_Active"
+                      ? "0 is inactive, 1 is active"
+                      : key.replace(/_/g, ' ')
+                  }
+                  type={key.toLowerCase().includes("date") ? "date" : "text"}
+                  required={key !== "End_Date" && key !== "Pay_Rate"}
+                />
+              ))}
+              <button type="submit">Update Librarian</button>
+            </form>
+          </div>
         ) : (
           <div>
             {librarians.length > 0 ? librarians.map((lib, idx) => (
