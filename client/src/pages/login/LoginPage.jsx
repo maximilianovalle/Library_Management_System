@@ -68,7 +68,7 @@ const Login = () => {
                 
                 // Redirect after a short delay
                 setTimeout(() => {
-                    window.location.href = `/managerdashboard`;
+                    window.location.href = `/manager`;
                 }, 1000);
             }
 

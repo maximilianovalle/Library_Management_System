@@ -25,6 +25,10 @@ const getStats = require('./librarian_page/getStats.js') // getStats()
 const librarian_info = require('./librarian_page/librarian_info.js')
 
 const addLibrarian = require('./manager_page/add_librarian.js');
+const viewLibrarians = require('./manager_page/view_librarian.js');
+const updateLibrarian = require('./manager_page/update_librarian.js');
+const deleteLibrarian = require('./manager_page/delete_librarian.js');
+
 
 // creates HTTP server and listens for incoming requests
 const app = http
@@ -240,11 +244,29 @@ const app = http
     }
 
     //////// MANAGER SIDE REQUESTS ////////
-    if(req.url === '/librarian_account' && req.method === 'GET' && role === 1){
+    if(req.url === '/add_librarian' && req.method === 'POST' && role === 3){
       addLibrarian(req, res, userID)
       return;
     }
 
-    res.end();
+    if(req.url === '/view_librarians' && req.method === 'GET' && role === 3){
+      viewLibrarians(req, res, userID)
+      return;
+    }
+
+    if (req.url.startsWith('/update_librarians') && req.method === 'PUT' && role === 3) {
+      updateLibrarian(req, res);
+      return
+    }
+    
+    if (req.url.startsWith('/delete_librarians') && req.method === 'DELETE' && role === 3) {
+      deleteLibrarian(req, res);
+      return
+    }
+
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Route not found." }));
   })
+
+
   .listen(8000, console.log("Server is running on port 8000")); // server is listening on port 8000 for incoming HTTP requests
