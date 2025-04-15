@@ -30,6 +30,7 @@ const deleteBookCopy = require('./librarian_page/delete_book.js')
 const all_devices = require('./librarian_page/get_devices.js')
 // const getRecentActivities = require('./librarian_page/get_recent.js')
 const getHeldItems = require('./librarian_page/all_holds.js')
+const getFines = require('./librarian_page/all_fines.js')
 
 const getManagerDashboardInfo = require('./manager_page/getManagerDashboardInfo.js');
 const addLibrarian = require('./manager_page/add_librarian.js');
@@ -284,7 +285,11 @@ const app = http
       getHeldItems(req, res)
       return;
     } 
-
+    if(req.url === '/get_fines' && req.method === 'GET' && role === 1){
+      console.log("getting fines")
+      getFines(req, res)
+      return;
+    } 
     // if(req.url === '/get_activity' && req.method === 'GET' && role === 1){
     //   console.log("Get recent activities")
     //   getRecentActivities(req, res)
