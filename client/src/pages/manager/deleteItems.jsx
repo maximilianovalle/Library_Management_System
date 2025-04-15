@@ -4,27 +4,22 @@ import axios from "axios";
 import { MdLaptopChromebook, MdModeEdit, MdDeleteForever } from "react-icons/md";
 import { BiLibrary } from "react-icons/bi";
 
-import DropDown from '../browse/components/drop_down';
 import defaultCover from '../checkedOutItems/book-not-found.png';
+import cameraImg from "../checkedOutItems/camera.png";
+import calculatorImg from "../checkedOutItems/calculator.png";
+import laptopImg from "../checkedOutItems/laptop.png";
+
+import DropDown from '../browse/components/drop_down';
 import Header from "../../components/header/ManagerHeader";
 import "./deleteItems.css";
 
 const browse_by = ["Title", "ISBN", "Author", "Genre"];
+const browse_by_devices = ["Model", "Category"];
 
-const processBooks = (books) => {
-    const bookMap = new Map();
-
-    books.forEach((book) => {
-        const isbn = book.ISBN;
-
-        if (bookMap.has(isbn)) {
-            bookMap.get(isbn).count += 1;
-        } else {
-            bookMap.set(isbn, { ...book, count: 1 });
-        }
-    });
-
-    return Array.from(bookMap.values());
+const categoryImages = {
+    camera: cameraImg,
+    calculator: calculatorImg,
+    laptop: laptopImg,
 };
 
 const ManagerDeleteItems = () => {
@@ -37,6 +32,9 @@ const ManagerDeleteItems = () => {
 
     const [search_value, setSearchValue] = useState("");
     const [search_by, setSearchBy] = useState("");
+
+    const [searchValue, setSearchValueDevices] = useState("");
+    const [searchBy, setSearchByDevices] = useState("");
 
 
     const showToast = (message, type = "success") => {
@@ -81,27 +79,53 @@ const ManagerDeleteItems = () => {
     };
 
     const fetchBooks = async (params = {}) => {
-        console.log(params);
         try {
             const token = localStorage.getItem("token");
+            
             if (!token) {
                 console.error("No token found. Redirecting to login...");
                 window.location.href = "/login";
                 return;
             }
 
-            const response = await axios.get(`${process.env.REACT_APP_API_URL}/books`, {
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                },
-                params,
-            });
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/books`, { headers: { "Authorization": `Bearer ${token}` }, params });
 
-            setBooks(response.data.allBooks);
+            setBooks(res.data.allBooks);
+
         } catch (error) {
-            console.error("Error fetching books:", error);
+            console.error("Error fetching books: ", error);
         }
     };
+
+    // device search
+
+    const handleSearchDevice = (e) => {
+        e.preventDefault();
+
+        fetchDevices({
+            searchBy: searchBy,
+            searchValue,
+        });
+    }
+
+    const fetchDevices = async (params = {}) => {
+        try {
+            const token = localStorage.getItem("token");
+            
+            if (!token) {
+                console.error("No token found. Redirecting to login...");
+                window.location.href = "/login";
+                return;
+            }
+
+            const res = await axios.get(`${process.env.REACT_APP_API_URL}/devices`, { headers: { "Authorization": `Bearer ${token}` }, params });
+
+            setDevices(res.data.allDevices);
+
+        } catch (error) {
+            console.error("Error fetching devices: ")
+        }
+    }
 
     return (
         <div>
@@ -132,13 +156,15 @@ const ManagerDeleteItems = () => {
                         {/* search bar */}
 
                         <form className="search fadeInAnimation" onSubmit={handleSearch}>
+
                             <div className="dropdown">
-                                <DropDown options={browse_by} value={search_by} onSelect={(selectedOption) => { setSearchBy(selectedOption); }}/>
+                                <DropDown options={browse_by} value={search_by} onSelect={ (selectedOption) => { setSearchBy(selectedOption); }}/>
                             </div>
 
-                            <input className="search_bar" type="text" label="Search" placeholder="Search Book..." value={search_value} onChange={(e) => setSearchValue(e.target.value)}/>
+                            <input className="search_bar" type="text" label="Search" placeholder="Search Book..." value={search_value} onChange={ (e) => setSearchValue(e.target.value) }/>
                             
                             <button className="browse_button" type="submit">Enter</button>
+
                         </form>
 
                         {/* books */}
@@ -172,15 +198,69 @@ const ManagerDeleteItems = () => {
                         </div>
 
                     </>) : (
-                        <p>No books found.</p>
+                        <div class="nothingFoundMsg">
+                            <p>No books found.</p>
+                        </div>
                     )}
                 </>)}
 
                 {/* devices tab */}
 
-                {activeTab === "devices" && (
-                    <p>Test 2</p>
-                )}
+                {activeTab === "devices" && (<>
+                    {devices.length > 0 ? (<>
+
+                    {/* search bar */}
+
+                    <form className="search fadeInAnimation" onSubmit={handleSearchDevice}>
+
+                        <div className="dropdown">
+                            <DropDown options={browse_by_devices} value={searchBy} onSelect={ (selectedOption) => { setSearchByDevices(selectedOption); }}/>
+                        </div>
+
+                        <input type="text" className="search_bar" label="Search" placeholder="Search Device..." value={searchValue} onChange={ (e) => setSearchValueDevices(e.target.value) }/>
+
+                        <button className="search_button browse_button" type="submit">Enter</button>
+
+                    </form>
+
+                    {/* devices */}
+
+                    <div className="Display_container">
+                    <ul className="device_list">
+                    
+                    {devices.map((device, index) => {
+
+                        const imageSrc = categoryImages[device.category.toLowerCase()];
+
+                        return (<>
+                        <div key={index} className="device_card">
+                            
+                            <div className="alignDeviceInfo">
+
+                                <p class="entryElement"><strong>{device.model}</strong></p>
+
+                                {imageSrc && (
+                                    <img src={imageSrc} alt={device.category} className="device_image"/>
+                                )}
+
+                                <p>{device.category}</p>
+
+                            </div>
+                            
+                        </div>
+                        </>)
+
+                    })}
+
+                    </ul>
+                    </div>
+
+                    </>) : (
+                        <div class="nothingFoundMsg">
+                            <p>No devices found.</p>
+                        </div>
+                    )}
+                </>)}
                 
 
             </div>
