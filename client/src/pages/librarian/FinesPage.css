@@ -2,20 +2,15 @@
     padding: 2rem;
     background-color: #fff5f5;
     min-height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family:'Times New Roman', Times, serif;
 }
 
 .fines-page h1 {
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
-    color: #b71c1c;
+    color: #4073b1;
 }
 
-.fines-page h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: #d32f2f;
-}
 
 .fines-table {
     width: 100%;
@@ -34,7 +29,7 @@
 }
 
 .fines-table th {
-    background-color: #e53935;
+    background-color: #ff9494;
     color: #ffffff;
     font-weight: 600;
     text-transform: uppercase;
@@ -87,7 +82,7 @@
 
 .clear-button {
     padding: 0.5rem 1rem;
-    background-color: #d32f2f;
+    background-color: #4073b1;
     color: white;
     border: none;
     border-radius: 6px;
@@ -97,5 +92,5 @@
 }
 
 .clear-button:hover {
-    background-color: #b71c1c;
+    background-color: #093e5d;
 }
