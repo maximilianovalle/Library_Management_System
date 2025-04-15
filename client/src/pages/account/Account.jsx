@@ -24,6 +24,12 @@ const Account = () => {
 
     const [loading, setLoading] = useState(false);
 
+    const itemsPerPage = 5;
+
+    const [currentBookPage, setCurrentBookPage] = useState(1);
+    const [currentDevicePage, setCurrentDevicePage] = useState(1);
+
+
     // triggered once when the page loads
     useEffect(() => {
         const fetchName = async () => {
@@ -169,33 +175,70 @@ const Account = () => {
                     <h1>Recent Activity</h1>
 
                     {/* past books */}
-                    <h2>Past Books</h2>
-                    {pastBooksArray.length > 0 ? (
-                        <ul id="pastBooksList">
-                            {pastBooksArray.map((book, i) => (
+                <h2>Past Books</h2>
+                {pastBooksArray.length > 0 ? (
+                    <>
+                    <ul id="pastBooksList">
+                        {pastBooksArray
+                            .slice((currentBookPage - 1) * itemsPerPage, currentBookPage * itemsPerPage)
+                            .map((book, i) => (
                                 <li key={i}>
                                     <strong>{book.title}</strong>, {book.author} <br />
                                     {book.checkoutDate} - {book.returnedDate}
-                                    <p></p>
                                 </li>
                             ))}
-                        </ul>
-                    ) : (
-                        <p>No books to display! Try returning a checked out book...</p>
-                    )}
+                    </ul>
+                    <div className="pagination">
+                        <button
+                            disabled={currentBookPage === 1}
+                            onClick={() => setCurrentBookPage(currentBookPage - 1)}
+                        >
+                            &#8592;
+                        </button>
+                        <span> {currentBookPage} of {Math.ceil(pastBooksArray.length / itemsPerPage)} </span>
+                        <button
+                            disabled={currentBookPage === Math.ceil(pastBooksArray.length / itemsPerPage)}
+                            onClick={() => setCurrentBookPage(currentBookPage + 1)}
+                        >
+                            &#8594;
+                        </button>
+                    </div>
+                    </>
+                ) : (
+                    <p>No books to display! Try returning a checked out book...</p>
+                )}
+
 
                     {/* past devices */}
                     <h2>Past Devices</h2>
                     {pastDevicesArray.length > 0 ? (
+                        <>
                         <ul id="pastDevicesList">
-                            {pastDevicesArray.map((device, i) => (
-                                <li key={i}>
-                                    <strong>{device.model}</strong>, {device.category} <br />
-                                    {device.checkoutDate} - {device.returnedDate}
-                                    <p></p>
-                                </li>
-                            ))}
+                            {pastDevicesArray
+                                .slice((currentDevicePage - 1) * itemsPerPage, currentDevicePage * itemsPerPage)
+                                .map((device, i) => (
+                                    <li key={i}>
+                                        <strong>{device.model}</strong>, {device.category} <br />
+                                        {device.checkoutDate} - {device.returnedDate}
+                                    </li>
+                                ))}
                         </ul>
+                        <div className="pagination">
+                            <button
+                                disabled={currentDevicePage === 1}
+                                onClick={() => setCurrentDevicePage(currentDevicePage - 1)}
+                            >
+                                &#8592;
+                            </button>
+                            <span> {currentDevicePage} of {Math.ceil(pastDevicesArray.length / itemsPerPage)} </span>
+                            <button
+                                disabled={currentDevicePage === Math.ceil(pastDevicesArray.length / itemsPerPage)}
+                                onClick={() => setCurrentDevicePage(currentDevicePage + 1)}
+                            >
+                                &#8594;
+                            </button>
+                        </div>
+                        </>
                     ) : (
                         <p>No devices to show! Try returning a checked out device...</p>
                     )}
