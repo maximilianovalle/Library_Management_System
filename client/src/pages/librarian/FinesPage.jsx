@@ -6,6 +6,11 @@ import "./FinesPage.css";
 const ManageFinesPage = () => {
     const [usersWithFines, setUsersWithFines] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [newFineAmount, setNewFineAmount] = useState("");
+    const [showActiveOnly, setShowActiveOnly] = useState(false);
+    const [successMessage, setSuccessMessage] = useState("");
 
     useEffect(() => {
         const fetchFines = async () => {
@@ -34,14 +39,69 @@ const ManageFinesPage = () => {
         fetchFines();
     }, []);
 
+    const openModal = (user) => {
+        setSelectedUser(user);
+        setNewFineAmount(user.Amount);
+        setIsModalOpen(true);
+        setSuccessMessage("");
+    };
+
+    const closeModal = () => {
+        setIsModalOpen(false);
+        setSuccessMessage("");
+    };
+
+    const handleSaveFine = async () => {
+        if (isNaN(newFineAmount) || newFineAmount < 0) {
+            alert("Please enter a valid non-negative number.");
+            return;
+        }
+
+        try {
+            const token = localStorage.getItem("token");
+            await axios.post(`${process.env.REACT_APP_API_URL}/update_fine`, {
+                user_id: selectedUser.User_ID,
+                new_amount: parseFloat(newFineAmount),
+                record_id: selectedUser.Record_ID
+            }, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            setUsersWithFines(prev =>
+                prev.map(u => u.User_ID === selectedUser.User_ID
+                    ? { ...u, Amount: newFineAmount }
+                    : u
+                )
+            );
+
+            setSuccessMessage(`Fine updated successfully for ${selectedUser.User_Name}.`);
+        } catch (error) {
+            console.error("Error updating fine:", error);
+            alert("Failed to update fine.");
+        }
+    };
+
+    const formatDate = (isoString) => {
+        const date = new Date(isoString);
+        return date.toLocaleString(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
     if (loading) {
         return <div>Loading...</div>;
     }
 
-    const handleClearFine = (user) => {
-        alert(`Fine cleared for ${user.Full_Name}`);
-        // Add API integration here if needed
-    };
+    const finesToDisplay = showActiveOnly
+        ? usersWithFines.filter(user => user.Fine_Status === 1)
+        : usersWithFines;
 
     return (
         <div>
@@ -49,8 +109,15 @@ const ManageFinesPage = () => {
             <div className="fines-page">
                 <h1>Manage Fines</h1>
 
-                {usersWithFines.length === 0 ? (
-                    <p>No users with fines at the moment.</p>
+                <button
+                    className="filter-button"
+                    onClick={() => setShowActiveOnly(prev => !prev)}
+                >
+                    {showActiveOnly ? "Show All Fines" : "Show Only Active Fines"}
+                </button>
+
+                {finesToDisplay.length === 0 ? (
+                    <p>{showActiveOnly ? "No active fines at the moment." : "No fines at the moment."}</p>
                 ) : (
                     <table className="fines-table">
                         <thead>
@@ -58,21 +125,27 @@ const ManageFinesPage = () => {
                                 <th>User Name</th>
                                 <th>Fine Amount</th>
                                 <th>Reason</th>
+                                <th>Record ID</th>
+                                <th>Fine Status</th>
+                                <th>Created At</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {usersWithFines.map((user, index) => (
+                            {finesToDisplay.map((user, index) => (
                                 <tr key={index}>
                                     <td>{user.User_Name}</td>
-                                    <td>${user.Amount.toFixed(2)}</td>
+                                    <td>{user.Amount}</td>
                                     <td>{user.Reason}</td>
+                                    <td>{user.Record_ID}</td>
+                                    <td>{user.Fine_Status === 1 ? 'Active' : 'Paid'}</td>
+                                    <td>{formatDate(user.Created_at)}</td>
                                     <td>
                                         <button
                                             className="clear-button"
-                                            onClick={() => handleClearFine(user)}
+                                            onClick={() => openModal(user)}
                                         >
-                                            Clear Fine
+                                            Update
                                         </button>
                                     </td>
                                 </tr>
@@ -81,6 +154,34 @@ const ManageFinesPage = () => {
                     </table>
                 )}
             </div>
+
+            {isModalOpen && (
+                <div className="modal-overlay">
+                    <div className="modal">
+                        <span className="modal-close" onClick={closeModal}>×</span>
+                        <h2>Update Fine</h2>
+
+                        {successMessage ? (
+                            <p className="success-message">{successMessage}</p>
+                        ) : (
+                            <>
+                                <label>New Fine Amount:</label>
+                                <input
+                                    type="number"
+                                    value={newFineAmount}
+                                    min="0"
+                                    step="0.01"
+                                    onChange={(e) => setNewFineAmount(e.target.value)}
+                                />
+                                <div className="modal-actions">
+                                    <button onClick={closeModal}>Cancel</button>
+                                    <button onClick={handleSaveFine}>Save</button>
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </div>
+            )}
         </div>
     );
 };

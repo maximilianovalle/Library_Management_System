@@ -6,7 +6,11 @@ module.exports = async function getFines(req, res) {
             SELECT 
                 CONCAT(u.First_Name, ' ', u.Last_Name) AS User_Name,
                 f.Amount,
-                f.Reason
+                f.Reason,
+                f.Record_ID,
+                f.Fine_Status,
+                f.User_ID,
+                f.Created_at
             FROM fines AS f
             JOIN user AS u ON f.User_ID = u.User_ID
         `);

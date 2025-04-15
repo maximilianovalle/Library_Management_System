@@ -1,6 +1,6 @@
 .fines-page {
     padding: 2rem;
-    background-color: #fff5f5;
+    background-color: #f1f1f1;
     min-height: 100vh;
     font-family:'Times New Roman', Times, serif;
 }
@@ -93,4 +93,151 @@
 
 .clear-button:hover {
     background-color: #093e5d;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 450px;
+    max-width: 90%;
+    position: relative;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: #333;
+}
+
+.modal h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+}
+
+.modal input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    color: #333;
+}
+
+.modal input:focus {
+    outline: none;
+    border-color: #4073b1;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #4073b1;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    width: 48%;
+}
+
+.modal-actions button:hover {
+    background-color: #0056b3;
+}
+
+.modal-actions button:focus {
+    outline: none;
+    background-color: #0056b3;
+}
+
+.modal-actions button.cancel-btn {
+    background-color: #ccc;
+}
+
+.modal-actions button.cancel-btn:hover {
+    background-color: #bbb;
+}
+
+
+.filter-button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    position: relative;
+    left: 1600px;
+}
+
+.filter-button:hover {
+    background-color: #4073b1;
+    transform: scale(1.05);
+}
+
+.filter-button:active {
+    background-color: #4073b1;
 }
