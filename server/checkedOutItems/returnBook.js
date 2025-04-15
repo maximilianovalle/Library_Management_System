@@ -43,7 +43,9 @@ module.exports = async function returnBook(req, res, userID) {
                     return;
                 }
 
-                await pool.query("UPDATE borrow_record SET Return_Date = NOW() WHERE User_ID = ? AND ISBN = ? AND Book_Copy_ID = ?", [userID, isbn, copyID]);
+                const recordID = await pool.query("SELECT Record_ID FROM borrow_record WHERE User_ID = ? AND ISBN = ? AND Book_Copy_ID = ? AND Return_Date IS NULL", [userID, isbn, copyID]);
+
+                await pool.query("UPDATE borrow_record SET Return_Date = NOW() WHERE Record_ID =  ?", [recordID]);
 
 
                 // 1 = good condition, 2 = worn out, or 3 = bad cond.
@@ -62,6 +64,11 @@ module.exports = async function returnBook(req, res, userID) {
                 }
 
                 await pool.query("UPDATE book_copies SET Book_Status = ?, Book_Condition = ? WHERE ISBN = ? AND Copy_ID = ?", [status[bookCondition], condition[bookCondition], isbn, copyID]);
+
+                // fine user if book returned in bad condition
+                if (condition == 3) {
+                    await pool.query("INSERT INTO fines (User_ID, Record_ID, Amount, Reason) VALUES (?, ?, 25, 'Damaged')", [userID, recordID])
+                };
 
             } catch (error) {
                 console.log("Return book error: ", error);

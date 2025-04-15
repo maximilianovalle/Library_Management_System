@@ -1,79 +1,117 @@
 import React, { useState } from "react";
-import Header from "../../components/header/LibrarianHeader";
-import "./LibrarianPage.css";
+import axios from "axios";
+import "./BookForm.css"; // Reuse BookForm styles for consistency
 
 const DeviceForm = () => {
-  const [formData, setFormData] = useState({
-    device_model: "",
-    device_category: "",
-    device: "",
-    device_copy: "",
-  });
-
+  const [deviceModel, setDeviceModel] = useState("");
+  const [deviceCategory, setDeviceCategory] = useState("");
+  const [deviceCopy, setDeviceCopy] = useState("");
   const [errors, setErrors] = useState({});
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [loading, setLoading] = useState(false);
 
   const validate = () => {
     const newErrors = {};
-    if (!formData.device_model.trim()) newErrors.device_model = "Device model is required";
-    if (!formData.device_category.trim()) newErrors.device_category = "Device category is required";
-    if (!formData.device.trim()) newErrors.device = "Device is required";
-    if (!formData.device_copy.trim()) newErrors.device_copy = "Device copy is required";
+    if (!deviceModel.trim()) newErrors.deviceModel = "Device model is required";
+    if (!deviceCategory.trim()) newErrors.deviceCategory = "Device category is required";
+    if (!deviceCopy.trim()) newErrors.deviceCopy = "Device copy is required";
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
       return;
     }
 
-    // Submit data
-    console.log("Submitting device:", formData);
-    alert("Device added successfully!");
-    setFormData({
-      device_model: "",
-      device_category: "",
-      device: "",
-      device_copy: "",
-    });
-    setErrors({});
+    const deviceData = {
+      device_model: deviceModel,
+      device_category: deviceCategory,
+      device_copy: deviceCopy,
+    };
+    console.log(deviceData)
+
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("No token found. Redirecting to login...");
+        window.location.href = "/login";
+        return;
+      }
+
+      const res = await axios.post(`${process.env.REACT_APP_API_URL}/adddevice`, deviceData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.data.error) {
+        console.error("Error adding device:", res.data.error);
+        alert("Failed to add device. Please try again.");
+        return;
+      }
+
+      alert("Device added successfully!");
+      window.location.href = "/librarian";
+
+      // Reset form
+      setDeviceModel("");
+      setDeviceCategory("");
+      setDeviceCopy("");
+      setErrors({});
+    } catch (error) {
+      console.error("Error submitting device:", error);
+      alert("Failed to add device. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div>
+    <div className="book-form-page">
       <div className="book-form-container">
+        <h2>Add a Device</h2>
         <form onSubmit={handleSubmit}>
-          <h2>Add a Device</h2>
+          <div>
+            <label>
+              Device Model<span className="required-star">*</span>
+            </label>
+            <input
+              type="text"
+              value={deviceModel}
+              onChange={(e) => setDeviceModel(e.target.value)}
+            />
+            {errors.deviceModel && <p className="text-error">{errors.deviceModel}</p>}
+          </div>
 
-          {[
-            { label: "Device Model", name: "device_model" },
-            { label: "Device Category (Laptop, Camera, Calculator)", name: "device_category" },
-            { label: "Device", name: "device" },
-            { label: "Device Copy", name: "device_copy" },
-          ].map(({ label, name }) => (
-            <div key={name}>
-              <label className="block font-medium">
-                {label} <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                name={name}
-                value={formData[name]}
-                onChange={handleChange}
-                className="w-full border rounded p-2"
-              />
-              {errors[name] && <p className="text-red-500 text-sm">{errors[name]}</p>}
-            </div>
-          ))}
+          <div>
+            <label>
+              Device Category<span className="required-star">*</span>
+            </label>
+            <input
+              type="text"
+              placeholder="Laptop, Camera, Calculator, etc."
+              value={deviceCategory}
+              onChange={(e) => setDeviceCategory(e.target.value)}
+            />
+            {errors.deviceCategory && <p className="text-error">{errors.deviceCategory}</p>}
+          </div>
 
-          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-            Add Device
+
+          <div>
+            <label>
+              Number of Copies<span className="required-star">*</span>
+            </label>
+            <input type="number" value={deviceCopy} onChange={(e) => setDeviceCopy(e.target.value)} />
+            {errors.deviceCopy && <p className="text-error">{errors.deviceCopy}</p>}
+          </div>
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Adding..." : "Add Device"}
           </button>
         </form>
       </div>

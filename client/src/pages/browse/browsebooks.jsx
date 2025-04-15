@@ -36,6 +36,8 @@ const BrowseBooks = () => {
     const [error, setError] = useState("");
     const [visible, setVisible] = useState(5);
     const [confirm_borrow, setConfirmBorrow] = useState(null)
+
+    const [triggerMessage, setTriggerMessage] = useState(null);
     // FAQ state
     const [activeIndex, setActiveIndex] = useState(null);
 
@@ -100,7 +102,11 @@ const BrowseBooks = () => {
 
         } catch (error) {
             console.error("Error borrowing book:", error);
-            alert("Failed to borrow book. Please try again.");
+
+            if (error.response.data.message == "Cannot check out items. User has unpaid fines exceeding $25.") {
+                setTriggerMessage(confirm_borrow);
+            }
+            
             setConfirmBorrow(null);
         }
     };
@@ -285,8 +291,25 @@ const BrowseBooks = () => {
                             <button className="confirm-button" onClick={handleBorrow}>Borrow Book</button>
                         </div>
                     </div>
-                </div>
-                    )}
+                    </div>
+                )}
+
+                {triggerMessage && (
+                    <div className="modal-overlay" onClick={() => setTriggerMessage(null)}>
+                    
+                    <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+                        <span className="modal-close" onClick={() => setTriggerMessage(null)}>&times;</span>
+                       
+                        <h2 class="modalHeader">You have fines exceeding $25</h2>
+
+                        <p>Please pay your fee amount located in your <a href="/account">Account</a> page before borrowing an item.</p>
+
+                        <div className="modal-buttons">
+                            <button className="confirm-button" onClick={() => setTriggerMessage(null)}>Ok</button>
+                        </div>
+                    </div>
+                    </div>
+                )}
         </div>
 
         </div>
