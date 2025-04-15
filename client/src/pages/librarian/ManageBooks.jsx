@@ -69,10 +69,9 @@ const ManageBooks = () => {
     }
   };
 
-  const getConditionClass = (condition) => {
+   const getConditionClass = (condition) => {
     if (!condition) return "";
     const clean = condition.trim().toLowerCase();
-  
     switch (clean) {
       case "good":
       case "good condition":
@@ -90,13 +89,16 @@ const ManageBooks = () => {
 
   const filteredBooks = books.filter((book) => {
     const query = searchQuery.toLowerCase();
-    const conditionMatch =
-      conditionFilter === "" || book.Book_Condition.toLowerCase().includes(conditionFilter.toLowerCase());
-    
-    return (
-      (book.Title.toLowerCase().includes(query) || book.Name.toLowerCase().includes(query)) &&
-      conditionMatch
-    );
+  
+    const title = (book.Title || "").toLowerCase();
+    const author = (book.Name || "").toLowerCase();
+    const condition = (book.Book_Condition || "").trim().toLowerCase();
+  
+    const titleMatch = title.includes(query);
+    const authorMatch = author.includes(query);
+    const conditionMatch = conditionFilter === "" || condition.includes(conditionFilter.toLowerCase());
+  
+    return (titleMatch || authorMatch) && conditionMatch;
   });
 
   return (
@@ -127,7 +129,6 @@ const ManageBooks = () => {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
 
-              {/* Condition Filter */}
               <div className="condition-filter">
                 <button onClick={() => setConditionFilter("")}>All Conditions</button>
                 <button onClick={() => setConditionFilter("good")}>Good</button>
@@ -139,7 +140,7 @@ const ManageBooks = () => {
                 <p>No books found.</p>
               ) : (
                 filteredBooks.map((book) => (
-                  <div className="book-row" key={book.Copy_ID}>
+                  <div className="book-row" key={`${book.ISBN}-${book.Copy_ID}`}>
                     <div>
                       <strong>{book.Title}</strong> (Author: {book.Name})
                       <p>ISBN: {book.ISBN}</p>
@@ -149,7 +150,7 @@ const ManageBooks = () => {
                     </div>
                     <button
                       className="delete-btn"
-                      onClick={() => handleDelete(book.Copy_ID, book.ISBN)} // Pass both Copy_ID and ISBN to delete
+                      onClick={() => handleDelete(book.Copy_ID, book.ISBN)} 
                     >
                       Delete
                     </button>
