@@ -25,6 +25,7 @@ const getStats = require('./librarian_page/getStats.js') // getStats()
 const librarian_info = require('./librarian_page/librarian_info.js')
 const add_books = require('./librarian_page/add_books.js')
 const add_device = require('./librarian_page/add_device.js')
+const get_books = require('./librarian_page/get_books.js')
 
 const getManagerDashboardInfo = require('./manager_page/getManagerDashboardInfo.js');
 const addLibrarian = require('./manager_page/add_librarian.js');
@@ -245,18 +246,24 @@ const app = http
       librarian_info(req, res, userID)
       return;
     }
-
-    if(req.url === '/addbooks' && req.method === 'POST' && role ===1){
+ 
+    if(req.url === '/addbooks' && req.method === 'POST' && role === 1){
       console.log("ADD BOOKS NEWO")
       add_books(req, res)
       return;
     }
 
-    if(req.url === '/adddevice' && req.method === 'POST' && role ===1){
+    if(req.url === '/adddevice' && req.method === 'POST' && role === 1){
       console.log("ADD DEVICE NEWO")
       add_device(req, res)
       return;
     }
+
+    if(req.url === '/get_books' && req.method === 'GET' && role === 1){
+      console.log("getting books")
+      get_books(req, res)
+      return;
+    } 
     //////// MANAGER SIDE REQUESTS ////////
 
     if (req.url === '/manager' && req.method === 'GET' && role === 3) {
