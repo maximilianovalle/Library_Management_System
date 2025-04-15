@@ -83,7 +83,6 @@ const ManageDevices = () => {
     }
   };
 
-  // Debugging the conditionFilter and filtering logic
   console.log('Current Condition Filter:', conditionFilter);
 
   const filteredDevices = devices.filter((device) => {
