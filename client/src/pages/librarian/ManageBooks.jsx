@@ -7,8 +7,9 @@ import "./ManageBooks.css";
 const ManageBooks = () => {
   const [activeTab, setActiveTab] = useState("add");
   const [books, setBooks] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [conditionFilter, setConditionFilter] = useState("");
   const [toast, setToast] = useState({ message: "", type: "" });
-  console.log(books)
 
   const showToast = (message, type = "success") => {
     setToast({ message, type });
@@ -17,52 +18,86 @@ const ManageBooks = () => {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-  
     if (!token) {
       console.error("No token found. Redirecting to login...");
       window.location.href = "/login";
       return;
     }
-  
+
     if (activeTab === "view") {
-      axios.get(`${process.env.REACT_APP_API_URL}/get_books`, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-      .then((res) => {
-        console.log("API Response:", res.data);
-        if (Array.isArray(res.data)) {
-          setBooks(res.data);
-        } else if (Array.isArray(res.data.books)) {
-          setBooks(res.data.books);
-        } else {
-          console.error("Unexpected response structure.");
-          showToast("Unexpected response format.", "error");
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        showToast("Failed to load books.", "error");
-      });
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/get_books`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          if (Array.isArray(res.data)) {
+            setBooks(res.data);
+          } else if (Array.isArray(res.data.books)) {
+            setBooks(res.data.books);
+          } else {
+            console.error("Unexpected response structure.");
+            showToast("Unexpected response format.", "error");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          showToast("Failed to load books.", "error");
+        });
     }
   }, [activeTab]);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (Copy_ID, ISBN) => {
+    console.log(Copy_ID, ISBN)
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`${process.env.REACT_APP_API_URL}/books/${id}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/delete_book`, {
         headers: {
-          Authorization: `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
+        data: {
+          Copy_ID,
+          ISBN, 
+        },
       });
-      setBooks((prev) => prev.filter((book) => book.id !== id));
+      setBooks((prev) => prev.filter((book) => book.Copy_ID !== Copy_ID));
       showToast("Book deleted successfully!");
     } catch (error) {
       console.error("Delete failed:", error);
       showToast("Failed to delete book.", "error");
     }
   };
+
+  const getConditionClass = (condition) => {
+    if (!condition) return "";
+    const clean = condition.trim().toLowerCase();
+  
+    switch (clean) {
+      case "good":
+      case "good condition":
+        return "good-condition";
+      case "bad":
+      case "bad condition":
+        return "bad-condition";
+      case "worn":
+      case "worn out":
+        return "worn-condition";
+      default:
+        return "";
+    }
+  };
+
+  const filteredBooks = books.filter((book) => {
+    const query = searchQuery.toLowerCase();
+    const conditionMatch =
+      conditionFilter === "" || book.Book_Condition.toLowerCase().includes(conditionFilter.toLowerCase());
+    
+    return (
+      (book.Title.toLowerCase().includes(query) || book.Name.toLowerCase().includes(query)) &&
+      conditionMatch
+    );
+  });
 
   return (
     <div>
@@ -80,19 +115,42 @@ const ManageBooks = () => {
         )}
 
         <div className="form-section">
-          {activeTab === "add" && (
-            <BookForm showToast={showToast} />
-          )}
+          {activeTab === "add" && <BookForm showToast={showToast} />}
 
           {activeTab === "view" && (
             <div className="book-list">
-              {books.length === 0 ? (
+              <input
+                type="text"
+                placeholder="Search by title or ISBN..."
+                className="search-bar"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+
+              {/* Condition Filter */}
+              <div className="condition-filter">
+                <button onClick={() => setConditionFilter("")}>All Conditions</button>
+                <button onClick={() => setConditionFilter("good")}>Good</button>
+                <button onClick={() => setConditionFilter("bad")}>Bad</button>
+                <button onClick={() => setConditionFilter("worn")}>Worn Out</button>
+              </div>
+
+              {filteredBooks.length === 0 ? (
                 <p>No books found.</p>
               ) : (
-                books.map((book) => (
-                  <div className="book-row">
-                    <span>{book.Title} (ISBN: {book.Name})</span>
-                    <button className="delete-btn" onClick={() => handleDelete(book.id)}>
+                filteredBooks.map((book) => (
+                  <div className="book-row" key={book.Copy_ID}>
+                    <div>
+                      <strong>{book.Title}</strong> (Author: {book.Name})
+                      <p>ISBN: {book.ISBN}</p>
+                      <span className={`condition-tag ${getConditionClass(book.Book_Condition)}`}>
+                        {book.Book_Condition}
+                      </span>
+                    </div>
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(book.Copy_ID, book.ISBN)} // Pass both Copy_ID and ISBN to delete
+                    >
                       Delete
                     </button>
                   </div>

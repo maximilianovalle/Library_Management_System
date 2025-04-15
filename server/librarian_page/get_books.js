@@ -5,7 +5,7 @@ module.exports = async function getBooks(req, res) {
 
 
         const [rows] =  await pool.query(`
-            SELECT b.Title, author.Name, b.Genre, b.ISBN, b.Publication_Year, b.Image_URL, bc.Book_Status
+            SELECT b.Title, author.Name, b.Genre, b.ISBN, b.Publication_Year, b.Image_URL, bc.Book_Status, bc.Book_Condition, bc.Copy_ID
             FROM book AS b
             JOIN author ON author.Author_ID = b.Author_ID
             JOIN book_copies AS bc ON b.ISBN = bc.ISBN
