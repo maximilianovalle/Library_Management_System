@@ -3,6 +3,7 @@ import axios from "axios";
 import Header from "../../components/header/LibrarianHeader";
 import BookForm from "./BookForm";
 import "./ManageBooks.css";
+import defaultCover from '../browse/book-not-found.png';  // import the default cover image
 
 const ManageBooks = () => {
   const [activeTab, setActiveTab] = useState("add");
@@ -49,7 +50,6 @@ const ManageBooks = () => {
   }, [activeTab]);
 
   const handleDelete = async (Copy_ID, ISBN) => {
-    console.log(Copy_ID, ISBN)
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`${process.env.REACT_APP_API_URL}/delete_book`, {
@@ -58,7 +58,7 @@ const ManageBooks = () => {
         },
         data: {
           Copy_ID,
-          ISBN, 
+          ISBN,
         },
       });
       setBooks((prev) => prev.filter((book) => book.Copy_ID !== Copy_ID));
@@ -69,7 +69,7 @@ const ManageBooks = () => {
     }
   };
 
-   const getConditionClass = (condition) => {
+  const getConditionClass = (condition) => {
     if (!condition) return "";
     const clean = condition.trim().toLowerCase();
     switch (clean) {
@@ -89,76 +89,109 @@ const ManageBooks = () => {
 
   const filteredBooks = books.filter((book) => {
     const query = searchQuery.toLowerCase();
-  
+
     const title = (book.Title || "").toLowerCase();
     const author = (book.Name || "").toLowerCase();
     const condition = (book.Book_Condition || "").trim().toLowerCase();
-  
+
     const titleMatch = title.includes(query);
     const authorMatch = author.includes(query);
     const conditionMatch = conditionFilter === "" || condition.includes(conditionFilter.toLowerCase());
-  
+
     return (titleMatch || authorMatch) && conditionMatch;
   });
 
   return (
     <div>
       <Header />
-      <div className="manage-books-container">
-        <h1 className="title">Manage Books</h1>
-
-        <div className="button-group">
-          <button onClick={() => setActiveTab("add")}>Add Book</button>
-          <button onClick={() => setActiveTab("view")}>View All</button>
-        </div>
-
-        {toast.message && (
-          <div className={`toast ${toast.type}`}>{toast.message}</div>
-        )}
-
-        <div className="form-section">
-          {activeTab === "add" && <BookForm showToast={showToast} />}
-
-          {activeTab === "view" && (
-            <div className="book-list">
-              <input
-                type="text"
-                placeholder="Search by title or ISBN..."
-                className="search-bar"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-
-              <div className="condition-filter">
-                <button onClick={() => setConditionFilter("")}>All Conditions</button>
-                <button onClick={() => setConditionFilter("good")}>Good</button>
-                <button onClick={() => setConditionFilter("bad")}>Bad</button>
-                <button onClick={() => setConditionFilter("worn")}>Worn Out</button>
-              </div>
-
-              {filteredBooks.length === 0 ? (
-                <p>No books found.</p>
-              ) : (
-                filteredBooks.map((book) => (
-                  <div className="book-row" key={`${book.ISBN}-${book.Copy_ID}`}>
-                    <div>
-                      <strong>{book.Title}</strong> (Author: {book.Name})
-                      <p>ISBN: {book.ISBN}</p>
-                      <span className={`condition-tag ${getConditionClass(book.Book_Condition)}`}>
-                        {book.Book_Condition}
-                      </span>
-                    </div>
-                    <button
-                      className="delete-btn"
-                      onClick={() => handleDelete(book.Copy_ID, book.ISBN)} 
-                    >
-                      Delete
-                    </button>
-                  </div>
-                ))
-              )}
-            </div>
+  
+      <div id="manageBooks">
+        <div className="user_page">
+          <div className="button-group">
+            <button 
+              onClick={() => setActiveTab("add")} 
+              className={`tab-button ${activeTab === "add" ? "active" : ""}`}
+            >
+              Add Book
+            </button>
+            <button 
+              onClick={() => setActiveTab("view")} 
+              className={`tab-button ${activeTab === "view" ? "active" : ""}`}
+            >
+              View All
+            </button>
+          </div>
+  
+          {toast.message && (
+            <div className={`toast ${toast.type}`}>{toast.message}</div>
           )}
+  
+          <div className="form-section">
+            {activeTab === "add" && <BookForm showToast={showToast} />}
+  
+            {activeTab === "view" && (
+              <div>
+                {/* Search Bar */}
+                <div className="search-bar-container">
+                  <input
+                    type="text"
+                    placeholder="Search by title or ISBN..."
+                    className="search-bar"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </div>
+  
+                {/* Condition Filter Buttons */}
+                <div className="condition-filter">
+                  <button onClick={() => setConditionFilter("")}>All Conditions</button>
+                  <button onClick={() => setConditionFilter("good")}>Good</button>
+                  <button onClick={() => setConditionFilter("bad")}>Bad</button>
+                  <button onClick={() => setConditionFilter("worn")}>Worn Out</button>
+                </div>
+  
+                {/* Book List */}
+                <div className="book-list">
+                  {filteredBooks.length === 0 ? (
+                    <p>No books found.</p>
+                  ) : (
+                    filteredBooks.map((book) => (
+                      <div className="book-card" key={`${book.ISBN}-${book.Copy_ID}`}>
+                        <div className="book-image-container">
+                          <img
+                            className="book-image"
+                            src={`https://covers.openlibrary.org/b/isbn/${book.ISBN}-L.jpg?default=false`}
+                            alt={book.Title}
+                            onError={(e) => {
+                              e.target.onerror = null;
+                              e.target.src = defaultCover;
+                            }}
+                          />
+                        </div>
+                        <div className="book-details">
+                          <h3>{book.Title}</h3>
+                          <p>{book.Name} (Author)</p>
+                          <p>ISBN: {book.ISBN}</p>
+                          <span
+                            className={`condition-tag ${getConditionClass(book.Book_Condition)}`}
+                          >
+                            {book.Book_Condition} {/* Display the book condition text here */}
+                          </span>
+                        </div>
+                        <br></br>
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDelete(book.Copy_ID, book.ISBN)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

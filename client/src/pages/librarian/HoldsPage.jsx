@@ -74,7 +74,7 @@ const HoldsPage = () => {
                                                 className="notify-button"
                                                 onClick={() => handleNotify(item)}
                                             >
-                                                Notify
+                                                Picked Up
                                             </button>
                                         </td>
                                     </tr>
