@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaUserTie, FaUsersCog, FaChartPie, FaClipboardList } from "react-icons/fa";
+import { FaUserTie, FaChartPie, FaClipboardList } from "react-icons/fa";
 import axios from "axios";
 import Header from "../../components/header/ManagerHeader";
 import { Link } from "react-router-dom";
@@ -61,10 +61,10 @@ const ManagerDashboard = () => {
 
       <div className="dashboard-container">
 
-        {/* <div class="dashboard-header">
-          <h1 class="dashboard-title">Manager Dashboard</h1>
+        {/* <div className="dashboard-header">
+          <h1 className="dashboard-title">Manager Dashboard</h1>
 
-          <div class="dashboard-welcome">
+          <div className="dashboard-welcome">
             <div className="welcome-message">
               <h2>Welcome back, {firstName} {lastName}</h2>
               <p>Here's what's happening at your library today</p>
@@ -84,10 +84,10 @@ const ManagerDashboard = () => {
         ) : (
           <>
 
-            <div class="dashboard-header">
-              <h1 id="dashboardTitle" class="dashboard-title">Manager Dashboard</h1>
+            <div className="dashboard-header">
+              <h1 id="dashboardTitle" className="dashboard-title">Manager Dashboard</h1>
 
-              <div class="dashboard-welcome">
+              <div className="dashboard-welcome">
                 <div className="welcome-message">
                   <h2>Welcome back, {firstName} {lastName}</h2>
                   <p>Here's what's happening at your library today</p>
@@ -99,30 +99,30 @@ const ManagerDashboard = () => {
               </div>
             </div>
 
-            <div class="dashboard-stats-grid">
+            <div className="dashboard-stats-grid">
 
               <div className="stat-card">
-                <div class="stat-icon">
+                <div className="stat-icon">
                 <FaUserTie/>
                 </div>
 
-                <div class="stat-content">
+                <div className="stat-content">
                   <h3>Active Librarians</h3>
-                  <p class="stat-value">{activeLibrarians}</p>
+                  <p className="stat-value">{activeLibrarians}</p>
                 </div>
               </div>
 
             </div>
 
-            <div class="dashboard-content">
+            <div className="dashboard-content">
 
-              <div class="dashboard-section">
+              <div className="dashboard-section">
 
                 <div className="section-header">
                   <h2>Quick Actions</h2>
                 </div>
 
-                <div id="actionLinks" class="quick-actions">
+                <div id="actionLinks" className="quick-actions">
                   <Link to="/view-librarians" className="action-button add-book">
                   <FaClipboardList className="icon" />View Librarians
                   </Link>
