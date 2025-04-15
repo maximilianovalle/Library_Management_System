@@ -127,6 +127,7 @@ const LibrarianManager = () => {
     Pay_Rate: ""
   });
   const [toast, setToast] = useState({ message: "", type: "" });
+  const [loading, setLoading] = useState(false);
 
   const [librarians, setLibrarians] = useState([]);
   const [editingId, setEditingId] = useState(null);
@@ -156,6 +157,7 @@ const LibrarianManager = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const token = localStorage.getItem("token");
       await axios.post(`${process.env.REACT_APP_API_URL}/add_librarian`, formData, {
         headers: { Authorization: `Bearer ${token}` }
@@ -174,6 +176,8 @@ const LibrarianManager = () => {
     } catch (error) {
       console.error("Add librarian failed:", error);
       showToast("Failed to add librarian.", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -291,7 +295,13 @@ const LibrarianManager = () => {
                   />
                 </div>
               ))}
-              <button type="submit">Add Librarian</button>
+              <button type="submit" disabled={loading}>
+                {loading ? (
+                  <div className="spinner" style={{ margin: "0 auto" }}></div>
+                ) : (
+                  "Add Librarian"
+                )}
+              </button>
             </form>
           </div>
         )}

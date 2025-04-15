@@ -2,92 +2,160 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Header from "../../components/header/LibrarianHeader";
 import BookForm from "./BookForm";
-import EditBook from "./EditBook";
 import "./ManageBooks.css";
 
 const ManageBooks = () => {
-  const [activeTab, setActiveTab] = useState("add"); // "add" | "edit" | "delete"
+  const [activeTab, setActiveTab] = useState("add");
   const [books, setBooks] = useState([]);
-  const [editingBookId, setEditingBookId] = useState(null); // ID of the book being edited
+  const [searchQuery, setSearchQuery] = useState("");
+  const [conditionFilter, setConditionFilter] = useState("");
+  const [toast, setToast] = useState({ message: "", type: "" });
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast({ message: "", type: "" }), 3000);
+  };
 
   useEffect(() => {
-    if (activeTab !== "add") {
-      axios.get("http://localhost:5000/api/books") // Adjust to your actual API
-        .then((res) => setBooks(res.data))
-        .catch((err) => console.error(err));
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found. Redirecting to login...");
+      window.location.href = "/login";
+      return;
+    }
+
+    if (activeTab === "view") {
+      axios
+        .get(`${process.env.REACT_APP_API_URL}/get_books`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          if (Array.isArray(res.data)) {
+            setBooks(res.data);
+          } else if (Array.isArray(res.data.books)) {
+            setBooks(res.data.books);
+          } else {
+            console.error("Unexpected response structure.");
+            showToast("Unexpected response format.", "error");
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+          showToast("Failed to load books.", "error");
+        });
     }
   }, [activeTab]);
 
-  const handleDelete = async (id) => {
+  const handleDelete = async (Copy_ID, ISBN) => {
+    console.log(Copy_ID, ISBN)
     try {
-      await axios.delete(`http://localhost:5000/api/books/${id}`);
-      setBooks(books.filter(book => book.id !== id));
-      alert("Book deleted!");
+      const token = localStorage.getItem("token");
+      await axios.delete(`${process.env.REACT_APP_API_URL}/delete_book`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: {
+          Copy_ID,
+          ISBN, 
+        },
+      });
+      setBooks((prev) => prev.filter((book) => book.Copy_ID !== Copy_ID));
+      showToast("Book deleted successfully!");
     } catch (error) {
       console.error("Delete failed:", error);
+      showToast("Failed to delete book.", "error");
     }
   };
 
-  const resetEdit = () => {
-    setEditingBookId(null);
-    setActiveTab("edit");
+  const getConditionClass = (condition) => {
+    if (!condition) return "";
+    const clean = condition.trim().toLowerCase();
+  
+    switch (clean) {
+      case "good":
+      case "good condition":
+        return "good-condition";
+      case "bad":
+      case "bad condition":
+        return "bad-condition";
+      case "worn":
+      case "worn out":
+        return "worn-condition";
+      default:
+        return "";
+    }
   };
+
+  const filteredBooks = books.filter((book) => {
+    const query = searchQuery.toLowerCase();
+    const conditionMatch =
+      conditionFilter === "" || book.Book_Condition.toLowerCase().includes(conditionFilter.toLowerCase());
+    
+    return (
+      (book.Title.toLowerCase().includes(query) || book.Name.toLowerCase().includes(query)) &&
+      conditionMatch
+    );
+  });
 
   return (
     <div>
       <Header />
       <div className="manage-books-container">
-        <h1 className="title" style={{alignItems: "center"}}>Manage Books</h1>
+        <h1 className="title">Manage Books</h1>
 
         <div className="button-group">
-          <button onClick={() => {
-            setActiveTab("add");
-            setEditingBookId(null);
-          }}>Add Book</button>
-          <button onClick={() => {
-            setActiveTab("edit");
-            setEditingBookId(null);
-          }}>Edit Book</button>
-          <button onClick={() => {
-            setActiveTab("delete");
-            setEditingBookId(null);
-          }}>Delete Book</button>
+          <button onClick={() => setActiveTab("add")}>Add Book</button>
+          <button onClick={() => setActiveTab("view")}>View All</button>
         </div>
 
+        {toast.message && (
+          <div className={`toast ${toast.type}`}>{toast.message}</div>
+        )}
+
         <div className="form-section">
-          {activeTab === "add" && <BookForm />}
+          {activeTab === "add" && <BookForm showToast={showToast} />}
 
-          {activeTab === "edit" && (
-            <div>
-              {editingBookId ? (
-                <EditBook bookId={editingBookId} onFinish={resetEdit} />
+          {activeTab === "view" && (
+            <div className="book-list">
+              <input
+                type="text"
+                placeholder="Search by title or ISBN..."
+                className="search-bar"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+
+              {/* Condition Filter */}
+              <div className="condition-filter">
+                <button onClick={() => setConditionFilter("")}>All Conditions</button>
+                <button onClick={() => setConditionFilter("good")}>Good</button>
+                <button onClick={() => setConditionFilter("bad")}>Bad</button>
+                <button onClick={() => setConditionFilter("worn")}>Worn Out</button>
+              </div>
+
+              {filteredBooks.length === 0 ? (
+                <p>No books found.</p>
               ) : (
-                <div>
-                  <h2>Select a Book to Edit</h2>
-                  {books.map((book) => (
-                    <div key={book.id} className="book-row">
-                      <span>{book.title} (ISBN: {book.isbn})</span>
-                      <button onClick={() => setEditingBookId(book.id)}>
-                        Edit
-                      </button>
+                filteredBooks.map((book) => (
+                  <div className="book-row" key={book.Copy_ID}>
+                    <div>
+                      <strong>{book.Title}</strong> (Author: {book.Name})
+                      <p>ISBN: {book.ISBN}</p>
+                      <span className={`condition-tag ${getConditionClass(book.Book_Condition)}`}>
+                        {book.Book_Condition}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(book.Copy_ID, book.ISBN)} // Pass both Copy_ID and ISBN to delete
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))
               )}
-            </div>
-          )}
-
-          {activeTab === "delete" && (
-            <div>
-              <h2>Delete a Book</h2>
-              {books.map((book) => (
-                <div key={book.id} className="book-row">
-                  <span>{book.title} (ISBN: {book.isbn})</span>
-                  <button className="delete-btn" onClick={() => handleDelete(book.id)}>
-                    Delete
-                  </button>
-                </div>
-              ))}
             </div>
           )}
         </div>
