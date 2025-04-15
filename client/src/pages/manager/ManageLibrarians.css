@@ -160,10 +160,6 @@
   to { opacity: 0; }
 }
 
-#librarianRowSpacing {
-  width: 95%;
-}
-
 .tab-buttons {
   background: none;
 	color: inherit;
