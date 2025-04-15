@@ -44,29 +44,20 @@ const getMaintenanceItems = require('./manager_page/get_maintenance_items.js');
 const resolveMaintenanceItem = require('./manager_page/resolve_maintenance_items.js');
 
 const getManagerBooksDevices = require("./manager_page/getManagerBooksDevices.js");
+const getBooksManager = require("./manager_page/getBooksManager.js");
 
 
-
-// creates HTTP server and listens for incoming requests
 const app = http
   .createServer(async (req, res) => {
-    // req [AKA request] - object representing the HTTP request sent by the client, contains details like
-    // - HTTP Method: GET, POST, PUT, etc.
-    // - URL/path: some general examples include "/login" and "api/users/"
-    // - Header(s): sent by back-end to tell client how to handle resonse
-    // - Body: data sent from front-end to back-end
-    // - Query Parameters: for example, "/users?id=7000001"
-
-    // FOR CORS : Cross-Origin Resource Sharing, allow methods and headers, and set the content type
     res.setHeader("Access-Control-Allow-Origin", "*");
     res.setHeader(
       "Access-Control-Allow-Methods",
       "GET, POST, PUT, DELETE, OPTIONS"
-    ); // specifies which HTTP methods are allowed from the client
+    );
     res.setHeader(
       "Access-Control-Allow-Headers",
       "Content-Type, Authorization, Origin"
-    ); // specifies which headers the client can send in the request
+    );
     res.setHeader("Access-Control-Allow-Credentials", "true"); // cookies/sessions
 
   if (req.method === 'OPTIONS') {
@@ -79,70 +70,70 @@ const app = http
     login(req, res);
     return;
   }
-    console.log("\nIncoming Request:", req.method, req.url);
+  
+  console.log("\nIncoming Request:", req.method, req.url);
 
-    if (req.method === "OPTIONS") {
-      res.writeHead(204);
-      res.end();
-      return;
-    }
+  if (req.method === "OPTIONS") {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
 
-    if (req.url === "/login" && req.method === "POST") {
-      login(req, res); // call login() function imported above
-      return;
-    }
+  if (req.url === "/login" && req.method === "POST") {
+    login(req, res); // call login() function imported above
+    return;
+  }
 
-    console.log("Authorizing token...");
+  console.log("Authorizing token...");
 
-    const token = req.headers.authorization?.split("Bearer ")[1]; // retrieves actual token string from request
+  const token = req.headers.authorization?.split("Bearer ")[1]; // retrieves actual token string from request
 
-    if (!token || !currSessions.has(token)) {
-      res.writeHead(401, { "Content-Type": "application/json" });
-      res.end(
-        JSON.stringify({
-          message: "You must log in before accessing that page.",
-        })
-      );
-      return;
-    }
+  if (!token || !currSessions.has(token)) {
+    res.writeHead(401, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify({
+        message: "You must log in before accessing that page.",
+      })
+    );
+    return;
+  }
 
-    console.log("Token authorized.");
+  console.log("Token authorized.");
 
-    // console.log("passed auth")
-    // logout function
-    if (req.url === "/logout" && req.method == "DELETE") {
-      currSessions.delete(token);
-      console.log(`Token deleted: ${token}`);
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(JSON.stringify({ message: "Logged out successfully" }));
-      return;
-    }
+  // logout function
+  if (req.url === "/logout" && req.method == "DELETE") {
+    currSessions.delete(token);
+    console.log(`Token deleted: ${token}`);
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(JSON.stringify({ message: "Logged out successfully" }));
+    return;
+  }
 
-    // retrieve userID + role mapped in currSessions w/ token
-    const ID_and_Role = currSessions.get(token);
-    const userID = ID_and_Role ? ID_and_Role.userID : null; // extract userID
-    const role = ID_and_Role ? ID_and_Role.role : null; // extract user role (1 = LIBRARIAN, 2 = USER)
+  // retrieve userID + role mapped in currSessions w/ token
+  const ID_and_Role = currSessions.get(token);
+  const userID = ID_and_Role ? ID_and_Role.userID : null; // extract userID
+  const role = ID_and_Role ? ID_and_Role.role : null; // extract user role (1 = LIBRARIAN, 2 = USER)
 
-    // when /account page loads
-    if (req.url === "/account" && req.method === "GET" && role === 2) {
-      getUserName(req, res, userID); // call getUserName() function imported above
-      return;
-    }
+  // when /account page loads
+  if (req.url === "/account" && req.method === "GET" && role === 2) {
+    getUserName(req, res, userID); // call getUserName() function imported above
+    return;
+  }
 
-    // if ( browser sends a GET request to "/devices" and USER role )
-    if (req.url.startsWith('/devices') && req.method === 'GET' && role === 2) {
-      getDevices(req, res);  // call getDevices() to search devices
-      return;
-    }
+  // if ( browser sends a GET request to "/devices" and USER role )
+  if (req.url.startsWith('/devices') && req.method === 'GET' && role === 2) {
+    getDevices(req, res);  // call getDevices() to search devices
+    return;
+  }
     
-    
-    // CheckedOut page
-    if (req.url === '/checkedout' && req.method === 'GET' && role === 2) {
-      console.log("Retrieving user checked out page info.");
-      getCheckedOutItems(req, res, userID);
-      console.log("Checked out page info retrieved.");
-      return;
-    }
+  
+  // CheckedOut page
+  if (req.url === '/checkedout' && req.method === 'GET' && role === 2) {
+    console.log("Retrieving user checked out page info.");
+    getCheckedOutItems(req, res, userID);
+    console.log("Checked out page info retrieved.");
+    return;
+  }
 
     if (req.url === '/returnItem' && req.method === 'PUT' && role === 2) {
       console.log("Returning book...");
@@ -305,6 +296,8 @@ const app = http
     //   getRecentActivities(req, res)
     //   return;
     // }
+
+
     //////// MANAGER SIDE REQUESTS ////////
 
     if (req.url === '/manager' && req.method === 'GET' && role === 3) {
@@ -346,15 +339,23 @@ const app = http
     }
 
     if (req.url === '/manage_items' && req.method === 'GET' && role === 3) {
-      console.log("Getting books for manager...");
+      console.log("Getting items for manager...");
       getManagerBooksDevices(req, res);
-      console.log("Books received.");
+      console.log("Items received.");
+      return;
+    }
+
+    if (req.url.startsWith("/books") && req.method === "GET" && role === 3) {
+      console.log("req for books");
+      getBooksManager(req, res);
+      return;
     }
 
     if (req.url === '/maintenance-items' && req.method === 'GET' && role === 3) {
       getMaintenanceItems(req, res);
       return;
     }
+    
     if (req.url === '/resolve-maintenance' && req.method === 'PUT' && role === 3) {
       resolveMaintenanceItem(req, res);
       return;
