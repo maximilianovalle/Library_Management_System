@@ -42,6 +42,8 @@ const markMaintenanceNotifsRead = require('./manager_page/mark_read_maintenance_
 const getMaintenanceItems = require('./manager_page/get_maintenance_items.js');
 const resolveMaintenanceItem = require('./manager_page/resolve_maintenance_items.js');
 
+const getManagerBooksDevices = require("./manager_page/getManagerBooksDevices.js");
+
 
 
 // creates HTTP server and listens for incoming requests
@@ -333,6 +335,12 @@ const app = http
     if (req.url === '/maintenance-notifications/mark-read' && req.method === 'POST' && role === 3) {
       markMaintenanceNotifsRead(req, res);
       return;
+    }
+
+    if (req.url === '/manage_items' && req.method === 'GET' && role === 3) {
+      console.log("Getting books for manager...");
+      getManagerBooksDevices(req, res);
+      console.log("Books received.");
     }
 
     if (req.url === '/maintenance-items' && req.method === 'GET' && role === 3) {

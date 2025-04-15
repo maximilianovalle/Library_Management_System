@@ -29,6 +29,20 @@ const LibrarianManager = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    try {
+      const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
+
+      // if ( no token )
+      if (!token) {
+          console.error("No token found. Redirecting to login...");
+          window.location.href = "/login";
+          return;
+      }
+
+    } catch (error) {
+      console.error("Error fetching info: ", error);
+    }
+
     if (activeTab === "view") {
       fetchLibrarians();
     }
@@ -160,6 +174,7 @@ const LibrarianManager = () => {
           >
             <IoIosAdd /> Add Librarian
           </button>
+          
           <button
             className={`tab-button ${activeTab === "view" ? "active" : ""}`}
             onClick={() => setActiveTab("view")}

@@ -23,6 +23,13 @@ const MaintenancePage = () => {
     const fetchMaintenanceItems = async () => {
       try {
         const token = localStorage.getItem("token");
+
+        if (!token) {
+          console.error("No token found. Redirecting to login...");
+          window.location.href = "/login";
+          return;
+      }
+      
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/maintenance-items`, {
           headers: { Authorization: `Bearer ${token}` },
         });
