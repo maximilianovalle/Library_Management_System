@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { IoIosSearch } from "react-icons/io";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "../../components/header/ManagerHeader";
@@ -60,13 +61,18 @@ const ManageLibrarians = () => {
   return (
     <div>
       <Header />
-      <div className="manage-librarians-container">
-        <h1 className="title">Manage Librarians</h1>
+      <div id="mainManage">
 
-        <div className="button-group">
+      <div className="manage-librarians-container container2">
+          <h1 id="dashboardTitle" class="manageLibrariansTitle dashboard-title">Create a Librarian Account</h1>
+
+        {/* <div className="button-group">
           <button onClick={() => setActiveTab("add")}>Add Librarian</button>
           <button onClick={() => navigate("/view-librarians")}>View All</button>
-        </div>
+        </div> */}
+        {/* <h3 class="addLibrarianSubtext">Create a Librarian Account</h3> */}
+
+        <button class="viewAllBtn" onClick={() => navigate("/view-librarians")}><IoIosSearch /> View All Librarians</button>
 
         {toast.message && (
           <div className={`toast ${toast.type}`}>{toast.message}</div>
@@ -90,6 +96,7 @@ const ManageLibrarians = () => {
             </form>
           )}
         </div>
+      </div>
       </div>
     </div>
   );

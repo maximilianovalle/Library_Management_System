@@ -1,15 +1,43 @@
 .manage-librarians-container {
   max-width: 1000px;
   margin: 0 auto;
-  padding: 3rem 2rem;
+  /* padding: 3rem 2rem; */
+  /* display: flex;
+  flex-direction: column;
+  align-items: center; */
 }
 
-.title {
+.container2 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#mainManage {
+  max-width: 1000px;
+  margin: 0px auto;
+}
+
+.manageLibrariansTitle {
+  width: 100%;
+  text-align: center;
+}
+
+.addLibTitle {
   text-align: center;
   font-size: 2rem;
-  margin-bottom: 1.5rem;
+  margin: 0px;
+  /* margin-bottom: 1.5rem; */
   font-weight: bold;
   color: #1a202c;
+}
+
+.addLibrarianSubtext {
+  text-align: center;
+  width: 100%;
+  margin: 0px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e5e7eb;
 }
 
 .button-group {
@@ -19,7 +47,7 @@
   margin-bottom: 2rem;
 }
 
-.button-group button {
+.viewAllBtn {
   background-color: #fc5c5c;
   color: white;
   border: none;
@@ -28,11 +56,14 @@
   font-weight: bold;
   border-radius: 8px;
   cursor: pointer;
+  width: 25%;
   transition: background-color 0.3s ease;
+  margin: 12px 0px;
 }
 
-.button-group button:hover {
+.viewAllBtn:hover {
   background-color: darkred;
+  cursor: pointer;
 }
 
 .button-group button:focus {
@@ -44,7 +75,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 2rem;
+  /* margin-top: 2rem; */
+  width: 85%;
+  animation: fade-in 0.5s ease;
 }
 
 .librarian-form {
@@ -84,7 +117,8 @@
 .toast {
   position: fixed;
   top: 20px;
-  right: 20px;
+  left: 50%;
+  transform: translateX(-50%);
   padding: 14px 20px;
   border-radius: 8px;
   font-weight: bold;

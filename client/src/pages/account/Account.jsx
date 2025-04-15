@@ -137,7 +137,7 @@ const Account = () => {
             {loading ? (
             <div className="dashboard-loading">
                 <div className="spinner"></div>
-                <p>Loading dashboard data...</p>
+                <p>Loading account info...</p>
             </div>
             ) : (
             <>

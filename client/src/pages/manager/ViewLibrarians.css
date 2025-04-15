@@ -23,6 +23,12 @@
     font-size: 1rem;
     background-color: #f9f9f9;
   }
+
+  #backHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
   
   .librarian-form button {
     background-color: #2563eb;
@@ -41,15 +47,28 @@
   }
   
   .librarian-row {
+    animation: fade-in 0.5s ease;
+    max-width: 65%;
+    /* max-height: 150px; */
+    margin: 0px auto;
     background-color: #ffffff;
-    padding: 1rem;
+    padding: 1rem 2rem;
     border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     margin-bottom: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+    
+  }
+
+  .createLibBtn {
+    margin-bottom: 32px;
   }
   
   .librarian-row:hover {
@@ -186,6 +205,8 @@
   }
 
   .back-btn {
+    /* width: 80px; */
+    font-size: 80px;
     background: none;
     border: none;
     color: #2d3748;
@@ -198,7 +219,19 @@
   
   .card-header {
     display: flex;
-    justify-content: flex-end;
+    /* justify-content: flex-end; */
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .iconAndName {
+    display: flex;
+    align-items: center;
+  }
+
+  .iconAndName h3 {
+    margin: 0px;
   }
   
   .position-badge {
@@ -211,6 +244,7 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    /* margin: 0px 0px 0px 8px; */
   }
 
 

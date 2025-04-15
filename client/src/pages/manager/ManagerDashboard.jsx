@@ -29,7 +29,7 @@ const ManagerDashboard = () => {
 
         setTimeout(() => {
           setLoading(false);
-      }, 1000);
+        }, 1000);
 
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/manager`, {
           headers: {

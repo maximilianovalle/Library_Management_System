@@ -4,6 +4,42 @@ import axios from "axios";
 import Header from "../../components/header/ManagerHeader";
 import "./Maintenance.css";
 
+import Laptop from '../checkedOutItems/laptop.png';
+import Camera from '../checkedOutItems/camera.png';
+import Calculator from '../checkedOutItems/calculator.png';
+
+// carousel slider imports
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import Slider from "react-slick";
+
+const sliderSettings = {
+  arrows: true,
+  dots: false,
+  infinite: false,
+  speed: 450,
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  centerMode: true,
+  centerPadding: "0px",
+  responsive: [
+      {
+          breakpoint: 768,
+          settings: {
+              slidesToShow: 3,
+              centerMode: true,
+              centerPadding: "0px",
+          }
+      }
+  ]
+};
+
+const deviceImages = {
+  "Calculator": Calculator,
+  "Camera": Camera,
+  "Laptop": Laptop,
+}
+
 const MaintenancePage = () => {
   const [maintenanceBooks, setMaintenanceBooks] = useState([]);
   const [maintenanceDevices, setMaintenanceDevices] = useState([]);
@@ -48,7 +84,10 @@ const MaintenancePage = () => {
   return (
     <div>
       <Header />
-      <div className="maintenance-container">
+
+
+
+      <div id="body" className="maintenance-container">
         <h1>Maintenance Items</h1>
 
         <section>
