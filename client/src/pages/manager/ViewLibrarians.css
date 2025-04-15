@@ -84,10 +84,11 @@
   .actions {
     display: flex;
     gap: 10px;
-    margin-top: 0.5rem;
+    margin-top: 1rem;
   }
   
   .actions button {
+    width: 120px;
     padding: 8px 16px;
     border: none;
     border-radius: 6px;
@@ -225,12 +226,7 @@
     width: 100%;
   }
 
-  .iconAndName {
-    display: flex;
-    align-items: center;
-  }
-
-  .iconAndName h3 {
+  .libName {
     margin: 0px;
   }
   
