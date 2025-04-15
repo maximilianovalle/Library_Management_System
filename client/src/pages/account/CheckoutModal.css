@@ -22,13 +22,17 @@
     animation: slideUpFade 0.4s ease;
     position: relative;
     font-family: "Segoe UI", sans-serif;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .icon{
     display: flex;
     justify-content:center;
-    font-size: 65px;
-    padding-bottom: 20px;
+    font-size: 80px;
+    /* padding-bottom: 20px; */
 }
 
 .checkout-header {

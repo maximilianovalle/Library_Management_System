@@ -213,9 +213,9 @@ const Account = () => {
                 }}
             >
                 <div className="checkout-modal">
-                    <div className="icon">
+                    {/* <div className="icon">
                         <FaRegCheckCircle />
-                    </div>
+                    </div> */}
                     <div className="checkout-header">
                         <h2>Payment Successful!</h2>
                     </div>
@@ -225,7 +225,6 @@ const Account = () => {
                         <button class="btn" onClick={() => {
                                 closeModal();
                         }}>Ok</button>
-                        {/* <p id="subtext">Please see our help desk for help with any questions or concerns.</p> */}
                     </div>
                 </div>
             </div>

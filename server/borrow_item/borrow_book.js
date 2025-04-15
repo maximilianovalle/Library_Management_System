@@ -63,9 +63,9 @@ module.exports = async function add_book_to_user(req, res, userID) {
             res.end(JSON.stringify({ message: "Book borrowed successfully", Copy_ID: bookCopyId }));
 
         } catch (error) {
-            console.error("Error processing borrow request:", error);
+            console.error("Error processing borrow request:", error.message);
             res.writeHead(500, { "Content-Type": "application/json" });
-            res.end(JSON.stringify({ message: "Internal Server Error" }));
+            res.end(JSON.stringify({ message: error.message }));
         }
     });
 };
