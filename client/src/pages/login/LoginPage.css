@@ -89,10 +89,11 @@ html, body {
 .login-form {
     padding: 2rem 1.5rem;
     background-color: #fff;
+    /* min-height: 200px; */
 }
 
-.form-group {
-    margin-bottom: 1.25rem;
+.login-form-group {
+    margin-bottom: 24px;
 }
 
 .form-label {
@@ -144,7 +145,6 @@ html, body {
     margin-top: 0.5rem;
     padding: 0 0.5rem;
 }
-
 .login-button {
     position: relative;
     width: 100%;

@@ -2,10 +2,14 @@ const pool = require('../database.js');
 
 module.exports = async function getManagerDashboardInfo(req, res, userID) {
     try {
-        const [[managerInfo], [totalLibrarians]] = await Promise.all([
+        const [[managerInfo], [totalLibrarians], [booksInMaintenance], [devicesInMaintenance]] = await Promise.all([
             pool.query("SELECT * FROM manager WHERE Manager_ID = ?", [userID]),
 
             pool.query("SELECT COUNT(*) FROM librarian WHERE End_Date IS NULL"),
+
+            pool.query("SELECT COUNT(*) FROM book_copies WHERE Book_Status = 'Maintenance'"),
+
+            pool.query("SELECT COUNT(*) FROM device_copies WHERE Device_Status = 'Maintenance'"),
         ]);
 
         if (managerInfo.length === 0) {    // if no user found
@@ -27,6 +31,8 @@ module.exports = async function getManagerDashboardInfo(req, res, userID) {
             firstName: firstName,
             lastName: lastName,
             activeLibrarians: totalLibrarians[0]['COUNT(*)'],
+            maintenanceBooks: booksInMaintenance[0]['COUNT(*)'],
+            maintenanceDevices: devicesInMaintenance[0]['COUNT(*)'],
         }));
 
     } catch (error) {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { IoIosAdd } from "react-icons/io";
 import Header from "../../components/header/ManagerHeader";
 import "./ViewLibrarians.css";
 
@@ -99,11 +100,13 @@ const ViewLibrarians = () => {
   return (
     <div>
       <Header />
-      <div className="manage-librarians-container">
-        <button className="back-btn" onClick={() => navigate(-1)}>
-          ←
-        </button>
-        <h1 className="title">All Librarians</h1>
+      <div className="manage-librarians-container mainManage">
+
+        <div class="manage-librarians-container container2">
+          <h1 id="dashboardTitle" class="manageLibrariansTitle dashboard-title">All Librarians</h1>
+
+          <button class="createLibBtn viewAllBtn" onClick={() => navigate("/manage-librarians")}><IoIosAdd /> Create a Librarian</button>
+        </div>
 
         {toast.message && <div className={`toast ${toast.type}`}>{toast.message}</div>}
 
@@ -145,14 +148,48 @@ const ViewLibrarians = () => {
 
             {librarians.length > 0 ? (
               librarians.map((lib, idx) => (
+
                 <div key={idx} className="librarian-row">
+
                   <div className="card-header">
+
+                    <div class="iconAndName">
+                      {/* <FaUserTie/> */}
+                      <h3>{lib.First_Name} {lib.Last_Name}</h3>
+                    </div>
+
                     <span className="position-badge">
                       {lib.Position} {!lib.End_Date && (
                         <span className="active-indicator" title="Current Employee">*</span>
                       )}
                     </span>
+
                   </div>
+
+                  <span class="entryElement"><strong>
+                    {lib.Department}</strong>
+                  </span>
+
+                  <span className="entryElement">
+                    Active:{" "}
+                    {lib.Hire_Date &&
+                      new Date(lib.Hire_Date).toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                      })}
+                    {lib.End_Date && (
+                      <span className="entryElement">
+                        {" "}–{" "}
+                        {new Date(lib.End_Date).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric"
+                        })}
+                      </span>
+                    )}
+                  </span>
+                  
                   <span>{lib.First_Name} {lib.Last_Name} - {lib.Department}</span>
                   <span>Hired: {lib.Hire_Date?.split("T")[0]}</span>
                   {lib.End_Date && <span>Ended: {lib.End_Date?.split("T")[0]}</span>}
@@ -161,6 +198,7 @@ const ViewLibrarians = () => {
                     <button className="delete-btn" onClick={() => confirmDelete(lib.Librarian_ID)}>Delete</button>
                   </div>
                 </div>
+
               ))
             ) : (
               <p>No librarians found.</p>
