@@ -48,7 +48,7 @@
   
   .librarian-row {
     animation: fade-in 0.5s ease;
-    max-width: 65%;
+    max-width: 55%;
     /* max-height: 150px; */
     margin: 0px auto;
     background-color: #ffffff;
@@ -277,6 +277,10 @@
     flex-direction: column;
     align-items: center;
     padding: 3rem;
+  }
+
+  #librarianRowSpacing {
+    width: 100%;
   }
   
   .spinner {

@@ -240,16 +240,17 @@ const LibrarianManager = () => {
                   librarians.map((lib, idx) => (
                     <div key={idx} className="librarian-row">
 
+                      <div id="librarianRowSpacing">
                       <div className="card-header">
 
-                        <h3 class="libName">{lib.First_Name} {lib.Last_Name}</h3>
+                        <h3 class="libName entryElement">{lib.First_Name} {lib.Last_Name}</h3>
 
-                        <span className="position-badge">
+                        <span className="entryElement">
                           {!lib.End_Date && (
-                            <span className="active-indicator" title="Current Employee">ACTIVE</span>
+                            <span className="entryElement active-indicator" title="Current Employee">ACTIVE SINCE</span>
                           )}
                           {lib.End_Date && (
-                            <span className="active-indicator" title="Current Employee">NOT ACTIVE</span>
+                            <span className="entryElement active-indicator" title="Current Employee">NOT ACTIVE</span>
                           )}
                         </span>
 
@@ -278,6 +279,7 @@ const LibrarianManager = () => {
                         )}
                       </span>
 
+                      </div>
                       </div>
 
                       <div className="actions">
