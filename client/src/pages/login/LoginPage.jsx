@@ -121,7 +121,7 @@ const Login = () => {
                         </div>
                     )}
                     
-                    <div className="form-group">
+                    <div className="login-form-group">
                         <label htmlFor="userId" className="form-label">User ID</label>
                         <div className="input-with-icon">
                             <span className="input-icon"><UserIcon /></span>
@@ -140,7 +140,7 @@ const Login = () => {
                         <p className="input-hint">Enter your unique library user ID</p>
                     </div>
                     
-                    <div className="form-group">
+                    <div className="login-form-group">
                         <label htmlFor="password" className="form-label">Password</label>
                         <div className="input-with-icon">
                             <span className="input-icon"><LockIcon /></span>
@@ -160,7 +160,7 @@ const Login = () => {
                     
                     <button 
                         type="submit" 
-                        className={`login-button`}
+                        className={`redLoginBtn login-button`}
                         disabled={isLoading}
                     >
                         {isLoading ? 'Signing In...' : 'Sign In'}
