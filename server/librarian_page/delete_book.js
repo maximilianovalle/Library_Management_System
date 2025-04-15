@@ -18,13 +18,11 @@ module.exports = async function deleteBookCopy(req, res, userID) {
                     return;
                 }
 
-                // First, delete any dependent borrow records
                 await pool.query(
                     "DELETE FROM borrow_record WHERE Book_Copy_ID = ? AND ISBN = ?",
                     [Copy_ID, ISBN]
                 );
 
-                // Then, delete the book copy itself
                 const result = await pool.query(
                     "DELETE FROM book_copies WHERE Copy_ID = ? AND ISBN = ?",
                     [Copy_ID, ISBN]
