@@ -47,43 +47,46 @@ const HoldsPage = () => {
         <div>
             <Header />
             <div className="holds-page">
-            <h1>Manage Holds</h1>
-            <h2>Users with Holds</h2>
-
-            {usersWithHolds.length === 0 ? (
-                <p>No users with holds at the moment.</p>
-            ) : (
-                <table className="holds-table">
-                    <thead>
-                        <tr>
-                            <th>User Name</th>
-                            <th>Category</th>
-                            <th>Model</th>
-                            <th>Actions</th> {/* New column */}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {usersWithHolds.map((item, index) => (
-                            <tr key={index}>
-                                <td>{item.Holder_Name}</td>
-                                <td>{item.Category}</td>
-                                <td>{item.Model}</td>
-                                <td>
-                                    <button
-                                        className="notify-button"
-                                        onClick={() => handleNotify(item)}
-                                    >
-                                        Notify
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
+                <h1>Manage Holds</h1>
+                <h2>Users with Holds</h2>
+    
+                {usersWithHolds.length === 0 ? (
+                    <p>No users with holds at the moment.</p>
+                ) : (
+                    <div className="table-container">
+                        <table className="holds-table">
+                            <thead>
+                                <tr>
+                                    <th>User Name</th>
+                                    <th>Category</th>
+                                    <th>Model</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {usersWithHolds.map((item, index) => (
+                                    <tr key={index}>
+                                        <td>{item.Holder_Name}</td>
+                                        <td>{item.Category}</td>
+                                        <td>{item.Model}</td>
+                                        <td>
+                                            <button
+                                                className="notify-button"
+                                                onClick={() => handleNotify(item)}
+                                            >
+                                                Notify
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
             </div>
         </div>
     );
+    
 };
 
 export default HoldsPage;
