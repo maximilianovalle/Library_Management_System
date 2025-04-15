@@ -184,7 +184,7 @@ const ManagerDeleteItems = () => {
                                 }}/>
 
                                 <p class="entryElement">{book.author}, {book.publication}</p>
-                                <p class="bookGenreSubtext entryElement"><em>{book.genre}</em></p>
+                                <p class="bookCataloguebtmPadding bookGenreSubtext entryElement"><em>{book.genre}</em></p>
 
                                 <div class="bookBtnContainer">
                                     <button class="bookCardBtn"><MdModeEdit /></button>
@@ -226,24 +226,29 @@ const ManagerDeleteItems = () => {
                     {/* devices */}
 
                     <div className="Display_container">
-                    <ul className="device_list">
+                    <div className="editDeviceDisplay">
                     
                     {devices.map((device, index) => {
 
                         const imageSrc = categoryImages[device.category.toLowerCase()];
 
                         return (<>
-                        <div key={index} className="device_card">
+                        <div key={index} className="deviceCardEdit device_card">
                             
                             <div className="alignDeviceInfo">
 
                                 <p class="entryElement"><strong>{device.model}</strong></p>
 
+                                <p class="entryElement">{device.category}</p>
+
                                 {imageSrc && (
                                     <img src={imageSrc} alt={device.category} className="device_image"/>
                                 )}
 
-                                <p>{device.category}</p>
+                                <div class="bookBtnContainer">
+                                    <button class="bookCardBtn"><MdModeEdit /></button>
+                                    <button class="bookCardBtn"><MdDeleteForever /></button>
+                                </div>
 
                             </div>
                             
@@ -252,7 +257,7 @@ const ManagerDeleteItems = () => {
 
                     })}
 
-                    </ul>
+                    </div>
                     </div>
 
                     </>) : (

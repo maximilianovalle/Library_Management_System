@@ -16,12 +16,16 @@
 
     font-size: 18px;
 
-    border: none;
+    height: 28px;
+    padding: 4px 4px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
     background-color: transparent;
 }
 
 .bookCardBtn:hover {
     color: #2563eb;
+    border: 1px solid #2563eb;
     cursor: pointer;
 }
 
@@ -41,4 +45,19 @@
     justify-content: space-between;
 
     width: 100%;
+}
+
+.editDeviceDisplay {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
+    gap: 20px;
+    padding: 20px;
+}
+
+.deviceCardEdit {
+    max-width: 300px;
+}
+
+.bookCataloguebtmPadding {
+    margin-bottom: 4px;
 }
