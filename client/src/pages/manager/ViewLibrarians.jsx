@@ -11,6 +11,7 @@ const ViewLibrarians = () => {
   const [toast, setToast] = useState({ message: "", type: "" });
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -32,6 +33,8 @@ const ViewLibrarians = () => {
       setLibrarians(res.data);
     } catch (err) {
       console.error("Error fetching librarians:", err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -104,25 +107,11 @@ const ViewLibrarians = () => {
 
         {toast.message && <div className={`toast ${toast.type}`}>{toast.message}</div>}
 
-        {showModal && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h3>Are you sure you want to delete this librarian?</h3>
-              <button className="confirm-btn" onClick={handleDelete}>
-                Yes, Delete
-              </button>
-              <button className="cancel-btn" onClick={() => setShowModal(false)}>
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
-
-        {editingId ? (
+        {loading ? (
+          <div className="spinner"></div>
+        ) : editingId ? (
           <div className="edit-modal">
-            <button className="close-btn" onClick={() => setEditingId(null)}>
-              ×
-            </button>
+            <button className="close-btn" onClick={() => setEditingId(null)}>×</button>
             <form onSubmit={handleUpdate} className="librarian-form" autoComplete="off">
               {Object.entries(formData).map(([key, value]) => (
                 <input
@@ -143,7 +132,17 @@ const ViewLibrarians = () => {
             </form>
           </div>
         ) : (
-          <div>
+          <>
+            {showModal && (
+              <div className="modal-overlay">
+                <div className="modal-content">
+                  <h3>Are you sure you want to delete this librarian?</h3>
+                  <button className="confirm-btn" onClick={handleDelete}>Yes, Delete</button>
+                  <button className="cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
+                </div>
+              </div>
+            )}
+
             {librarians.length > 0 ? (
               librarians.map((lib, idx) => (
                 <div key={idx} className="librarian-row">
@@ -154,25 +153,19 @@ const ViewLibrarians = () => {
                       )}
                     </span>
                   </div>
-                  <span>
-                    {lib.First_Name} {lib.Last_Name} - {lib.Department}
-                  </span>
+                  <span>{lib.First_Name} {lib.Last_Name} - {lib.Department}</span>
                   <span>Hired: {lib.Hire_Date?.split("T")[0]}</span>
                   {lib.End_Date && <span>Ended: {lib.End_Date?.split("T")[0]}</span>}
                   <div className="actions">
-                    <button className="edit-btn" onClick={() => handleEdit(lib)}>
-                      Edit
-                    </button>
-                    <button className="delete-btn" onClick={() => confirmDelete(lib.Librarian_ID)}>
-                      Delete
-                    </button>
+                    <button className="edit-btn" onClick={() => handleEdit(lib)}>Edit</button>
+                    <button className="delete-btn" onClick={() => confirmDelete(lib.Librarian_ID)}>Delete</button>
                   </div>
                 </div>
               ))
             ) : (
               <p>No librarians found.</p>
             )}
-          </div>
+          </>
         )}
       </div>
     </div>

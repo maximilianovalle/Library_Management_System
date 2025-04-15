@@ -17,6 +17,7 @@ const ManageLibrarians = () => {
     Pay_Rate: ""
   });
   const [toast, setToast] = useState({ message: "", type: "" });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const showToast = (message, type = "success") => {
@@ -34,26 +35,29 @@ const ManageLibrarians = () => {
   const handleAdd = async (e) => {
     e.preventDefault();
     try {
-        const token = localStorage.getItem("token");
-        await axios.post(`${process.env.REACT_APP_API_URL}/add_librarian`, formData, {
-          headers: {
-            Authorization: `Bearer ${token}`
-          }
-        });
-        showToast(`${formData.First_Name} ${formData.Last_Name} added successfully!`, "success");
-        setFormData({
-            First_Name: "",
-            Last_Name: "",
-            Password: "",
-            Department: "",
-            Position: "",
-            SSN: "",
-            Hire_Date: "",
-            Pay_Rate: ""
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      await axios.post(`${process.env.REACT_APP_API_URL}/add_librarian`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      showToast(`${formData.First_Name} ${formData.Last_Name} added successfully!`, "success");
+      setFormData({
+        First_Name: "",
+        Last_Name: "",
+        Password: "",
+        Department: "",
+        Position: "",
+        SSN: "",
+        Hire_Date: "",
+        Pay_Rate: ""
       });
     } catch (error) {
       console.error("Add librarian failed:", error);
       showToast("Failed to add librarian.", "error");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -86,7 +90,13 @@ const ManageLibrarians = () => {
                   required={key !== "Pay_Rate"}
                 />
               ))}
-              <button type="submit">Add Librarian</button>
+              <button type="submit" disabled={loading}>
+                {loading ? (
+                  <div className="spinner" style={{ margin: "0 auto" }}></div>
+                ) : (
+                  "Add Librarian"
+                )}
+              </button>
             </form>
           )}
         </div>
