@@ -302,7 +302,7 @@ const app = http
       getMaintenanceItems(req, res);
       return;
     }
-    if (req.url === '/resolve-maintenance' && req.method === 'POST' && role === 3) {
+    if (req.url === '/resolve-maintenance' && req.method === 'PUT' && role === 3) {
       resolveMaintenanceItem(req, res);
       return;
     }
