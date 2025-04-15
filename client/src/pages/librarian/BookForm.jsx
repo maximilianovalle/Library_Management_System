@@ -5,8 +5,8 @@ import "./BookForm.css";
 const BookForm = () => {
   const [title, setTitle]= useState("")
   const [genre, setGenre]= useState("")
-  const [isbn, setIsbn]= useState(null)
-  const [year, setYear]= useState(null)
+  const [isbn, setIsbn]= useState("")
+  const [year, setYear]= useState("")
   const [author, setAuthor] = useState("");
   const [categoryId, setCategoryId] = useState(""); 
   const [image, setImage]= useState("")
@@ -77,6 +77,8 @@ const BookForm = () => {
             "Authorization": `Bearer ${token}`
         }
       });
+      alert("Book added successfully!");
+      window.location.href = '/librarian'
 
       if (add_book_res.data.error) {
         console.error("Error adding book:", add_book_res.data.error);
@@ -95,6 +97,7 @@ const BookForm = () => {
       setYear("");
       setImage("");
       setErrors({});
+      setCopies("");
     } catch (error) {
       console.error("Error adding book:", error);
       alert("Failed to add book. Please try again.");

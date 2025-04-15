@@ -26,21 +26,37 @@ module.exports = async function add_books(req, res) {
 
             const author_id = await getOrAddAuthorId(author, bio);
 
-            await pool.query(
-                'INSERT INTO book (Title, Category_ID, Genre, ISBN, Publication_Year, Author_ID, Image_URL) VALUES (?, ?, ?, ?, ?, ?, ?)',
-                [title, category_id, genre, isbn, publication_year, author_id, image_url]
+            // Check if the book with the given ISBN already exists
+            const [existingBook] = await pool.query(
+                'SELECT * FROM book WHERE ISBN = ?',
+                [isbn]
             );
 
+            if (existingBook.length === 0) {
+                // Book does not exist: insert it
+                await pool.query(
+                    'INSERT INTO book (Title, Category_ID, Genre, ISBN, Publication_Year, Author_ID, Image_URL) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                    [title, category_id, genre, isbn, publication_year, author_id, image_url]
+                );
+            }
+
+            // Get the current highest Copy_ID for this ISBN
+            const [copyCountResult] = await pool.query(
+                'SELECT COUNT(*) as count FROM book_copies WHERE ISBN = ?',
+                [isbn]
+            );
+            const existingCopies = copyCountResult[0].count;
+
+            // Add the new copies with incremented Copy_IDs
             for (let i = 1; i <= copies; i++) {
-                console.log(i)
                 await pool.query(
                     'INSERT INTO book_copies (Copy_ID, ISBN, Book_Condition, Book_Status) VALUES (?, ?, ?, ?)',
-                    [i, isbn, 'Good Condition', 'Available']
+                    [existingCopies + i, isbn, 'Good Condition', 'Available']
                 );
             }
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ message: 'Book added successfully' }));
+            res.end(JSON.stringify({ message: 'Book and/or copies added successfully' }));
 
         } catch (err) {
             console.error(err);
