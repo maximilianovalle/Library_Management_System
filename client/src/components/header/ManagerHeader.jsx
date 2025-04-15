@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
-// import "./ManagerHeader.css";  was giving error
+import "./ManagerHeader.css";
 
 const ManagerHeader = () => {
   const location = useLocation();
@@ -42,7 +42,7 @@ const ManagerHeader = () => {
       title: "Maintenance",
       link: "/maintenance",
       badge: notifCount,
-      onClick: handleMaintenanceClick
+      onClick: handleMaintenanceClick,
     },
     { title: "Reports", link: "/reports" },
   ];
@@ -53,29 +53,27 @@ const ManagerHeader = () => {
   };
 
   return (
-    <header className="librarian-header">
-      <div className="librarian-container">
-        <nav className="librarian-nav">
-          <div className="librarian-logo">
+    <header className="manager-header">
+      <div className="manager-container">
+        <nav className="manager-nav">
+          <div className="manager-logo">
             <Link to="/manager">
               <img src="/logo.png" alt="Library Logo" />
             </Link>
             <h1>Cougar Library</h1>
           </div>
 
-          <div className="librarian-links">
+          <div className="manager-links">
             {navItems.map((item) => (
-              <div key={item.title} onClick={item.onClick || null} style={{ position: "relative" }}>
+              <div key={item.title} onClick={item.onClick || null} className="manager-link-wrapper">
                 <Link
                   to={item.link}
-                  className={`librarian-link ${
+                  className={`manager-link ${
                     location.pathname.startsWith(item.link) ? "active" : ""
                   }`}
                 >
                   {item.title}
-                  {item.badge > 0 && (
-                    <span className="notif-badge bounce">{item.badge}</span>
-                  )}
+                  {item.badge > 0 && <span className="notif-badge">{item.badge}</span>}
                 </Link>
               </div>
             ))}
