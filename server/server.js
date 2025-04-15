@@ -28,6 +28,8 @@ const add_device = require('./librarian_page/add_device.js')
 const get_books = require('./librarian_page/get_books.js')
 const deleteBookCopy = require('./librarian_page/delete_book.js')
 const all_devices = require('./librarian_page/get_devices.js')
+// const getRecentActivities = require('./librarian_page/get_recent.js')
+const getHeldItems = require('./librarian_page/all_holds.js')
 
 const getManagerDashboardInfo = require('./manager_page/getManagerDashboardInfo.js');
 const addLibrarian = require('./manager_page/add_librarian.js');
@@ -277,6 +279,17 @@ const app = http
       all_devices(req, res)
       return;
     } 
+    if(req.url === '/get_holds' && req.method === 'GET' && role === 1){
+      console.log("getting holds")
+      getHeldItems(req, res)
+      return;
+    } 
+
+    // if(req.url === '/get_activity' && req.method === 'GET' && role === 1){
+    //   console.log("Get recent activities")
+    //   getRecentActivities(req, res)
+    //   return;
+    // }
     //////// MANAGER SIDE REQUESTS ////////
 
     if (req.url === '/manager' && req.method === 'GET' && role === 3) {

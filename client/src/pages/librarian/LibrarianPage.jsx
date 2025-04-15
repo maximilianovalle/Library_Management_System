@@ -77,48 +77,7 @@ const LibrarianDashboard = () => {
     const [finesDue, setFinesDue] = useState(0);
     
     const [timeframe, setTimeframe] = useState("week");
-    const [recentActivity, setRecentActivity] = useState([
-        {
-            id: 1,
-            timestamp: new Date(2025, 3, 1, 14, 25),
-            username: "John Doe",
-            action: "Check Out",
-            item: "The Great Gatsby",
-            type: "book"
-        },
-        {
-            id: 2,
-            timestamp: new Date(2025, 3, 1, 13, 15),
-            username: "Emma Watson",
-            action: "Return",
-            item: "HP Spectre x360",
-            type: "device"
-        },
-        {
-            id: 3,
-            timestamp: new Date(2025, 3, 1, 12, 42),
-            username: "Mike Johnson",
-            action: "Place Hold",
-            item: "Harry Potter and the Sorcerer's Stone",
-            type: "book"
-        },
-        {
-            id: 4,
-            timestamp: new Date(2025, 3, 1, 11, 30),
-            username: "Sarah Parker",
-            action: "Fine Payment",
-            item: "$12.50",
-            type: "payment"
-        },
-        {
-            id: 5,
-            timestamp: new Date(2025, 3, 1, 10, 15),
-            username: "Robert Williams",
-            action: "Check Out",
-            item: "Dell XPS 13",
-            type: "device"
-        }
-    ]);
+    // const [recentActivity, setRecentActivity] = useState([]);
     
     const [popularBooks, setPopularBooks] = useState([]);
     
@@ -160,16 +119,15 @@ const LibrarianDashboard = () => {
                     console.error("Error fetching stats:", error);
                 }
                 
-                /*
-                const activityResponse = await axios.get("https://library-management-system-gf9d.onrender.com/librarian/dashboard/activity", {
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
                 
-                setStats(statsResponse.data);
-                setRecentActivity(activityResponse.data.activities || []);
-                */
+                // const activityResponse = await axios.get(`${process.env.REACT_APP_API_URL}/get_activity`, {
+                //     headers: {
+                //         "Authorization": `Bearer ${token}`
+                //     }
+                // });
+                // console.log(activityResponse.data)
+                // setRecentActivity(activityResponse.data.activities);
+
                const popular_books_response = await axios.get(`${process.env.REACT_APP_API_URL}/reports?type=popular`, {
                     headers: {
                         "Authorization": `Bearer ${token}`
@@ -320,7 +278,6 @@ const LibrarianDashboard = () => {
                                 <div className="stat-content">
                                     <h3>Overdue Items</h3>
                                     <p className="stat-value">{overdueItems.toLocaleString()}</p>
-                                    <Link to="/librarian/overdue" className="stat-link">View details</Link>
                                 </div>
                             </div>
                             
@@ -378,41 +335,7 @@ const LibrarianDashboard = () => {
                             </div>
                             
                             <div className="dashboard-bottom-row">
-                                <div className="dashboard-section activity-section">
-                                    <div className="section-header">
-                                        <h2>Recent Activity</h2>
-                                    </div>
-                                    
-                                    {recentActivity.length > 0 ? (
-                                        <div className="activity-list">
-                                            {recentActivity.map((activity) => (
-                                                <div key={activity.id} className="activity-item">
-                                                    <div className="activity-icon">
-                                                        {getActivityIcon(activity.type)}
-                                                    </div>
-                                                    <div className="activity-content">
-                                                        <p className="activity-text">
-
-                                                            <span className="user-name">{activity.username}</span> <br />
-                                                            <span className="activity-action">{activity.action}: </span> 
-                                                            <span className="activity-item-name">{activity.item}</span>
-
-                                                        </p>
-                                                        <p className="activity-time">{formatTime(activity.timestamp)}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <p className="no-activity">No recent activity to display.</p>
-                                    )}
-                                    
-                                    <div className="view-all-link">
-                                        <Link to="/librarian/activity">View all activity</Link>
-                                    </div>
-                                </div>
-                                
-                                <div className="dashboard-section popular-section">
+                           <div className="dashboard-section popular-section">
                                     <div className="section-header">
                                         <h2>Popular Books</h2>
                                     </div>
