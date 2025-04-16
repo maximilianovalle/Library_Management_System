@@ -5,7 +5,7 @@ module.exports = async function viewUsers(req, res) {
     const [rows] = await pool.query(`
       SELECT User_ID, First_Name, Last_Name, Email, Password, Role, Created_At
       FROM user
-      WHERE User_ID != 9999999
+      WHERE Is_Deleted = 0 AND User_ID != 9999999
       ORDER BY Created_At DESC
     `);
 
