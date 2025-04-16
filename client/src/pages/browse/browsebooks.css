@@ -169,6 +169,10 @@ a {
     flex-direction: column;
 }
 
+.library-info-section:hover{
+    cursor: pointer;
+}
+
 .library-info-left {
     flex: 2;
     /* min-width: 280px; */

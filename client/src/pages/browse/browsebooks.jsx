@@ -40,7 +40,7 @@ const BrowseBooks = () => {
     const [triggerMessage, setTriggerMessage] = useState(null);
     // FAQ state
     const [activeIndex, setActiveIndex] = useState(null);
-
+    const [showInfo, setShowInfo] = useState(true);
 
     const double_check_borrow = (book) => {
         setConfirmBorrow(book);
@@ -160,15 +160,16 @@ const BrowseBooks = () => {
 
         <div id="mainBrowseBooks">
 
-            <div className="library-info-section">
-                <div className="library-info-left">
-                <h1>Welcome to Cougar Library!</h1>
-                    <p>
-                        As a UH student, you get full access to our library services — no sign-up required. Use your account to browse our catalogue, place holds on devices, check out books, and track late fees all in one place. Whether you're in need of a laptop for class or a book for research, we’ve got you covered. All devices and books are free to borrow, and faculty + alumni get extended borrow periods. Go Coogs!
-                    </p>
-                </div>
-                
-            </div>
+        {showInfo && (
+                    <div className="library-info-section" onClick={() => setShowInfo(false)}>
+                        <div className="library-info-left">
+                            <h1>Welcome to Cougar Library!</h1>
+                            <p>
+                                As a UH student, you get full access to our library services — no sign-up required. Use your account to browse our catalogue, place holds on devices, check out books, and track late fees all in one place. Whether you're in need of a laptop for class or a book for research, we’ve got you covered. All devices and books are free to borrow, and faculty + alumni get extended borrow periods. Go Coogs!
+                            </p>
+                        </div>
+                    </div>
+                )}
 
             <div className="user_page">
 
