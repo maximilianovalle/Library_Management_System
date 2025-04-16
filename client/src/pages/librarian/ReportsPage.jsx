@@ -202,6 +202,7 @@ const ReportsPage = () => {
                                     <th>Title</th>
                                     <th>Author</th>
                                     <th>User</th>
+                                    <th>Checkout Date</th>
                                     <th>Due Date</th>
                                     <th>Days Overdue</th>
                                     <th>User Role</th>
@@ -219,6 +220,7 @@ const ReportsPage = () => {
                                             <td>{book.Title}</td>
                                             <td>{book.Author_Name}</td>
                                             <td>{book.First_Name} {book.Last_Name}</td>
+                                            <td>{new Date(book.Checkout_Date).toLocaleDateString()}</td>
                                             <td>{new Date(book.Due_Date).toLocaleDateString()}</td>
                                             <td className="overdue-days">{diffDays}</td>
                                             <td>{book.User_Role}</td>
