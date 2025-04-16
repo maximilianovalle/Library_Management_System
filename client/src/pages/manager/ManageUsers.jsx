@@ -5,6 +5,12 @@ import { MdOutlineModeEdit, MdDelete } from "react-icons/md";
 import Header from "../../components/header/ManagerHeader";
 import "./ManageLibrarians.css"; // Reused styling
 
+const roleMap = {
+    1: "Student",
+    2: "Alumni",
+    3: "Faculty",
+  };  
+
 const ManageUsers = () => {
   const [activeTab, setActiveTab] = useState("add");
   const [formData, setFormData] = useState({
@@ -187,9 +193,7 @@ const ManageUsers = () => {
                     <div id="librarianRowSpacing">
                       <div className="card-header">
                         <h3 className="libName entryElement">{user.First_Name} {user.Last_Name}</h3>
-                        <span className="position-badge">
-                          {user.Role === "1" ? "Student" : user.Role === "2" ? "Alumni" : "Faculty"}
-                        </span>
+                        <span className="position-badge">{roleMap[user.Role]}</span>
                       </div>
                       <div className="card-header">
                         <span className="entryElement">{user.Email}</span>
