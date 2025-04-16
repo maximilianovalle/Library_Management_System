@@ -36,17 +36,16 @@ module.exports = async function getDevices(req, res) {
 
         const params = [];
 
-        // Apply filtering if search parameters are valid
         if (search_by && search_value && allowedFields.includes(search_by.toLowerCase())) {
             const column = fieldMap[search_by.toLowerCase()];
-            query += ` WHERE LOWER(${column}) LIKE ?`;
+            query += ` WHERE dc.Device_Status != 'Deleted' AND LOWER(${column}) LIKE ?`;
             params.push(`%${search_value.toLowerCase()}%`);
         } else {
             // Default: show only available devices
             query += ` WHERE dc.Device_Status = 'Available'`;
         }
 
-        // Apply sorting based on dropdown selection
+        // sorting based on dropdown selection
         if (sort_by === "Model A-Z") {
             query += ` ORDER BY dc.Model ASC`;
         } else if (sort_by === "Model Z-A") {
@@ -57,17 +56,16 @@ module.exports = async function getDevices(req, res) {
             query += ` ORDER BY CASE WHEN dc.Device_Status = 'Available' THEN 1 ELSE 0 END ASC`;
         }
 
-        // Apply pagination limits
-        query += ` LIMIT ? OFFSET ?`;
-        params.push(parseInt(limit), offset);
+        // pagination limits
+        // query += ` LIMIT ? OFFSET ?`;
+        // params.push(parseInt(limit), offset);
 
-        console.log("FINAL QUERY:", query);
-        console.log("PARAMS:", params);
+        // console.log("FINAL QUERY:", query);
+        // console.log("PARAMS:", params);
 
         // Run device query
         const [rows] = await pool.query(query, params);
 
-        // Format results into clean array of objects
         const formattedDevices = rows.map(row => ({
             model: row.Model,
             category: row.Category,
@@ -75,11 +73,12 @@ module.exports = async function getDevices(req, res) {
             status: row.Device_Status
         }));
 
-        // Get counts by category to support frontend chips
+        // get counts by category to support frontend chips
         const [countRows] = await pool.query(`
             SELECT d.Category, COUNT(*) as count
             FROM device d
             JOIN device_copies dc ON d.Model = dc.Model AND d.Category = dc.Category
+            WHERE dc.Device_Status != 'Deleted'
             GROUP BY d.Category
         `);
 
@@ -88,7 +87,6 @@ module.exports = async function getDevices(req, res) {
             categoryCounts[row.Category] = row.count;
         });
 
-        // Send results to frontend
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
             devices: formattedDevices,
