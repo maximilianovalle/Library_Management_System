@@ -112,25 +112,25 @@ const BrowseDevices = () => {
         }
     };
 
-    const closeModal = () => {
-        setHoldConfirm(null);
-    }
+    // const closeModal = () => {
+    //     setHoldConfirm(null);
+    // }
 
-    const handleCancelHold = async (model) => {
-        try {
-            const token = localStorage.getItem("token");
-            await axios.post(`${process.env.REACT_APP_API_URL}/hold/cancel`, {
-                model
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            await fetchDevices();
-            await fetchUserHolds();
-            alert("Hold released.");
-        } catch (err) {
-            alert("Failed to cancel hold.");
-        }
-    };
+    // const handleCancelHold = async (model) => {
+    //     try {
+    //         const token = localStorage.getItem("token");
+    //         await axios.post(`${process.env.REACT_APP_API_URL}/hold/cancel`, {
+    //             model
+    //         }, {
+    //             headers: { Authorization: `Bearer ${token}` }
+    //         });
+    //         await fetchDevices();
+    //         await fetchUserHolds();
+    //         alert("Hold released.");
+    //     } catch (err) {
+    //         alert("Failed to cancel hold.");
+    //     }
+    // };
 
     const filteredDevices = devices.filter(device => {
         const isHeld = userHolds.includes(device.model);
@@ -220,12 +220,12 @@ const BrowseDevices = () => {
                                         {isHeldByUser ? (
                                             <div className="held-section">
                                                 <span className="held_by_you">Held by you</span>
-                                                <button
+                                                {/* <button
                                                     className="cancel_hold_button"
                                                     onClick={() => handleCancelHold(device.model)}
                                                 >
                                                     Release Hold
-                                                </button>
+                                                </button> */}
                                             </div>
                                         ) : device.status.toLowerCase() === "available" && (
                                             <button
