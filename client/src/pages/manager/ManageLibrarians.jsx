@@ -37,6 +37,25 @@ const LibrarianManager = () => {
   const [loading, setLoading] = useState(false);
 
   const [librarians, setLibrarians] = useState([]);
+
+  //pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [librariansPerPage] = useState(10);
+
+  const indexOfLastLibrarian = currentPage * librariansPerPage;
+  const indexOfFirstLibrarian = indexOfLastLibrarian - librariansPerPage;
+  const currentLibrarians = librarians.slice(indexOfFirstLibrarian, indexOfLastLibrarian);
+
+  const totalPages = Math.ceil(librarians.length / librariansPerPage);
+  const pageNumbers = [];
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+  }
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   const [editingId, setEditingId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
@@ -104,7 +123,6 @@ const LibrarianManager = () => {
       ...prev,
       Password: newPassword
     }));
-    showToast("Random password generated!", "info");
   };
 
   const handleAdd = async (e) => {
@@ -385,7 +403,7 @@ const LibrarianManager = () => {
             ) : (
               <div id="containsAllLibrarians">
                 {librarians.length > 0 ? (
-                  librarians.map((lib, idx) => (
+                  currentLibrarians.map((lib, idx) => (
                     <div key={idx} className="librarian-row">
                       <div id="librarianRowSpacing">
                         <div className="card-header">
@@ -430,6 +448,23 @@ const LibrarianManager = () => {
                 )}
               </div>
             )}
+            <div className="pagination">
+              <button
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(currentPage - 1)}
+              >
+                &#8592;
+              </button>
+              <span>
+                {currentPage} of {totalPages}
+              </span>
+              <button
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(currentPage + 1)}
+              >
+                &#8594;
+              </button>
+            </div>
           </>
         )}
       </div>

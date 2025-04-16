@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { IoIosSearch, IoIosAdd } from "react-icons/io";
-// import { MdOutlineModeEdit, MdDelete } from "react-icons/md";
 import { MdOutlineModeEdit, MdDelete, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import Header from "../../components/header/ManagerHeader";
 import "./ManageLibrarians.css"; // Reused styling
@@ -12,7 +11,7 @@ const generateRandomPassword = () => {
     return Array.from({ length: 12 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
   };
 
-const roleMap = {
+    const roleMap = {
     1: "Student",
     2: "Alumni",
     3: "Faculty",
@@ -34,6 +33,24 @@ const roleMap = {
     const [editingId, setEditingId] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
+
+    //pagination
+    const [currentPage, setCurrentPage] = useState(1);
+    const [usersPerPage] = useState(10);
+
+    const indexOfLastUser = currentPage * usersPerPage;
+    const indexOfFirstUser = indexOfLastUser - usersPerPage;
+    const currentUsers = users.slice(indexOfFirstUser, indexOfLastUser);
+
+    const totalPages = Math.ceil(users.length / usersPerPage);
+    const pageNumbers = [];
+    for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i);
+    }
+
+    const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    };
   
     useEffect(() => {
       if (activeTab === "view") fetchUsers();
@@ -54,7 +71,6 @@ const roleMap = {
         ...prev,
         Password: newPassword
       }));
-      showToast("Random password generated!", "info");
     };
   
     const handleAdd = async (e) => {
@@ -240,38 +256,50 @@ const roleMap = {
                           {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
                         </button>
                       </div>
-                      {/* <select name="Role" value={formData.Role} onChange={handleChange} className="styled-select">
-                          <option value="1">Student</option>
-                          <option value="2">Alumni</option>
-                          <option value="3">Faculty</option>
-                      </select> */}
                       <button type="submit">Update User</button>
                   </form>
                 </div>
               ) : (
                 <div id="containsAllLibrarians">
-                  {users.map((user, idx) => (
-                    <div key={idx} className="librarian-row">
-                      <div id="librarianRowSpacing">
-                        <div className="card-header">
-                          <h3 className="libName entryElement">{user.First_Name} {user.Last_Name}</h3>
-                          <span className="position-badge">{roleMap[user.Role]}</span>
-                        </div>
-                        <div className="card-header">
-                          <span className="entryElement">{user.Email}</span>
-                          <span className="entryElement">
-                            Created: {new Date(user.Created_At).toLocaleDateString("en-US")}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="actions">
-                        <button className="edit-btn" onClick={() => handleEdit(user)}><MdOutlineModeEdit /> Edit</button>
-                        <button className="delete-btn" onClick={() => confirmDelete(user.User_ID)}><MdDelete /> Delete</button>
-                      </div>
+                {currentUsers.map((user, idx) => (
+                <div key={idx} className="librarian-row">
+                    <div id="librarianRowSpacing">
+                    <div className="card-header">
+                        <h3 className="libName entryElement">{user.First_Name} {user.Last_Name}</h3>
+                        <span className="position-badge">{roleMap[user.Role]}</span>
                     </div>
-                  ))}
+                    <div className="card-header">
+                        <span className="entryElement">{user.Email}</span>
+                        <span className="entryElement">
+                        Created: {new Date(user.Created_At).toLocaleDateString("en-US")}
+                        </span>
+                    </div>
+                    </div>
+                    <div className="actions">
+                    <button className="edit-btn" onClick={() => handleEdit(user)}><MdOutlineModeEdit /> Edit</button>
+                    <button className="delete-btn" onClick={() => confirmDelete(user.User_ID)}><MdDelete /> Delete</button>
+                    </div>
+                </div>
+                ))}
                 </div>
               )}
+              <div className="pagination">
+                <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                >
+                    &#8592;
+                </button>
+                <span>
+                    {currentPage} of {totalPages}
+                </span>
+                <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                >
+                    &#8594;
+                </button>
+                </div>
             </>
           )}
         </div>
