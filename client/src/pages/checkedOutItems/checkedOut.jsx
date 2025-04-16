@@ -101,12 +101,12 @@ const CheckedOutPage = () => {
 
     const closeReturnModal = () => setShowReturnItem(false);
 
-    const openCancelModal = (index) => {
-        setAffectedIndex(index)
-        setTimeout(() => {
-            setShowCancelHold(true);
-        }, 400);
-    }
+    // const openCancelModal = (index) => {
+    //     setAffectedIndex(index)
+    //     setTimeout(() => {
+    //         setShowCancelHold(true);
+    //     }, 400);
+    // }
     
     const closeCancelModal = () => setShowCancelHold(false);
 
@@ -125,7 +125,7 @@ const CheckedOutPage = () => {
         }
 
         try {
-            const res = await axios.put(`${process.env.REACT_APP_API_URL}/returnItem`, data, {
+            await axios.put(`${process.env.REACT_APP_API_URL}/returnItem`, data, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -152,7 +152,7 @@ const CheckedOutPage = () => {
         }
 
         try {
-            const res = await axios.put(`${process.env.REACT_APP_API_URL}/removeHold`, data, {
+            await axios.put(`${process.env.REACT_APP_API_URL}/removeHold`, data, {
                 headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
