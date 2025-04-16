@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+  /* weird bug delete this page later */
+
+
+  import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { IoIosAdd } from "react-icons/io";
