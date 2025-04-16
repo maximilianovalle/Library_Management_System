@@ -172,7 +172,7 @@ const BrowseBooks = () => {
 
             <div className="user_page">
 
-                <form className="search" onSubmit={handleSearch}>
+                <form className="searchForm search" onSubmit={handleSearch}>
                     <div className="dropdown">
                         <DropDown
                             options={browse_by}
@@ -305,7 +305,10 @@ const BrowseBooks = () => {
                         <p>Please pay your fee amount located in your <a href="/account">Account</a> page before borrowing an item.</p>
 
                         <div className="modal-buttons">
-                            <button className="confirm-button" onClick={() => setTriggerMessage(null)}>Ok</button>
+                            <button className="confirm-button" onClick={() => {
+                                setTriggerMessage(null);
+                                window.location.href = '/account';
+                            }}>Take Me to Account</button>
                         </div>
                     </div>
                     </div>

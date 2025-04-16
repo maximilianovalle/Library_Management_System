@@ -3,6 +3,7 @@ import axios from "axios";
 
 import { MdLaptopChromebook, MdModeEdit, MdDeleteForever } from "react-icons/md";
 import { BiLibrary } from "react-icons/bi";
+import { FiAlertOctagon } from "react-icons/fi";
 
 import defaultCover from '../checkedOutItems/book-not-found.png';
 import cameraImg from "../checkedOutItems/camera.png";
@@ -27,6 +28,11 @@ const ManagerDeleteItems = () => {
     const [books, setBooks] = useState([]);
     const [devices, setDevices] = useState([]);
 
+    const [bookDeleteModal, setBookDeleteModal] = useState(null);
+    const [bookEditModal, setBookEditModal] = useState(null);
+    const [deviceDeleteModal, setDeviceDeleteModal] = useState(null);
+    const [deviceEditModal, setDeviceEditModal] = useState(null);
+
     const [activeTab, setActiveTab] = useState("books");
     const [toast, setToast] = useState({ message: "", type: "" });
 
@@ -37,6 +43,14 @@ const ManagerDeleteItems = () => {
     const [searchBy, setSearchByDevices] = useState("");
 
 
+    const verifyUser = (token) => {
+        if (!token) {
+            console.error("No token found. Redirecting to login...");
+            window.location.href = "/login";
+            return;
+        }
+    }
+
     const showToast = (message, type = "success") => {
         setToast({ message, type });
         setTimeout(() => setToast({ message: "", type: "" }), 3000);
@@ -45,12 +59,7 @@ const ManagerDeleteItems = () => {
     const fetchItems = async () => {
         try {
             const token = localStorage.getItem("token");
-
-            if (!token) {
-                console.error("No token found. Redirecting to login...");
-                window.location.href = "/login";
-                return;
-            }
+            verifyUser(token);
 
             const res = await axios.get(`${process.env.REACT_APP_API_URL}/manage_items`, {
                 headers: {Authorization: `Bearer ${token}`},
@@ -81,12 +90,7 @@ const ManagerDeleteItems = () => {
     const fetchBooks = async (params = {}) => {
         try {
             const token = localStorage.getItem("token");
-            
-            if (!token) {
-                console.error("No token found. Redirecting to login...");
-                window.location.href = "/login";
-                return;
-            }
+            verifyUser(token);
 
             const res = await axios.get(`${process.env.REACT_APP_API_URL}/books`, { headers: { "Authorization": `Bearer ${token}` }, params });
 
@@ -111,12 +115,7 @@ const ManagerDeleteItems = () => {
     const fetchDevices = async (params = {}) => {
         try {
             const token = localStorage.getItem("token");
-            
-            if (!token) {
-                console.error("No token found. Redirecting to login...");
-                window.location.href = "/login";
-                return;
-            }
+            verifyUser(token);
 
             const res = await axios.get(`${process.env.REACT_APP_API_URL}/devices`, { headers: { "Authorization": `Bearer ${token}` }, params });
 
@@ -137,23 +136,55 @@ const ManagerDeleteItems = () => {
 
     // edit device
 
-    // delete book
+    const deleteBook = async (bookDeleteModal) => {
+        const token = localStorage.getItem("token");
+        verifyUser(token);
 
-        // on delete book button click
-        // open delete modal w/ title info
-            // "are you sure you wish to delete this book? this action cannot be undone"
-            // delete, cancel
+        const data = {
+            isbn: bookDeleteModal.isbn,
+        }
 
-        // on delete btn click, delete book + return success notif
+        try {
 
-    // delete device
+            const res = await axios.put(`${process.env.REACT_APP_API_URL}/deleteBookManager`, data, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
 
-        // on delete device button click
-        // open delete modal w/ title info
-            // "are you sure you wish to delete this device? this action cannot be undone"
-            // delete, cancel
+        } catch (error) {
+            console.log("Error deleting book: ", error);
+        }
 
-        // on delete btn click, delete device + return success notif
+        window.location.reload();
+    }
+
+    const deleteDevice = async (deviceDeleteModal) => {
+        const token = localStorage.getItem("token");
+        verifyUser(token);
+
+        const data = {
+            model: deviceDeleteModal.model,
+        }
+
+        try {
+
+            const res = await axios.put(`${process.env.REACT_APP_API_URL}/deleteDeviceManager`, data, {
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+
+        } catch (error) {
+            console.log("Error deleting device: ", error);
+        }
+
+        window.location.reload();
+    }
+
+
 
     return (
         <div>
@@ -206,7 +237,7 @@ const ManagerDeleteItems = () => {
 
                                 <h3 className="entryElement">{book.title}</h3>
 
-                                <img className="book_image" src={`https://covers.openlibrary.org/b/isbn/${book.ISBN}-L.jpg?default=false`} alt={book.Title}onError={(e) => {
+                                <img className="book_image" src={`https://covers.openlibrary.org/b/isbn/${book.isbn}-L.jpg?default=false`} alt={book.Title}onError={(e) => {
                                     e.target.onerror = null;
                                     e.target.src = defaultCover;
                                 }}/>
@@ -216,20 +247,58 @@ const ManagerDeleteItems = () => {
 
                                 <div class="bookBtnContainer">
                                     <button class="bookCardBtn"><MdModeEdit /></button>
-                                    <button class="bookCardBtn"><MdDeleteForever /></button>
+                                    <button class="bookCardBtn" onClick={() => setBookDeleteModal(book)}><MdDeleteForever /></button>
                                 </div>
 
                             </div>
                             </>);
                         })}
 
+                        {/* delete book modal */}
+
+                        {bookDeleteModal && (
+                            <div className="modal-overlay" onClick={() => setBookDeleteModal(null)}>
+                            
+                            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+                                <span className="modal-close" onClick={() => setBookDeleteModal(null)}>&times;</span>
+                            
+                                <h2 class="modalHeader">Delete all copies of <em>{bookDeleteModal.title}</em>?</h2>
+
+                                <p>Clicking 'confirm' will delete every copy of <em>{bookDeleteModal.title}</em> in your catalogue. This book will no longer be accessible to any user. This action cannot be undone.</p>
+
+                                <div className="modal-buttons">
+                                    <button className="confirm-button" onClick={() => {
+                                        setBookDeleteModal(null);
+                                        deleteBook(bookDeleteModal);
+                                    }}><FiAlertOctagon /> Confirm</button>
+
+                                    <button className="cancel-button" onClick={() => setBookDeleteModal(null)}>Cancel</button>
+                                </div>
+                            </div>
+                            </div>
+                        )}
+
                         </div>
 
-                    </>) : (
+                    </>) : (<>
+                        {/* search bar */}
+
+                        <form className="search fadeInAnimation" onSubmit={handleSearch}>
+
+                            <div className="dropdown">
+                                <DropDown options={browse_by} value={search_by} onSelect={ (selectedOption) => { setSearchBy(selectedOption); }}/>
+                            </div>
+
+                            <input className="search_bar" type="text" label="Search" placeholder="Search Book..." value={search_value} onChange={ (e) => setSearchValue(e.target.value) }/>
+                            
+                            <button className="browse_button" type="submit">Enter</button>
+
+                        </form>
+                        
                         <div class="nothingFoundMsg">
                             <p>No books found.</p>
                         </div>
-                    )}
+                    </>)}
                 </>)}
 
                 {/* devices tab */}
@@ -275,7 +344,7 @@ const ManagerDeleteItems = () => {
 
                                 <div class="bookBtnContainer">
                                     <button class="bookCardBtn"><MdModeEdit /></button>
-                                    <button class="bookCardBtn"><MdDeleteForever /></button>
+                                    <button class="bookCardBtn" onClick={() => setDeviceDeleteModal(device)}><MdDeleteForever /></button>
                                 </div>
 
                             </div>
@@ -286,13 +355,52 @@ const ManagerDeleteItems = () => {
                     })}
 
                     </div>
+
+                    {/* delete device modal */}
+
+                    {deviceDeleteModal && (
+                        <div className="modal-overlay" onClick={() => setDeviceDeleteModal(null)}>
+                        
+                        <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+                            <span className="modal-close" onClick={() => setDeviceDeleteModal(null)}>&times;</span>
+                        
+                            <h2 class="modalHeader">Delete all <em>{deviceDeleteModal.model}</em> {deviceDeleteModal.category.toLowerCase()}s?</h2>
+
+                            <p>Clicking 'confirm' will delete every instance of a <em>{deviceDeleteModal.model}</em> {deviceDeleteModal.category.toLowerCase()} in your catalogue. This device will no longer be accessible to any user. This action cannot be undone.</p>
+
+                            <div className="modal-buttons">
+                                <button className="confirm-button" onClick={() => {
+                                    setDeviceDeleteModal(null);
+                                    deleteDevice(deviceDeleteModal);
+                                }}><FiAlertOctagon /> Confirm</button>
+                                
+                                <button className="cancel-button" onClick={() => setDeviceDeleteModal(null)}>Cancel</button>
+                            </div>
+                        </div>
+                        </div>
+                    )}
+
                     </div>
 
-                    </>) : (
+                    </>) : (<>
+                        {/* search bar */}
+
+                        <form className="search fadeInAnimation" onSubmit={handleSearchDevice}>
+
+                            <div className="dropdown">
+                                <DropDown options={browse_by_devices} value={searchBy} onSelect={ (selectedOption) => { setSearchByDevices(selectedOption); }}/>
+                            </div>
+
+                            <input type="text" className="search_bar" label="Search" placeholder="Search Device..." value={searchValue} onChange={ (e) => setSearchValueDevices(e.target.value) }/>
+
+                            <button className="search_button browse_button" type="submit">Enter</button>
+
+                        </form>
+
                         <div class="nothingFoundMsg">
                             <p>No devices found.</p>
                         </div>
-                    )}
+                    </>)}
                 </>)}
                 
 

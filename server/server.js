@@ -45,6 +45,9 @@ const resolveMaintenanceItem = require('./manager_page/resolve_maintenance_items
 
 const getManagerBooksDevices = require("./manager_page/getManagerBooksDevices.js");
 const getBooksManager = require("./manager_page/getBooksManager.js");
+const getDevicesManager = require("./manager_page/getDevicesManager.js");
+const deleteBookCopies = require('./manager_page/deleteBookCopies.js');
+const deleteDeviceCopies = require('./manager_page/deleteDeviceCopies.js');
 
 
 const app = http
@@ -313,6 +316,18 @@ const app = http
       return;
     }
 
+    if (req.url === '/deleteBookManager' && req.method === 'PUT' && role === 3) {
+      console.log("Deleting book...");
+      deleteBookCopies(req, res);
+      console.log("Book deleted.");
+    }
+
+    if (req.url === '/deleteDeviceManager' && req.method === 'PUT' && role === 3) {
+      console.log("Deleting device...");
+      deleteDeviceCopies(req, res);
+      console.log("Device deleted.");
+    }
+
     if(req.url === '/view_librarians' && req.method === 'GET' && role === 3){
       viewLibrarians(req, res, userID)
       return;
@@ -348,6 +363,13 @@ const app = http
     if (req.url.startsWith("/books") && req.method === "GET" && role === 3) {
       console.log("req for books");
       getBooksManager(req, res);
+      return;
+    }
+
+    if (req.url.startsWith("/devices") && req.method === 'GET' && role === 3) {
+      console.log("Getting devices for manager...");
+      getDevicesManager(req, res);
+      console.log("Devices received for manager");
       return;
     }
 

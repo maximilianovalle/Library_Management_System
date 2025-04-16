@@ -61,3 +61,10 @@
 .bookCataloguebtmPadding {
     margin-bottom: 4px;
 }
+
+.confirm-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 4px;
+}
