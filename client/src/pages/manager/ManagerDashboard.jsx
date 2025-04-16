@@ -11,7 +11,7 @@ const ManagerDashboard = () => {
   const [lastName, setLastName] = useState("");
 
   const [activeLibrarians, setActiveLibrarians] = useState(0);
-  const [recentChanges, setRecentChanges] = useState([]);
+  // const [recentChanges, setRecentChanges] = useState([]);
   const [maintenanceBooks, setMaintenanceBooks] = useState(0);
   const [maintenanceDevices, setMaintenanceDevices] = useState(0);
 
