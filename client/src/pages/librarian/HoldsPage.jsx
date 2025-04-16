@@ -6,7 +6,6 @@ import "./HoldsPage.css";
 const HoldsPage = () => {
     const [usersWithHolds, setUsersWithHolds] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [filterStatus, setFilterStatus] = useState("all");
 
     useEffect(() => {
         const fetchHolds = async () => {
@@ -35,9 +34,61 @@ const HoldsPage = () => {
         fetchHolds();
     }, []);
 
-    const handleNotify = (item) => {
-        alert(`Notification sent to ${item.Holder_Name}`);
+    const handlePickedUP = async (item) => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("No token found. Redirecting to login...");
+                window.location.href = "/login";
+                return;
+            }
+
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/device_pickup`, {
+                hold_id: item.Hold_ID,
+                model: item.Model,
+                userID: item.User_ID,
+                category: item.Category,
+                copy_id: item.Copy_ID
+            }, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            alert(response.data.message);
+            window.location.reload()
+        } catch (error) {
+            console.error("Error handling picked up:", error);
+        }
     };
+
+    const handleReturned = async (item) => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.error("No token found. Redirecting to login...");
+                window.location.href = "/login";
+                return;
+            }
+
+            const response = await axios.post(`${process.env.REACT_APP_API_URL}/returned_device`, {
+                model: item.Model,
+                userID: item.User_ID,
+                category: item.Category,
+                copy_id: item.Copy_ID
+            }, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            alert(response.data.message);
+            window.location.reload()
+        } catch (error) {
+            console.error("Error handling picked up:", error);
+        }
+    };
+
 
     const formatDate = (isoString) => {
         const date = new Date(isoString);
@@ -51,6 +102,77 @@ const HoldsPage = () => {
         });
     };
 
+    const handleDelete = (indexToRemove) => {
+        setUsersWithHolds(prev => {
+            const copy = [...prev];
+            copy.splice(indexToRemove, 1);
+            return copy;
+        });
+    };
+
+    const renderTable = (title, items, actionType) => (
+        <div className="status-section">
+            <h2>{title}</h2>
+            {items.length === 0 ? (
+                <p>No {title.toLowerCase()} holds found.</p>
+            ) : (
+                <div className="table-container">
+                    <table className="holds-table">
+                        <thead>
+                            <tr>
+                                <th>User Name</th>
+                                <th>Category</th>
+                                <th>Model</th>
+                                <th>Status</th>
+                                <th>Hold ID</th>
+                                <th>Created At</th>
+                                <th>Expiration Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {items.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.Holder_Name}</td>
+                                    <td>{item.Category}</td>
+                                    <td>{item.Model}</td>
+                                    <td>{getHoldStatusText(item.Hold_status)}</td>
+                                    <td>{item.Hold_ID}</td>
+                                    <td>{formatDate(item.Created_at)}</td>
+                                    <td>{formatDate(item.Expiration_date)}</td>
+                                    <td>
+                                        {actionType === "pickup" && (
+                                            <button
+                                                className="notify-button"
+                                                onClick={() => handlePickedUP(item)}
+                                            >
+                                                Picked Up
+                                            </button>
+                                        )}
+                                        {actionType === "return" && (
+                                            <button className="notify-button"
+                                            onClick={() => handleReturned(item)}>
+                                                Returned
+                                            </button>
+                                        )}
+                                        {actionType === "delete" && (
+                                            <button
+                                                className="notify-button"
+                                                onClick={() => handleDelete(index)}
+                                            >
+                                                Delete
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            )}
+        </div>
+    );
+
     const getHoldStatusText = (statusCode) => {
         switch (statusCode) {
             case 1: return "Active";
@@ -60,13 +182,9 @@ const HoldsPage = () => {
         }
     };
 
-    const filteredHolds = usersWithHolds.filter(item => {
-        if (filterStatus === "all") return true;
-        if (filterStatus === "active") return item.Hold_status === 1;
-        if (filterStatus === "pending") return item.Hold_status === 2;
-        if (filterStatus === "expired") return item.Hold_status === 3;
-        return true;
-    });
+    const activeHolds = usersWithHolds.filter(item => item.Hold_status === 1);
+    const pendingHolds = usersWithHolds.filter(item => item.Hold_status === 2);
+    const expiredHolds = usersWithHolds.filter(item => item.Hold_status === 3);
 
     if (loading) {
         return <div>Loading...</div>;
@@ -77,61 +195,9 @@ const HoldsPage = () => {
             <Header />
             <div className="holds-page">
                 <h1>Manage Holds</h1>
-                <div className="filter-section">
-                    <label htmlFor="filterSelect">Filter by Status:</label>
-                    <select
-                        id="filterSelect"
-                        value={filterStatus}
-                        onChange={(e) => setFilterStatus(e.target.value)}
-                    >
-                        <option value="all">All</option>
-                        <option value="active">Active</option>
-                        <option value="pending">Pending</option>
-                        <option value="expired">Expired</option>
-                    </select>
-                </div>
-
-                {filteredHolds.length === 0 ? (
-                    <p>No holds matching the selected filter.</p>
-                ) : (
-                    <div className="table-container">
-                        <table className="holds-table">
-                            <thead>
-                                <tr>
-                                    <th>User Name</th>
-                                    <th>Category</th>
-                                    <th>Model</th>
-                                    <th>Status</th>
-                                    <th>Hold ID</th>
-                                    <th>Created At</th>
-                                    <th>Expiration Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {filteredHolds.map((item, index) => (
-                                    <tr key={index}>
-                                        <td>{item.Holder_Name}</td>
-                                        <td>{item.Category}</td>
-                                        <td>{item.Model}</td>
-                                        <td>{getHoldStatusText(item.Hold_status)}</td>
-                                        <td>{item.Hold_ID}</td>
-                                        <td>{formatDate(item.Created_at)}</td>
-                                        <td>{formatDate(item.Expiration_date)}</td>
-                                        <td>
-                                            <button
-                                                className="notify-button"
-                                                onClick={() => handleNotify(item)}
-                                            >
-                                                Picked Up
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
+                {renderTable("Pending Holds", pendingHolds, "pickup")}
+                {renderTable("Active Holds", activeHolds, "return")}
+                {renderTable("Expired Holds", expiredHolds, "delete")}
             </div>
         </div>
     );

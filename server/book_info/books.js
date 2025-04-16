@@ -51,7 +51,7 @@ module.exports = async function getBooks(req, res) {
 
         console.log("Final Query:", query);
         const [rows] = await pool.query(query, params);
-
+        console.log(rows)
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ books: rows }));
     } catch (error) {

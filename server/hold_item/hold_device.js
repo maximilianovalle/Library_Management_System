@@ -46,7 +46,7 @@ module.exports = async function holdDevice(req, res) {
 
             await pool.query(`
                 INSERT INTO holds (user_id, model, category, isbn, hold_status, created_at, expiration_date)
-                VALUES (?, ?, ?, NULL, 1, NOW(), ?)
+                VALUES (?, ?, ?, NULL, 2, NOW(), ?)
             `, [userID, model, category, formattedExpiration]);
 
             res.writeHead(200, { 'Content-Type': 'application/json' });
