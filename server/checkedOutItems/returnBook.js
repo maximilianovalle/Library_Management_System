@@ -43,7 +43,11 @@ module.exports = async function returnBook(req, res, userID) {
                     return;
                 }
 
-                const recordID = await pool.query("SELECT Record_ID FROM borrow_record WHERE User_ID = ? AND ISBN = ? AND Book_Copy_ID = ? AND Return_Date IS NULL", [userID, isbn, copyID]);
+                const [rows] = await pool.query("SELECT Record_ID FROM borrow_record WHERE User_ID = ? AND ISBN = ? AND Book_Copy_ID = ? AND Return_Date IS NULL", [userID, isbn, copyID]);
+
+                const recordID = rows[0]?.Record_ID;
+
+                console.log("RECORD ID: ", recordID);
 
                 await pool.query("UPDATE borrow_record SET Return_Date = NOW() WHERE Record_ID =  ?", [recordID]);
 

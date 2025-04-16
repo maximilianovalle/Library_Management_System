@@ -127,6 +127,34 @@ const ManagerDeleteItems = () => {
         }
     }
 
+    // edit book
+
+        // on edit book button click
+        // open modal w/ current book info, editable
+            // title
+            // author
+            // 
+
+    // edit device
+
+    // delete book
+
+        // on delete book button click
+        // open delete modal w/ title info
+            // "are you sure you wish to delete this book? this action cannot be undone"
+            // delete, cancel
+
+        // on delete btn click, delete book + return success notif
+
+    // delete device
+
+        // on delete device button click
+        // open delete modal w/ title info
+            // "are you sure you wish to delete this device? this action cannot be undone"
+            // delete, cancel
+
+        // on delete btn click, delete device + return success notif
+
     return (
         <div>
             <Header />
