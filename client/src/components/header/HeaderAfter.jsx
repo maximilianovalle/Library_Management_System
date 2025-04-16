@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { IoIosNotifications } from "react-icons/io";
 import { MdNotificationsActive } from "react-icons/md";
-import { BsDot } from "react-icons/bs";
+import { BsDot, BsCheck2All } from "react-icons/bs";
 
 const HeaderAfter = () => {
     const location = useLocation();
@@ -202,7 +202,10 @@ const HeaderAfter = () => {
                                 <div className="readNotifBox notifBox">
 
                                     <div className="notifHeader">
+                                        <div id="forUnread">
+                                        <span className="entryElement">read</span>
                                         <h3 class="entryElement">{notifType[notification.type] || "Other"}</h3>
+                                        </div>
 
                                         <p className="dateNotif">
                                         {new Date(notification.date).toLocaleString("en-CA", {
