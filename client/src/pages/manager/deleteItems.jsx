@@ -29,8 +29,8 @@ const ManagerDeleteItems = () => {
     const [devices, setDevices] = useState([]);
 
     const [bookDeleteModal, setBookDeleteModal] = useState(null);
-    const [bookEditModal, setBookEditModal] = useState(null);
-    const [bookFormData, setBookFormData] = useState({});
+    // const [bookEditModal, setBookEditModal] = useState(null);
+    // const [bookFormData, setBookFormData] = useState({});
 
     const [deviceDeleteModal, setDeviceDeleteModal] = useState(null);
     // const [deviceEditModal, setDeviceEditModal] = useState(null);
