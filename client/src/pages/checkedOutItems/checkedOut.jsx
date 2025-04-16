@@ -101,12 +101,12 @@ const CheckedOutPage = () => {
 
     const closeReturnModal = () => setShowReturnItem(false);
 
-    const openCancelModal = (index) => {
-        setAffectedIndex(index)
-        setTimeout(() => {
-            setShowCancelHold(true);
-        }, 400);
-    }
+    // const openCancelModal = (index) => {
+    //     setAffectedIndex(index)
+    //     setTimeout(() => {
+    //         setShowCancelHold(true);
+    //     }, 400);
+    // }
     
     const closeCancelModal = () => setShowCancelHold(false);
 
@@ -125,7 +125,7 @@ const CheckedOutPage = () => {
         }
 
         try {
-            const res = await axios.put(`${process.env.REACT_APP_API_URL}/returnItem`, data, {
+            await axios.put(`${process.env.REACT_APP_API_URL}/returnItem`, data, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -152,7 +152,7 @@ const CheckedOutPage = () => {
         }
 
         try {
-            const res = await axios.put(`${process.env.REACT_APP_API_URL}/removeHold`, data, {
+            await axios.put(`${process.env.REACT_APP_API_URL}/removeHold`, data, {
                 headers: {
                 "Authorization": `Bearer ${token}`,
                 "Content-Type": "application/json",
@@ -234,7 +234,7 @@ const CheckedOutPage = () => {
                             // device entry
                             return (
                                 <div key={`hold_${index}`} class="deviceEntry">
-                                    <p id="holdSubtext">ON HOLD - Pick up item at library help desk</p>
+                                    <p id="holdSubtext">Thank you for picking up your device</p>
                                     <h3 class="entryElement">{device.model}</h3>
                                     <p class="entryElement">{device.category}</p>
                                     <img src={deviceImages[device.category]} alt={device.category}/>
@@ -247,7 +247,8 @@ const CheckedOutPage = () => {
                                         }
                                     </strong></p>
 
-                                    <button class="btn holdBtn entryElement" onClick={() => {openCancelModal(index);}}>Remove Hold</button>
+                                    {/* <button class="btn holdBtn entryElement" onClick={() => {openCancelModal(index);}}>Remove Hold</button> */}
+                                    <p id="holdSubtext">Return at the Library</p>
                                 </div>
                             )
 

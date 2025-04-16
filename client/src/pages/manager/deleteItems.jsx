@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 
-import { MdLaptopChromebook, MdModeEdit, MdDeleteForever } from "react-icons/md";
+import { MdLaptopChromebook, MdDeleteForever } from "react-icons/md";
 import { BiLibrary } from "react-icons/bi";
 import { FiAlertOctagon } from "react-icons/fi";
 
@@ -59,25 +59,25 @@ const ManagerDeleteItems = () => {
         setTimeout(() => setToast({ message: "", type: "" }), 3000);
     };
 
-    const fetchItems = async () => {
+    const fetchItems = useCallback(async () => {
         try {
             const token = localStorage.getItem("token");
             verifyUser(token);
-
+    
             const res = await axios.get(`${process.env.REACT_APP_API_URL}/manage_items`, {
-                headers: {Authorization: `Bearer ${token}`},
+                headers: { Authorization: `Bearer ${token}` },
             });
-
+    
             setBooks(res.data.allBooks);
             setDevices(res.data.allDevices);
         } catch (error) {
             console.error("Error fetching books: ", error);
         }
-    }
-
+    }, []);
+    
     useEffect(() => {
         fetchItems();
-    }, []);
+    }, [fetchItems]);
 
     // book search
 
@@ -197,7 +197,7 @@ const ManagerDeleteItems = () => {
 
         try {
 
-            const res = await axios.put(`${process.env.REACT_APP_API_URL}/deleteBookManager`, data, {
+            await axios.put(`${process.env.REACT_APP_API_URL}/deleteBookManager`, data, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -224,7 +224,7 @@ const ManagerDeleteItems = () => {
 
         try {
 
-            const res = await axios.put(`${process.env.REACT_APP_API_URL}/deleteDeviceManager`, data, {
+            await axios.put(`${process.env.REACT_APP_API_URL}/deleteDeviceManager`, data, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -255,7 +255,6 @@ const ManagerDeleteItems = () => {
                     <button className={`tab-button ${activeTab === "books" ? "active" : ""}`} onClick={() => {
                         setActiveTab("books");
                     }}><BiLibrary /></button>
-
                     <button className={`tab-button ${activeTab === "devices" ? "active" : ""}`} onClick={() => {
                         setActiveTab("devices");
                     }}><MdLaptopChromebook /></button>

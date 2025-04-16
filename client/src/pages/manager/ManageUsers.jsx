@@ -48,9 +48,9 @@ const generateRandomPassword = () => {
     pageNumbers.push(i);
     }
 
-    const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    };
+    // const handlePageChange = (pageNumber) => {
+    // setCurrentPage(pageNumber);
+    // };
   
     useEffect(() => {
       if (activeTab === "view") fetchUsers();

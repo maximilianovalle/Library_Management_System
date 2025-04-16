@@ -34,6 +34,8 @@ const all_devices = require('./librarian_page/get_devices.js')
 const getHeldItems = require('./librarian_page/all_holds.js')
 const getFines = require('./librarian_page/all_fines.js')
 const updateFine = require('./librarian_page/update_fine.js')
+const PickedUpDevice = require('./librarian_page/device_pickup.js')
+const ReturnedDevice = require('./librarian_page/device_return.js')
 
 const getManagerDashboardInfo = require('./manager_page/getManagerDashboardInfo.js');
 
@@ -320,6 +322,17 @@ const app = http
       return;
     } 
 
+    if(req.url === '/device_pickup' && req.method === 'POST' && role === 1){
+      console.log("Picked up device")
+      PickedUpDevice(req, res)
+      return;
+    }
+
+    if(req.url === '/returned_device' && req.method === 'POST' && role === 1){
+      console.log("Returned device")
+      ReturnedDevice(req, res)
+      return;
+    }
     // if(req.url === '/get_activity' && req.method === 'GET' && role === 1){
     //   console.log("Get recent activities")
     //   getRecentActivities(req, res)

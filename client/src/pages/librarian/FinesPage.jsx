@@ -77,6 +77,7 @@ const ManageFinesPage = () => {
             );
 
             setSuccessMessage(`Fine updated successfully for ${selectedUser.User_Name}.`);
+            window.location.reload()
         } catch (error) {
             console.error("Error updating fine:", error);
             alert("Failed to update fine.");

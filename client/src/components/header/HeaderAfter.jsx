@@ -24,7 +24,7 @@ const HeaderAfter = () => {
     };
 
     const [unreadNotifsAmnt, setUnreadNotifsAmnt] = useState(0);
-    const [notifUnread, setNotifUnread] = useState(false);
+    // const [notifUnread, setNotifUnread] = useState(false);
     const [notifications, setNotifications] = useState([]);
     const [notificationsModal, setNotificationsModal] = useState(false);
 
@@ -63,7 +63,7 @@ const HeaderAfter = () => {
 
         try {
 
-            const res = await axios.put(`${process.env.REACT_APP_API_URL}/markAsRead`, data, {
+            await axios.put(`${process.env.REACT_APP_API_URL}/markAsRead`, data, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
