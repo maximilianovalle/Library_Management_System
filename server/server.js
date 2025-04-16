@@ -34,10 +34,17 @@ const getFines = require('./librarian_page/all_fines.js')
 const updateFine = require('./librarian_page/update_fine.js')
 
 const getManagerDashboardInfo = require('./manager_page/getManagerDashboardInfo.js');
+
 const addLibrarian = require('./manager_page/add_librarian.js');
 const viewLibrarians = require('./manager_page/view_librarian.js');
 const updateLibrarian = require('./manager_page/update_librarian.js');
 const deleteLibrarian = require('./manager_page/delete_librarian.js');
+
+const addUser = require('./manager_page/add_user.js');
+const viewUsers = require('./manager_page/view_user.js');
+const updateUser = require('./manager_page/update_user.js');
+const deleteUser = require('./manager_page/delete_user.js');
+
 const getUnreadMaintenanceNotifs = require('./manager_page/get_unread_maintenance_notifs.js');
 const markMaintenanceNotifsRead = require('./manager_page/mark_read_maintenance_notifs.js');
 const getMaintenanceItems = require('./manager_page/get_maintenance_items.js');
@@ -325,6 +332,26 @@ const app = http
     
     if (req.url.startsWith('/delete_librarians') && req.method === 'DELETE' && role === 3) {
       deleteLibrarian(req, res);
+      return
+    }
+
+    if(req.url === '/add_user' && req.method === 'POST' && role === 3){
+      addUser(req, res, userID)
+      return;
+    }
+
+    if(req.url === '/view_user' && req.method === 'GET' && role === 3){
+      viewUsers(req, res, userID)
+      return;
+    }
+
+    if (req.url.startsWith('/update_user') && req.method === 'PUT' && role === 3) {
+      updateUser(req, res);
+      return
+    }
+    
+    if (req.url.startsWith('/delete_user') && req.method === 'DELETE' && role === 3) {
+      deleteUser(req, res);
       return
     }
 
