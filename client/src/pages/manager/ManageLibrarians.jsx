@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { IoIosSearch, IoIosAdd } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import { MdOutlineModeEdit, MdDelete } from "react-icons/md";
 import Header from "../../components/header/ManagerHeader";
 import "./ManageLibrarians.css";
@@ -26,7 +26,7 @@ const LibrarianManager = () => {
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     try {
