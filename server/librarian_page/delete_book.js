@@ -18,27 +18,28 @@ module.exports = async function deleteBookCopy(req, res, userID) {
                     return;
                 }
 
-                await pool.query(
-                    "DELETE FROM borrow_record WHERE Book_Copy_ID = ? AND ISBN = ?",
+                const borrowResult = await pool.query(
+                    "SELECT * FROM borrow_record WHERE Book_Copy_ID = ? AND ISBN = ?",
                     [Copy_ID, ISBN]
                 );
 
-                const result = await pool.query(
-                    "DELETE FROM book_copies WHERE Copy_ID = ? AND ISBN = ?",
-                    [Copy_ID, ISBN]
-                );
-
-                if (result.affectedRows === 0) {
-                    res.writeHead(404, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: "Book copy not found" }));
-                    return;
+                if (borrowResult.length > 0) {
+                    await pool.query(
+                        "UPDATE book_copies SET Book_Status = 'Deleted' WHERE Copy_ID = ? AND ISBN = ?",
+                        [Copy_ID, ISBN]
+                    );
+                } else {
+                    await pool.query(
+                        "UPDATE book_copies SET Book_Status = 'Deleted' WHERE Copy_ID = ? AND ISBN = ?",
+                        [Copy_ID, ISBN]
+                    );
                 }
 
                 res.writeHead(200, { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ message: "Book copy deleted successfully!" }));
+                res.end(JSON.stringify({ message: "Book copy status updated to 'Deleted'" }));
 
             } catch (error) {
-                console.log("Error deleting book copy: ", error);
+                console.log("Error updating book copy: ", error);
                 res.writeHead(500, { 'Content-Type': 'application/json' });
                 res.end(JSON.stringify({ message: "Internal Server Error" }));
                 return;
