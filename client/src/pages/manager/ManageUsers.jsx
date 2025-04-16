@@ -1,51 +1,28 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { IoIosSearch, IoIosAdd } from "react-icons/io";
-import { useNavigate } from "react-router-dom";
 import { MdOutlineModeEdit, MdDelete } from "react-icons/md";
 import Header from "../../components/header/ManagerHeader";
-import "./ManageLibrarians.css";
+import "./ManageLibrarians.css"; // Reused styling
 
-const LibrarianManager = () => {
+const ManageUsers = () => {
   const [activeTab, setActiveTab] = useState("add");
   const [formData, setFormData] = useState({
     First_Name: "",
     Last_Name: "",
+    Email: "",
     Password: "",
-    Department: "",
-    Position: "",
-    SSN: "",
-    Hire_Date: "",
-    Pay_Rate: ""
+    Role: "1"
   });
   const [toast, setToast] = useState({ message: "", type: "" });
   const [loading, setLoading] = useState(false);
-
-  const [librarians, setLibrarians] = useState([]);
+  const [users, setUsers] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
-  const navigate = useNavigate();
-
   useEffect(() => {
-    try {
-      const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
-
-      // if ( no token )
-      if (!token) {
-          console.error("No token found. Redirecting to login...");
-          window.location.href = "/login";
-          return;
-      }
-
-    } catch (error) {
-      console.error("Error fetching info: ", error);
-    }
-
-    if (activeTab === "view") {
-      fetchLibrarians();
-    }
+    if (activeTab === "view") fetchUsers();
   }, [activeTab]);
 
   const showToast = (message, type = "success") => {
@@ -54,10 +31,7 @@ const LibrarianManager = () => {
   };
 
   const handleChange = (e) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value
-    }));
+    setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleAdd = async (e) => {
@@ -65,62 +39,48 @@ const LibrarianManager = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      await axios.post(`${process.env.REACT_APP_API_URL}/add_librarian`, formData, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/add_user`, formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      showToast(`${formData.First_Name} ${formData.Last_Name} added successfully!`);
-      setFormData({
-        First_Name: "",
-        Last_Name: "",
-        Password: "",
-        Department: "",
-        Position: "",
-        SSN: "",
-        Hire_Date: "",
-        Pay_Rate: ""
-      });
+      showToast(`Added ${formData.First_Name} ${formData.Last_Name}`);
+      setFormData({ First_Name: "", Last_Name: "", Email: "", Password: "", Role: "1" });
     } catch (error) {
-      console.error("Add librarian failed:", error);
-      showToast("Failed to add librarian.", "error");
+      console.error(error);
+      showToast("Failed to add user", "error");
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchLibrarians = async () => {
+  const fetchUsers = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await axios.get(`${process.env.REACT_APP_API_URL}/view_librarians`, {
+      const res = await axios.get(`${process.env.REACT_APP_API_URL}/view_user`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setLibrarians(res.data);
-    } catch (err) {
-      console.error("Error fetching librarians:", err);
+      setUsers(res.data);
+    } catch (error) {
+      console.error("Fetch failed:", error);
     }
   };
 
-  const handleEdit = (lib) => {
-    setEditingId(lib.Librarian_ID);
-    setFormData({
-      ...lib,
-      Hire_Date: lib.Hire_Date?.split("T")[0] || getToday(),
-      End_Date: lib.Is_Active === 1 ? "" : lib.End_Date?.split("T")[0] || getToday(),
-    });
+  const handleEdit = (user) => {
+    setEditingId(user.User_ID);
+    setFormData({ ...user });
   };
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      await axios.put(`${process.env.REACT_APP_API_URL}/update_librarians/${editingId}`, formData, {
+      await axios.put(`${process.env.REACT_APP_API_URL}/update_user/${editingId}`, formData, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      showToast("Librarian updated successfully!");
+      showToast("User updated!");
       setEditingId(null);
-      fetchLibrarians();
+      fetchUsers();
     } catch (error) {
-      console.error("Update failed:", error);
-      showToast("Failed to update librarian", "error");
+      showToast("Update failed", "error");
     }
   };
 
@@ -132,54 +92,40 @@ const LibrarianManager = () => {
   const handleDelete = async () => {
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`${process.env.REACT_APP_API_URL}/delete_librarians/${deleteId}`, {
+      await axios.delete(`${process.env.REACT_APP_API_URL}/delete_user/${deleteId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      showToast("Librarian deleted successfully!", "error");
-      fetchLibrarians();
+      showToast("User deleted", "error");
+      fetchUsers();
       setShowModal(false);
-      setDeleteId(null);
     } catch (error) {
-      showToast("Failed to delete librarian.", "error");
-      console.error("Delete failed:", error);
+      showToast("Failed to delete", "error");
     }
   };
-
-  const getToday = () => new Date().toISOString().split("T")[0];
 
   return (
     <div>
       <Header />
       <div className="manage-librarians-container mainManage">
-
-      <h2 id="dashboardTitle" class="dashboard-title manageLibrariansTitle">Manage Librarians</h2>
+        <h2 id="dashboardTitle" className="dashboard-title manageLibrariansTitle">Manage Users</h2>
 
         <div className="tab-buttons dashboard-header dashboard-title">
           <button
             className={`tab-button ${activeTab === "add" ? "active" : ""}`}
             onClick={() => {
               setActiveTab("add");
-              setEditingId(null); // Clear any edit state
-              setFormData({
-                First_Name: "",
-                Last_Name: "",
-                Password: "",
-                Department: "",
-                Position: "",
-                SSN: "",
-                Hire_Date: "",
-                Pay_Rate: ""
-              }); // Reset form
+              setEditingId(null);
+              setFormData({ First_Name: "", Last_Name: "", Email: "", Password: "", Role: "1" });
             }}
           >
-            <IoIosAdd /> Add Librarian
+            <IoIosAdd /> Add User
           </button>
-          
+
           <button
             className={`tab-button ${activeTab === "view" ? "active" : ""}`}
             onClick={() => setActiveTab("view")}
           >
-            <IoIosSearch /> View All Librarians
+            <IoIosSearch /> View All Users
           </button>
         </div>
 
@@ -187,27 +133,18 @@ const LibrarianManager = () => {
 
         {activeTab === "add" && (
           <div className="form-section">
-
             <form onSubmit={handleAdd} className="librarian-form" autoComplete="off">
-              {Object.entries(formData).map(([key, value]) => (
-                <div key={key} className="form-group">
-                  <label htmlFor={key}>{key.replace(/_/g, " ")}</label>
-                  <input
-                    id={key}
-                    name={key}
-                    value={value}
-                    onChange={handleChange}
-                    type={key.toLowerCase().includes("date") ? "date" : "text"}
-                    required={key !== "Pay_Rate"}
-                  />
-                </div>
-              ))}
+              <input name="First_Name" value={formData.First_Name} onChange={handleChange} placeholder="First Name" required />
+              <input name="Last_Name" value={formData.Last_Name} onChange={handleChange} placeholder="Last Name" required />
+              <input name="Email" value={formData.Email} onChange={handleChange} placeholder="Email" type="email" required />
+              <input name="Password" value={formData.Password} onChange={handleChange} placeholder="Password" type="text" required />
+              <select name="Role" value={formData.Role} onChange={handleChange} className="styled-select">
+                <option value="1">Student</option>
+                <option value="2">Alumni</option>
+                <option value="3">Faculty</option>
+              </select>
               <button type="submit" disabled={loading}>
-                {loading ? (
-                  <div className="spinner" style={{ margin: "0 auto" }}></div>
-                ) : (
-                  "Add Librarian"
-                )}
+                {loading ? <div className="spinner"></div> : "Add User"}
               </button>
             </form>
           </div>
@@ -219,9 +156,7 @@ const LibrarianManager = () => {
               <div className="modal-overlay">
                 <div className="modal-box">
                   <span className="modal-close" onClick={() => setShowModal(null)}>&times;</span>
-
-                  <h2 class="modalHeader">Delete librarian?</h2>
-
+                  <h2 className="modalHeader">Delete user?</h2>
                   <p>This action cannot be undone.</p>
                   <button className="confirm-btn" onClick={handleDelete}>Yes, Delete</button>
                   <button className="cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
@@ -232,80 +167,43 @@ const LibrarianManager = () => {
             {editingId ? (
               <div className="edit-modal">
                 <button className="close-btn" onClick={() => setEditingId(null)}>×</button>
-                <form onSubmit={handleUpdate} className="librarian-form" autoComplete="off">
-                  {Object.entries(formData).map(([key, value]) => (
-                    <div key={key} className="form-group">
-                      <label htmlFor={key}>{key.replace(/_/g, " ")}</label>
-                      <input
-                        id={key}
-                        name={key}
-                        value={value || ""}
-                        onChange={handleChange}
-                        type={key.toLowerCase().includes("date") ? "date" : "text"}
-                        required={key !== "End_Date" && key !== "Pay_Rate"}
-                      />
-                    </div>
-                  ))}
-                  <button type="submit">Update Librarian</button>
+                <form onSubmit={handleUpdate} className="librarian-form">
+                  <input name="First_Name" value={formData.First_Name} onChange={handleChange} placeholder="First Name" required />
+                  <input name="Last_Name" value={formData.Last_Name} onChange={handleChange} placeholder="Last Name" required />
+                  <input name="Email" value={formData.Email} onChange={handleChange} placeholder="Email" type="email" required />
+                  <input name="Password" value={formData.Password} onChange={handleChange} placeholder="Password" type="text" required />
+                  <select name="Role" value={formData.Role} onChange={handleChange} className="styled-select">
+                    <option value="1">Student</option>
+                    <option value="2">Alumni</option>
+                    <option value="3">Faculty</option>
+                  </select>
+                  <button type="submit">Update User</button>
                 </form>
               </div>
             ) : (
               <div id="containsAllLibrarians">
-                {librarians.length > 0 ? (
-                  librarians.map((lib, idx) => (
-                    <div key={idx} className="librarian-row">
-
-                      <div id="librarianRowSpacing">
+                {users.map((user, idx) => (
+                  <div key={idx} className="librarian-row">
+                    <div id="librarianRowSpacing">
                       <div className="card-header">
-
-                        <h3 class="libName entryElement">{lib.First_Name} {lib.Last_Name}</h3>
-
-                        <span className="entryElement">
-                          {!lib.End_Date && (
-                            <span className="entryElement active-indicator" title="Current Employee">ACTIVE SINCE</span>
-                          )}
-                          {lib.End_Date && (
-                            <span className="entryElement active-indicator" title="Current Employee">NOT ACTIVE</span>
-                          )}
+                        <h3 className="libName entryElement">{user.First_Name} {user.Last_Name}</h3>
+                        <span className="position-badge">
+                          {user.Role === "1" ? "Student" : user.Role === "2" ? "Alumni" : "Faculty"}
                         </span>
-
                       </div>
-
-                      <div class="card-header">
-
-                        <div>
-                          <span className="entryElement">{lib.Position}, {lib.Department}</span>
-
-                        </div>
-
-                      <span className="entryElement">
-                        
-                        {lib.Hire_Date &&
-                          new Date(lib.Hire_Date).toLocaleDateString("en-US", {
-                            year: "numeric", month: "long", day: "numeric"
-                          })}
-                        {lib.End_Date && (
-                          <span className="entryElement">
-                            {" "}–{" "}
-                            {new Date(lib.End_Date).toLocaleDateString("en-US", {
-                              year: "numeric", month: "long", day: "numeric"
-                            })}
-                          </span>
-                        )}
-                      </span>
-
-                      </div>
-                      </div>
-
-                      <div className="actions">
-                        <button className="edit-btn" onClick={() => handleEdit(lib)}><MdOutlineModeEdit /> Edit</button>
-                        <button className="delete-btn" onClick={() => confirmDelete(lib.Librarian_ID)}><MdDelete /> Delete</button>
+                      <div className="card-header">
+                        <span className="entryElement">{user.Email}</span>
+                        <span className="entryElement">
+                          Created: {new Date(user.Created_At).toLocaleDateString("en-US")}
+                        </span>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <p>No librarians found.</p>
-                )}
+                    <div className="actions">
+                      <button className="edit-btn" onClick={() => handleEdit(user)}><MdOutlineModeEdit /> Edit</button>
+                      <button className="delete-btn" onClick={() => confirmDelete(user.User_ID)}><MdDelete /> Delete</button>
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
           </>
@@ -315,4 +213,4 @@ const LibrarianManager = () => {
   );
 };
 
-export default LibrarianManager;
+export default ManageUsers;
