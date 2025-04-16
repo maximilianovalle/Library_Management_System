@@ -14,9 +14,10 @@ module.exports = async function getUserHolds(req, res) {
         const userID = session.userID;
 
         const [holds] = await pool.query(`
-            SELECT model, hold_status 
-            FROM holds 
-            WHERE user_id = ? AND hold_status = 1
+            SELECT h.model, h.category, dc.Copy_ID AS copy_id
+            FROM holds h
+            JOIN device_copies dc ON h.model = dc.Model AND h.category = dc.Category
+            WHERE h.user_id = ? AND h.hold_status = 1 AND dc.Device_Status = 'On Hold'
         `, [userID]);
 
         res.writeHead(200, { 'Content-Type': 'application/json' });

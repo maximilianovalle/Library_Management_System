@@ -16,6 +16,8 @@ const holdDevice = require("./hold_item/hold_device.js"); //holdDevice()
 const returnBook = require("./checkedOutItems/returnBook.js");
 const removeHold = require("./checkedOutItems/removeHold.js");
 
+const getNotifications = require("./account_info/getNotifs.js");
+
 
 const getUserHolds = require("./hold_item/user_holds.js");
 const cancelHold = require("./hold_item/cancel_hold.js");
@@ -60,6 +62,7 @@ const deleteDeviceCopies = require('./manager_page/deleteDeviceCopies.js');
 
 const bookUpdate = require('./manager_page/bookUpdate.js');
 const deviceUpdate = require('./manager_page/deviceUpdate.js');
+const markNotifAsRead = require("./account_info/markNotifAsRead.js");
 
 
 const app = http
@@ -139,6 +142,19 @@ const app = http
   if (req.url.startsWith('/devices') && req.method === 'GET' && role === 2) {
     getDevices(req, res);  // call getDevices() to search devices
     return;
+  }
+
+  if (req.url === "/getNotifications" && req.method === 'GET' && role === 2) {
+    console.log("Fetching notifications...");
+    getNotifications(req, res, userID);
+    console.log("Notifications fetched.");
+    return;
+  }
+
+  if (req.url === '/markAsRead' && req.method === 'PUT' && role === 2) {
+    console.log("Marking notification as read...");
+    markNotifAsRead(req, res);
+    console.log("Marked notification as read.");
   }
     
   
