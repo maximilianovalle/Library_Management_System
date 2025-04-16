@@ -237,8 +237,6 @@ const HeaderAfter = () => {
                                 </div>
                             )}
 
-                            <p className="headerSubtextNotif">click a notification to mark it as read</p>
-
                         </div>
                         </div>
                     )}
