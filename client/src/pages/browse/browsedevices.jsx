@@ -52,12 +52,13 @@ const BrowseDevices = () => {
             const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/holds`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
-            setUserHolds(response.data.holds.map(h => h.model));
+    
+            setUserHolds(response.data.holds || []);
         } catch (error) {
             console.error("Error fetching user holds:", error);
         }
     };
+    
 
     useEffect(() => {
         const init = async () => {
@@ -112,25 +113,25 @@ const BrowseDevices = () => {
         }
     };
 
-    const closeModal = () => {
-        setHoldConfirm(null);
-    }
+    // const closeModal = () => {
+    //     setHoldConfirm(null);
+    // }
 
-    const handleCancelHold = async (model) => {
-        try {
-            const token = localStorage.getItem("token");
-            await axios.post(`${process.env.REACT_APP_API_URL}/hold/cancel`, {
-                model
-            }, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            await fetchDevices();
-            await fetchUserHolds();
-            alert("Hold released.");
-        } catch (err) {
-            alert("Failed to cancel hold.");
-        }
-    };
+    // const handleCancelHold = async (model) => {
+    //     try {
+    //         const token = localStorage.getItem("token");
+    //         await axios.post(`${process.env.REACT_APP_API_URL}/hold/cancel`, {
+    //             model
+    //         }, {
+    //             headers: { Authorization: `Bearer ${token}` }
+    //         });
+    //         await fetchDevices();
+    //         await fetchUserHolds();
+    //         alert("Hold released.");
+    //     } catch (err) {
+    //         alert("Failed to cancel hold.");
+    //     }
+    // };
 
     const filteredDevices = devices.filter(device => {
         const isHeld = userHolds.includes(device.model);
@@ -206,7 +207,13 @@ const BrowseDevices = () => {
                     <ul className="device_list">
                         {filteredDevices.map((device, index) => {
                             const imageSrc = categoryImages[device.category.toLowerCase()];
-                            const isHeldByUser = userHolds.includes(device.model);
+                            const isHeldByUser = userHolds.some(
+                                (h) =>
+                                    h.model === device.model &&
+                                    h.category === device.category &&
+                                    h.copy_id === device.copy_id
+                            );
+                            
 
                             return (
                                 <li key={index} className="device_card">
@@ -220,12 +227,12 @@ const BrowseDevices = () => {
                                         {isHeldByUser ? (
                                             <div className="held-section">
                                                 <span className="held_by_you">Held by you</span>
-                                                <button
+                                                {/* <button
                                                     className="cancel_hold_button"
                                                     onClick={() => handleCancelHold(device.model)}
                                                 >
                                                     Release Hold
-                                                </button>
+                                                </button> */}
                                             </div>
                                         ) : device.status.toLowerCase() === "available" && (
                                             <button
