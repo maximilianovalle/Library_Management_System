@@ -56,6 +56,9 @@ const getDevicesManager = require("./manager_page/getDevicesManager.js");
 const deleteBookCopies = require('./manager_page/deleteBookCopies.js');
 const deleteDeviceCopies = require('./manager_page/deleteDeviceCopies.js');
 
+const bookUpdate = require('./manager_page/bookUpdate.js');
+const deviceUpdate = require('./manager_page/deviceUpdate.js');
+
 
 const app = http
   .createServer(async (req, res) => {
@@ -321,6 +324,18 @@ const app = http
     if(req.url === '/add_librarian' && req.method === 'POST' && role === 3){
       addLibrarian(req, res, userID)
       return;
+    }
+
+    if (req.url === '/bookUpdateManager' && req.method === 'PUT' && role === 3) {
+      console.log("Updating book...");
+      bookUpdate(req, res);
+      console.log("Book updated.");
+    }
+
+    if (req.url === '/deviceUpdateManager' && req.method === 'PUT' && role === 3) {
+      console.log("Updating device...");
+      deviceUpdate(req, res);
+      console.log("Device updated.");
     }
 
     if (req.url === '/deleteBookManager' && req.method === 'PUT' && role === 3) {

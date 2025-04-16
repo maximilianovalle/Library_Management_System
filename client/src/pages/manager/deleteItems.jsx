@@ -30,8 +30,11 @@ const ManagerDeleteItems = () => {
 
     const [bookDeleteModal, setBookDeleteModal] = useState(null);
     const [bookEditModal, setBookEditModal] = useState(null);
+    const [bookFormData, setBookFormData] = useState({});
+
     const [deviceDeleteModal, setDeviceDeleteModal] = useState(null);
-    const [deviceEditModal, setDeviceEditModal] = useState(null);
+    // const [deviceEditModal, setDeviceEditModal] = useState(null);
+    // const [deviceFormData, setDeviceFormData] = useState({});
 
     const [activeTab, setActiveTab] = useState("books");
     const [toast, setToast] = useState({ message: "", type: "" });
@@ -128,13 +131,61 @@ const ManagerDeleteItems = () => {
 
     // edit book
 
-        // on edit book button click
-        // open modal w/ current book info, editable
-            // title
-            // author
-            // 
+    // const handleBookChange = (e) => {
+    //     setBookFormData((prev) => ({
+    //         ...prev,
+    //         [e.target.name]: e.target.value,
+    //     }));
+    // };
+
+    // const handleBookUpdate = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         const token = localStorage.getItem("token");
+    //         verifyUser(token);
+
+    //         await axios.put(`${process.env.REACT_APP_API_URL}/bookUpdateManager`, bookFormData, {
+    //             headers: { Authorization: `Bearer ${token}` },
+    //         });
+
+    //     } catch (error) {
+    //         console.error("Book update failed: ", error);
+    //     }
+
+    //     setBookEditModal(null);
+    //     window.location.reload();
+    // }
 
     // edit device
+
+    // const handleDeviceChange = (e) => {
+    //     setDeviceFormData((prev) => ({
+    //         ...prev,
+    //         [e.target.name]: e.target.value,
+    //     }));
+    // };
+
+    // const handleDeviceUpdate = async (e) => {
+    //     e.preventDefault();
+
+    //     try {
+    //         const token = localStorage.getItem("token");
+    //         verifyUser(token);
+
+    //         await axios.put(`${process.env.REACT_APP_API_URL}/deviceUpdateManager`, deviceFormData, {
+    //             headers: { Authorization: `Bearer ${token}` },
+    //         });
+            
+    //     } catch (error) {
+    //         console.error("Device update failed: ", error);
+    //     }
+
+    //     setDeviceEditModal(null);
+    //     window.location.reload();
+    // }
+
+    // delete book
 
     const deleteBook = async (bookDeleteModal) => {
         const token = localStorage.getItem("token");
@@ -158,7 +209,10 @@ const ManagerDeleteItems = () => {
         }
 
         window.location.reload();
+        showToast("Book deleted successfully.");
     }
+
+    //  delete device
 
     const deleteDevice = async (deviceDeleteModal) => {
         const token = localStorage.getItem("token");
@@ -182,8 +236,8 @@ const ManagerDeleteItems = () => {
         }
 
         window.location.reload();
+        showToast("Device deleted successfully.");
     }
-
 
 
     return (
@@ -246,8 +300,11 @@ const ManagerDeleteItems = () => {
                                 <p class="bookCataloguebtmPadding bookGenreSubtext entryElement"><em>{book.genre}</em></p>
 
                                 <div class="bookBtnContainer">
-                                    <button class="bookCardBtn"><MdModeEdit /></button>
-                                    <button class="bookCardBtn" onClick={() => setBookDeleteModal(book)}><MdDeleteForever /></button>
+                                    {/* <button class="bookCardBtn" onClick={() => {
+                                        setBookEditModal(book);
+                                        setBookFormData({ ...book });
+                                        }}><MdModeEdit /></button> */}
+                                    <button class="redDelete bookCardBtn" onClick={() => setBookDeleteModal(book)}><MdDeleteForever /></button>
                                 </div>
 
                             </div>
@@ -277,6 +334,38 @@ const ManagerDeleteItems = () => {
                             </div>
                             </div>
                         )}
+
+                        {/* edit book modal */}
+
+                        {/* {bookEditModal && (
+                            <div className="modal-overlay" onClick={() => setBookEditModal(null)}>
+                            
+                            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+
+                                <span className="modal-close" onClick={() => setBookEditModal(null)}>&times;</span>
+
+                                <form onSubmit={handleBookUpdate} className="shortenCatalogueForm librarian-form" autoComplete="off">
+
+                                    {Object.entries(bookFormData).map(([key, value]) => {
+
+                                        if (key === "isbn") return null;
+
+                                        return (<div>
+
+                                        <div class="alignMeLeft entryElement"><strong>{key}</strong></div>
+                                        <input className="entryInput" key={key} name={key} value={value || ""} onChange={handleBookChange} placeholder={key.replace(/_/g, " ")} type={key === "Role" ? "number" : "text"} required/>
+
+                                        </div>)
+
+                                    })}
+
+                                    <button type="submit">Update Book</button>
+
+                                </form>
+
+                            </div>
+                            </div>
+                        )} */}
 
                         </div>
 
@@ -339,12 +428,15 @@ const ManagerDeleteItems = () => {
                                 <p class="entryElement">{device.category}</p>
 
                                 {imageSrc && (
-                                    <img src={imageSrc} alt={device.category} className="device_image"/>
+                                    <img src={imageSrc} alt={device.category} className="removeLeft device_image"/>
                                 )}
 
                                 <div class="bookBtnContainer">
-                                    <button class="bookCardBtn"><MdModeEdit /></button>
-                                    <button class="bookCardBtn" onClick={() => setDeviceDeleteModal(device)}><MdDeleteForever /></button>
+                                    {/* <button class="bookCardBtn" onClick={() => {
+                                        setDeviceEditModal(device);
+                                        setDeviceFormData({ ...device });
+                                        }}><MdModeEdit /></button> */}
+                                    <button class="redDelete bookCardBtn" onClick={() => setDeviceDeleteModal(device)}><MdDeleteForever /></button>
                                 </div>
 
                             </div>
@@ -379,6 +471,47 @@ const ManagerDeleteItems = () => {
                         </div>
                         </div>
                     )}
+
+                    {/* edit device modal */}
+
+                    {/* {deviceEditModal && (
+                        <div className="modal-overlay" onClick={() => setDeviceEditModal(null)}>
+                        
+                        <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+
+                            <span className="modal-close" onClick={() => setDeviceEditModal(null)}>&times;</span>
+
+                            <form onSubmit={handleDeviceUpdate} className="shortenCatalogueForm librarian-form" autoComplete="off">
+
+                                {Object.entries(deviceFormData).map(([key, value]) => {
+
+                                    if (key === "category") return (<div>
+                                    <div class="alignMeLeft entryElement"><strong>{key}</strong></div>
+                                    <select name="category" value={deviceFormData.category} onChange={handleDeviceChange} className="makeMeBigger styled-select">
+                                        <option value="Calculator">Calculator</option>
+                                        <option value="Laptop">Laptop</option>
+                                        <option value="Camera">Camera</option>
+                                    </select>
+                                    </div>)
+
+                                    if (key === "model") return null;
+
+                                    return (<div>
+
+                                    <div class="alignMeLeft entryElement"><strong>{key}</strong></div>
+                                    <input className="entryInput" key={key} name={key} value={value || ""} onChange={handleDeviceChange} placeholder={key.replace(/_/g, " ")} type={key === "Role" ? "number" : "text"} required/>
+
+                                    </div>)
+
+                                })}
+
+                                <button type="submit">Update Device</button>
+
+                            </form>
+
+                        </div>
+                        </div>
+                    )} */}
 
                     </div>
 

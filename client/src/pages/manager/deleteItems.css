@@ -68,3 +68,32 @@
     justify-content: center;
     column-gap: 4px;
 }
+
+.shortenCatalogueForm {
+    max-width: 400px;
+    border: none;
+    box-shadow: none;
+    margin-top: 0px;
+}
+
+.entryInput {
+    width: 360px;
+}
+
+.alignMeLeft {
+    text-align: left;
+    padding-left: 12px;
+}
+
+.makeMeBigger {
+    width: 390px;
+}
+
+.removeLeft {
+    margin-left: 0px;
+}
+
+.redDelete {
+    color: red;
+    border: 1px solid red;
+}
