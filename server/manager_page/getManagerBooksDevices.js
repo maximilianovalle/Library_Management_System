@@ -15,7 +15,7 @@ module.exports = async function getManagerBooksDevices(req, res) {
         let allBooksArr = allBooks.map(row => ({
             title: row.Title,
             genre: row.Genre,
-            ISBN: row.ISBN,
+            isbn: row.ISBN,
             publication: row.Publication_Year,
             author: row.Name,
         }))

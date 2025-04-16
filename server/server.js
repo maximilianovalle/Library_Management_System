@@ -34,10 +34,17 @@ const getFines = require('./librarian_page/all_fines.js')
 const updateFine = require('./librarian_page/update_fine.js')
 
 const getManagerDashboardInfo = require('./manager_page/getManagerDashboardInfo.js');
+
 const addLibrarian = require('./manager_page/add_librarian.js');
 const viewLibrarians = require('./manager_page/view_librarian.js');
 const updateLibrarian = require('./manager_page/update_librarian.js');
 const deleteLibrarian = require('./manager_page/delete_librarian.js');
+
+const addUser = require('./manager_page/add_user.js');
+const viewUsers = require('./manager_page/view_user.js');
+const updateUser = require('./manager_page/update_user.js');
+const deleteUser = require('./manager_page/delete_user.js');
+
 const getUnreadMaintenanceNotifs = require('./manager_page/get_unread_maintenance_notifs.js');
 const markMaintenanceNotifsRead = require('./manager_page/mark_read_maintenance_notifs.js');
 const getMaintenanceItems = require('./manager_page/get_maintenance_items.js');
@@ -45,6 +52,12 @@ const resolveMaintenanceItem = require('./manager_page/resolve_maintenance_items
 
 const getManagerBooksDevices = require("./manager_page/getManagerBooksDevices.js");
 const getBooksManager = require("./manager_page/getBooksManager.js");
+const getDevicesManager = require("./manager_page/getDevicesManager.js");
+const deleteBookCopies = require('./manager_page/deleteBookCopies.js');
+const deleteDeviceCopies = require('./manager_page/deleteDeviceCopies.js');
+
+const bookUpdate = require('./manager_page/bookUpdate.js');
+const deviceUpdate = require('./manager_page/deviceUpdate.js');
 
 
 const app = http
@@ -313,6 +326,30 @@ const app = http
       return;
     }
 
+    if (req.url === '/bookUpdateManager' && req.method === 'PUT' && role === 3) {
+      console.log("Updating book...");
+      bookUpdate(req, res);
+      console.log("Book updated.");
+    }
+
+    if (req.url === '/deviceUpdateManager' && req.method === 'PUT' && role === 3) {
+      console.log("Updating device...");
+      deviceUpdate(req, res);
+      console.log("Device updated.");
+    }
+
+    if (req.url === '/deleteBookManager' && req.method === 'PUT' && role === 3) {
+      console.log("Deleting book...");
+      deleteBookCopies(req, res);
+      console.log("Book deleted.");
+    }
+
+    if (req.url === '/deleteDeviceManager' && req.method === 'PUT' && role === 3) {
+      console.log("Deleting device...");
+      deleteDeviceCopies(req, res);
+      console.log("Device deleted.");
+    }
+
     if(req.url === '/view_librarians' && req.method === 'GET' && role === 3){
       viewLibrarians(req, res, userID)
       return;
@@ -325,6 +362,26 @@ const app = http
     
     if (req.url.startsWith('/delete_librarians') && req.method === 'DELETE' && role === 3) {
       deleteLibrarian(req, res);
+      return
+    }
+
+    if(req.url === '/add_user' && req.method === 'POST' && role === 3){
+      addUser(req, res, userID)
+      return;
+    }
+
+    if(req.url === '/view_user' && req.method === 'GET' && role === 3){
+      viewUsers(req, res, userID)
+      return;
+    }
+
+    if (req.url.startsWith('/update_user') && req.method === 'PUT' && role === 3) {
+      updateUser(req, res);
+      return
+    }
+    
+    if (req.url.startsWith('/delete_user') && req.method === 'DELETE' && role === 3) {
+      deleteUser(req, res);
       return
     }
 
@@ -348,6 +405,13 @@ const app = http
     if (req.url.startsWith("/books") && req.method === "GET" && role === 3) {
       console.log("req for books");
       getBooksManager(req, res);
+      return;
+    }
+
+    if (req.url.startsWith("/devices") && req.method === 'GET' && role === 3) {
+      console.log("Getting devices for manager...");
+      getDevicesManager(req, res);
+      console.log("Devices received for manager");
       return;
     }
 

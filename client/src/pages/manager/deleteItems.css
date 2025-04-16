@@ -16,12 +16,16 @@
 
     font-size: 18px;
 
-    border: none;
+    height: 28px;
+    padding: 4px 4px;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
     background-color: transparent;
 }
 
 .bookCardBtn:hover {
     color: #2563eb;
+    border: 1px solid #2563eb;
     cursor: pointer;
 }
 
@@ -41,4 +45,55 @@
     justify-content: space-between;
 
     width: 100%;
+}
+
+.editDeviceDisplay {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 300px));
+    gap: 20px;
+    padding: 20px;
+}
+
+.deviceCardEdit {
+    max-width: 300px;
+}
+
+.bookCataloguebtmPadding {
+    margin-bottom: 4px;
+}
+
+.confirm-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: 4px;
+}
+
+.shortenCatalogueForm {
+    max-width: 400px;
+    border: none;
+    box-shadow: none;
+    margin-top: 0px;
+}
+
+.entryInput {
+    width: 360px;
+}
+
+.alignMeLeft {
+    text-align: left;
+    padding-left: 12px;
+}
+
+.makeMeBigger {
+    width: 390px;
+}
+
+.removeLeft {
+    margin-left: 0px;
+}
+
+.redDelete {
+    color: red;
+    border: 1px solid red;
 }

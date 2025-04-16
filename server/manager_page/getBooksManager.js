@@ -48,7 +48,7 @@ module.exports = async function getBooks(req, res) {
         let allBooksArr = rows.map(row => ({
             title: row.Title,
             genre: row.Genre,
-            ISBN: row.ISBN,
+            isbn: row.ISBN,
             publication: row.Publication_Year,
             author: row.Name,
         }))

@@ -22,7 +22,8 @@ import LibrarianAccount from './pages/librarian/LibrarianAccount'
 
 import ManagerDashboard from './pages/manager/ManagerDashboard';
 import ManageLibrarians from './pages/manager/ManageLibrarians';
-import ViewLibrarians from './pages/manager/ViewLibrarians';
+import ViewLibrarians from './pages/manager/ViewLibrarians';   /* weird bug delete this route later */
+import ManageUsers from './pages/manager/ManageUsers';
 import ViewReports from './pages/manager/ReportsPage';
 import Maintenance from './pages/manager/Maintenance';
 import ManagerDeleteItems from './pages/manager/deleteItems';
@@ -56,7 +57,9 @@ function App() {
       {/* Manager Routes */}
       <Route path="/manager" element={<ManagerDashboard/>}/>
       <Route path="/manage-librarians" element={<ManageLibrarians/>}/>
-      <Route path="/view-librarians" element={<ViewLibrarians/>}/>
+      {/* <Route path="/view-librarians" element={<ViewLibrarians/>}/> */}
+      <Route path="/manage-users" element={<ManageUsers/>}/>
+      {/* <Route path="/view-users" element={<ViewUsers/>}/> */}
       <Route path="/reports" element={<ViewReports/>}/>
       <Route path="/maintenance" element={<Maintenance/>}/>
       <Route path="/deleteItems" element={<ManagerDeleteItems/>}/>
@@ -75,6 +78,7 @@ function App() {
       <Route path="/librarian/fines" element={<ManageFinesPage/>} />
       <Route path="/librarian/holds" element={<HoldsPage />} />
       <Route path="/librarian_account" element={<LibrarianAccount/>}/>
+
       {/*  <Route path="/librarian/fines" element={<FinesPage />} />
       <Route path="/librarian/activity" element={<ActivityPage />} />
       <Route path="/librarian/reports/popular-books" element={<PopularBooksReport />} />

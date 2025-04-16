@@ -38,6 +38,7 @@ const ManagerHeader = () => {
   const navItems = [
     { title: "Dashboard", link: "/manager" },
     { title: "Manage Librarians", link: "/manage-librarians" },
+    { title: "Manage Users", link: "/manage-users" },
     { title: "Manage Catalogue", link: "/deleteItems" },
     {
       title: "Maintenance",

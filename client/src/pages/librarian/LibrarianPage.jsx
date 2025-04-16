@@ -322,10 +322,6 @@ const LibrarianDashboard = () => {
                                         <FaTabletAlt className="icon"/>
                                         <span>Add New Device</span>
                                     </Link>
-                                    <Link to="/librarian/users/search" className="action-button search-user">
-                                        <FaUsers className="icon"/>
-                                        <span>Search Users</span>
-                                    </Link>
                                     <Link to="/librarian/reports" className="action-button generate-report">
                                         <FaChartBar className="icon"/>
                                         <span>Generate Reports</span>

@@ -43,13 +43,22 @@ module.exports = async function returnBook(req, res, userID) {
                     return;
                 }
 
-                const recordID = await pool.query("SELECT Record_ID FROM borrow_record WHERE User_ID = ? AND ISBN = ? AND Book_Copy_ID = ? AND Return_Date IS NULL", [userID, isbn, copyID]);
+                const [rows] = await pool.query("SELECT Record_ID FROM borrow_record WHERE User_ID = ? AND ISBN = ? AND Book_Copy_ID = ? AND Return_Date IS NULL", [userID, isbn, copyID]);
+
+                const recordID = rows[0]?.Record_ID;
+
+                console.log("RECORD ID: ", recordID);
 
                 await pool.query("UPDATE borrow_record SET Return_Date = NOW() WHERE Record_ID =  ?", [recordID]);
 
 
                 // 1 = good condition, 2 = worn out, or 3 = bad cond.
-                const bookCondition = getRandomWeighed();
+                let bookCondition = getRandomWeighed();
+
+                // maintenance book, 100% chance of bad condition return
+                if (isbn == "0000000000") {
+                    bookCondition = 3;
+                }
 
                 const condition = {
                     1: "Good condition",
@@ -66,7 +75,7 @@ module.exports = async function returnBook(req, res, userID) {
                 await pool.query("UPDATE book_copies SET Book_Status = ?, Book_Condition = ? WHERE ISBN = ? AND Copy_ID = ?", [status[bookCondition], condition[bookCondition], isbn, copyID]);
 
                 // fine user if book returned in bad condition
-                if (condition == 3) {
+                if (bookCondition == 3) {
                     await pool.query("INSERT INTO fines (User_ID, Record_ID, Amount, Reason) VALUES (?, ?, 25, 'Damaged')", [userID, recordID])
                 };
 

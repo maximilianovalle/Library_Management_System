@@ -40,7 +40,7 @@ const BrowseBooks = () => {
     const [triggerMessage, setTriggerMessage] = useState(null);
     // FAQ state
     const [activeIndex, setActiveIndex] = useState(null);
-
+    const [showInfo, setShowInfo] = useState(true);
 
     const double_check_borrow = (book) => {
         setConfirmBorrow(book);
@@ -103,7 +103,7 @@ const BrowseBooks = () => {
         } catch (error) {
             console.error("Error borrowing book:", error);
 
-            if (error.response.data.message == "Cannot check out items. User has unpaid fines exceeding $25.") {
+            if (error.response.data.message === "Cannot check out items. User has unpaid fines exceeding $25.") {
                 setTriggerMessage(confirm_borrow);
             }
             
@@ -160,19 +160,20 @@ const BrowseBooks = () => {
 
         <div id="mainBrowseBooks">
 
-            <div className="library-info-section">
-                <div className="library-info-left">
-                <h1>Welcome to Cougar Library!</h1>
-                    <p>
-                        As a UH student, you get full access to our library services — no sign-up required. Use your account to browse our catalogue, place holds on devices, check out books, and track late fees all in one place. Whether you're in need of a laptop for class or a book for research, we’ve got you covered. All devices and books are free to borrow, and faculty + alumni get extended borrow periods. Go Coogs!
-                    </p>
-                </div>
-                
-            </div>
+        {showInfo && (
+                    <div className="library-info-section" onClick={() => setShowInfo(false)}>
+                        <div className="library-info-left">
+                            <h1>Welcome to Cougar Library!</h1>
+                            <p>
+                                As a UH student, you get full access to our library services — no sign-up required. Use your account to browse our catalogue, place holds on devices, check out books, and track late fees all in one place. Whether you're in need of a laptop for class or a book for research, we’ve got you covered. All devices and books are free to borrow, and faculty + alumni get extended borrow periods. Go Coogs!
+                            </p>
+                        </div>
+                    </div>
+                )}
 
             <div className="user_page">
 
-                <form className="search" onSubmit={handleSearch}>
+                <form className="searchForm search" onSubmit={handleSearch}>
                     <div className="dropdown">
                         <DropDown
                             options={browse_by}
@@ -305,7 +306,10 @@ const BrowseBooks = () => {
                         <p>Please pay your fee amount located in your <a href="/account">Account</a> page before borrowing an item.</p>
 
                         <div className="modal-buttons">
-                            <button className="confirm-button" onClick={() => setTriggerMessage(null)}>Ok</button>
+                            <button className="confirm-button" onClick={() => {
+                                setTriggerMessage(null);
+                                window.location.href = '/account';
+                            }}>Take Me to Account</button>
                         </div>
                     </div>
                     </div>

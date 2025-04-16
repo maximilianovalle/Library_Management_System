@@ -132,11 +132,6 @@ const CheckedOutPage = () => {
                 },
             });
 
-            // window.location.reload();
-            // setAffectedIndex("");
-            // fetchItems();
-            // closeReturnModal();
-
         } catch (error) {
             console.log("Error returning book: ", error);
         }
@@ -163,12 +158,6 @@ const CheckedOutPage = () => {
                 "Content-Type": "application/json",
                 },
             });
-
-            
-            // window.location.reload();
-            // setAffectedIndex("");
-            // fetchItems();
-            // closeCancelModal();
 
         } catch (error) {
             console.error("Error removing hold: ", error);

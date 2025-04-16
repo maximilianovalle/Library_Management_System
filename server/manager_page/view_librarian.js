@@ -5,6 +5,7 @@ module.exports = async function viewLibrarians(req, res) {
         const [rows] = await pool.query(`
             SELECT Librarian_ID, First_Name, Last_Name, Password, Department, Position, SSN, Hire_Date, End_Date, Pay_Rate, Is_Active
             FROM librarian
+            WHERE Is_Deleted = 0
             ORDER BY is_Active DESC
         `);
 
