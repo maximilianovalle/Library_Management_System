@@ -3,7 +3,7 @@ const pool = require('../database.js');
 module.exports = async function viewUsers(req, res) {
   try {
     const [rows] = await pool.query(`
-      SELECT User_ID, First_Name, Last_Name, Email, Role, Created_At
+      SELECT User_ID, First_Name, Last_Name, Email, Password, Role, Created_At
       FROM user
       WHERE User_ID != 9999999
       ORDER BY Created_At DESC
