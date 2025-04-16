@@ -36,7 +36,7 @@ const LibrarianHeader = () => {
                                 key={item.title}
                                 to={item.link}
                                 className={`librarian-link ${
-                                    location.pathname.startsWith(item.link) ? "active" : ""
+                                    location.pathname === (item.link) ? "active" : ""
                                 }`}
                             >
                                 {item.title}
