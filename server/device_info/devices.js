@@ -28,7 +28,7 @@ module.exports = async function getDevices(req, res) {
 
         // Base query to join device and device_copies tables
         let query = `
-            SELECT d.Category, d.Model, dc.Device_Condition, dc.Device_Status
+            SELECT d.Category, d.Model, dc.Device_Condition, dc.Device_Status, dc.Copy_ID
             FROM device d
             JOIN device_copies dc
             ON d.Model = dc.Model AND d.Category = dc.Category
@@ -70,7 +70,8 @@ module.exports = async function getDevices(req, res) {
             model: row.Model,
             category: row.Category,
             condition: row.Device_Condition,
-            status: row.Device_Status
+            status: row.Device_Status,
+            copy_id: row.Copy_ID
         }));
 
         // get counts by category to support frontend chips

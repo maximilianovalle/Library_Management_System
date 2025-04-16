@@ -52,12 +52,13 @@ const BrowseDevices = () => {
             const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/holds`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-
-            setUserHolds(response.data.holds.map(h => h.model));
+    
+            setUserHolds(response.data.holds || []);
         } catch (error) {
             console.error("Error fetching user holds:", error);
         }
     };
+    
 
     useEffect(() => {
         const init = async () => {
@@ -206,7 +207,13 @@ const BrowseDevices = () => {
                     <ul className="device_list">
                         {filteredDevices.map((device, index) => {
                             const imageSrc = categoryImages[device.category.toLowerCase()];
-                            const isHeldByUser = userHolds.includes(device.model);
+                            const isHeldByUser = userHolds.some(
+                                (h) =>
+                                    h.model === device.model &&
+                                    h.category === device.category &&
+                                    h.copy_id === device.copy_id
+                            );
+                            
 
                             return (
                                 <li key={index} className="device_card">
