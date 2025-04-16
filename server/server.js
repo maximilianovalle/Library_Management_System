@@ -16,6 +16,8 @@ const holdDevice = require("./hold_item/hold_device.js"); //holdDevice()
 const returnBook = require("./checkedOutItems/returnBook.js");
 const removeHold = require("./checkedOutItems/removeHold.js");
 
+const getNotifications = require("./account_info/getNotifs.js");
+
 
 const getUserHolds = require("./hold_item/user_holds.js");
 const cancelHold = require("./hold_item/cancel_hold.js");
@@ -32,6 +34,8 @@ const all_devices = require('./librarian_page/get_devices.js')
 const getHeldItems = require('./librarian_page/all_holds.js')
 const getFines = require('./librarian_page/all_fines.js')
 const updateFine = require('./librarian_page/update_fine.js')
+const PickedUpDevice = require('./librarian_page/device_pickup.js')
+const ReturnedDevice = require('./librarian_page/device_return.js')
 
 const getManagerDashboardInfo = require('./manager_page/getManagerDashboardInfo.js');
 
@@ -58,6 +62,7 @@ const deleteDeviceCopies = require('./manager_page/deleteDeviceCopies.js');
 
 const bookUpdate = require('./manager_page/bookUpdate.js');
 const deviceUpdate = require('./manager_page/deviceUpdate.js');
+const markNotifAsRead = require("./account_info/markNotifAsRead.js");
 
 
 const app = http
@@ -137,6 +142,19 @@ const app = http
   if (req.url.startsWith('/devices') && req.method === 'GET' && role === 2) {
     getDevices(req, res);  // call getDevices() to search devices
     return;
+  }
+
+  if (req.url === "/getNotifications" && req.method === 'GET' && role === 2) {
+    console.log("Fetching notifications...");
+    getNotifications(req, res, userID);
+    console.log("Notifications fetched.");
+    return;
+  }
+
+  if (req.url === '/markAsRead' && req.method === 'PUT' && role === 2) {
+    console.log("Marking notification as read...");
+    markNotifAsRead(req, res);
+    console.log("Marked notification as read.");
   }
     
   
@@ -304,6 +322,17 @@ const app = http
       return;
     } 
 
+    if(req.url === '/device_pickup' && req.method === 'POST' && role === 1){
+      console.log("Picked up device")
+      PickedUpDevice(req, res)
+      return;
+    }
+
+    if(req.url === '/returned_device' && req.method === 'POST' && role === 1){
+      console.log("Returned device")
+      ReturnedDevice(req, res)
+      return;
+    }
     // if(req.url === '/get_activity' && req.method === 'GET' && role === 1){
     //   console.log("Get recent activities")
     //   getRecentActivities(req, res)

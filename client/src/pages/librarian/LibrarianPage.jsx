@@ -79,7 +79,7 @@ const LibrarianDashboard = () => {
     const [timeframe, setTimeframe] = useState("week");
     // const [recentActivity, setRecentActivity] = useState([]);
     
-    const [popularBooks, setPopularBooks] = useState([]);
+    // const [popularBooks, setPopularBooks] = useState([]);
     
     const [loading, setLoading] = useState(false);
 
@@ -128,13 +128,13 @@ const LibrarianDashboard = () => {
                 // console.log(activityResponse.data)
                 // setRecentActivity(activityResponse.data.activities);
 
-               const popular_books_response = await axios.get(`${process.env.REACT_APP_API_URL}/reports?type=popular`, {
-                    headers: {
-                        "Authorization": `Bearer ${token}`
-                    }
-                });
-                console.log(popular_books_response.data.popularBooks)
-                setPopularBooks(popular_books_response.data.popularBooks)
+            //    const popular_books_response = await axios.get(`${process.env.REACT_APP_API_URL}/reports?type=popular`, {
+            //         headers: {
+            //             "Authorization": `Bearer ${token}`
+            //         }
+            //     });
+            //     console.log(popular_books_response.data.popularBooks)
+            //     setPopularBooks(popular_books_response.data.popularBooks)
 
 
                 const librarian_info_response =  await axios.get(`${process.env.REACT_APP_API_URL}/librarian_account`, {
@@ -329,7 +329,7 @@ const LibrarianDashboard = () => {
                                 </div>
                                 
                             </div>
-                            
+{/*                             
                             <div className="dashboard-bottom-row">
                            <div className="dashboard-section popular-section">
                                     <div className="section-header">
@@ -357,7 +357,7 @@ const LibrarianDashboard = () => {
                                         <Link to="/librarian/reports">View full report</Link>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </>
                 )}

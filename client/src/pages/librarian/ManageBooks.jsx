@@ -88,18 +88,23 @@ const ManageBooks = () => {
   };
 
   const filteredBooks = books.filter((book) => {
+    if (book.Book_Status && book.Book_Status.toLowerCase() === "deleted") {
+      return false;
+    }
+  
     const query = searchQuery.toLowerCase();
-
     const title = (book.Title || "").toLowerCase();
     const author = (book.Name || "").toLowerCase();
     const condition = (book.Book_Condition || "").trim().toLowerCase();
-
+  
     const titleMatch = title.includes(query);
     const authorMatch = author.includes(query);
-    const conditionMatch = conditionFilter === "" || condition.includes(conditionFilter.toLowerCase());
-
+    const conditionMatch =
+      conditionFilter === "" || condition.includes(conditionFilter.toLowerCase());
+  
     return (titleMatch || authorMatch) && conditionMatch;
   });
+  
 
   return (
     <div>

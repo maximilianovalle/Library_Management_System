@@ -262,7 +262,7 @@ const BrowseDevices = () => {
                         
                     <h2 class="modalHeader">On Hold</h2>
 
-                        <p>Device will be added to your held items.</p>
+                        <p>Pick up the Device at the Front Desk</p>
 
                         <div className="modal-buttons">
                             <button className="confirm-button" onClick={() => setHoldConfirm(null)}>Ok</button>

@@ -71,3 +71,85 @@
     background-color: darkred;
   }
   
+  .noStyleBtn {
+    font-size: 24px;
+    border: none;
+    margin: 0px;
+    padding: 0px;
+    background-color: transparent;
+  }
+
+  .noStyleBtn:hover {
+    color: #2563eb;
+    cursor: pointer;
+  }
+
+  .notificationScroll {
+    max-height: 500px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+  }
+
+  .notifBox {
+    max-width: 500px;
+    max-height: 120px;
+    padding: 8px 12px;
+    border: 2px solid #e5e7eb;
+    /* border-bottom: none; */
+    border-radius: 6px;
+    margin-bottom: 4px;
+  }
+
+  .notifBoxUnread:hover {
+    background-color: #fbfbfc;
+    cursor: pointer;
+  }
+
+  .dateNotif {
+    margin: 0px;
+    font-size: 14px;
+    font-weight: 200;
+  }
+
+  .unreadNotifDot {
+    color: #e74c3c;
+    font-size: 28px;
+    padding: 0px;
+    margin: 0px;
+  }
+
+  .unreadNotifTitle {
+    color: #e74c3c;
+  }
+
+  .notifHeader {
+    max-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* background-color: #2563eb; */
+    padding: 8px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .notifHeader div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .notifBody {
+    max-width: 95%;
+    margin: 0px auto;
+    text-align: left;
+    margin-bottom: 4px;
+  }
+
+  .redAlert {
+    color: #e74c3c;
+  }
+
+  .readNotifBox {
+    color: #5e5e5e;
+    font-weight: 200;
+  }
