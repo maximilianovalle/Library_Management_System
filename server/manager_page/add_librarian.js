@@ -28,8 +28,8 @@ module.exports = async function addLibrarian(req, res) {
 
             const [result] = await pool.query(
                 `INSERT INTO librarian 
-                (First_Name, Last_Name, Password, Department, Position, SSN, Hire_Date, End_Date, Pay_Rate, Is_Active) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`,
+                (First_Name, Last_Name, Password, Department, Position, SSN, Hire_Date, End_Date, Pay_Rate, Is_Active, Is_Deleted)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 0)`,
                 [
                     First_Name,
                     Last_Name,

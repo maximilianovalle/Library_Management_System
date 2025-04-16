@@ -6,9 +6,9 @@ module.exports = async function deleteLibrarian(req, res) {
         const id = req.url.split('/').pop();
 
         const [result] = await pool.query(
-            `DELETE FROM librarian WHERE Librarian_ID = ?`,
+            `UPDATE librarian SET Is_Deleted = 1 WHERE Librarian_ID = ?`,
             [id]
-        );
+          );          
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: 'Librarian deleted successfully' }));

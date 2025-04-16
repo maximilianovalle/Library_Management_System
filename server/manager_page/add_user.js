@@ -23,8 +23,8 @@ module.exports = async function addUser(req, res) {
   const newUserID = maxUserID ? maxUserID + 1 : minID;
 
   const [result] = await pool.query(
-    `INSERT INTO user (User_ID, First_Name, Last_Name, Email, Role, Password, Created_At)
-     VALUES (?, ?, ?, ?, ?, ?, NOW())`,
+    `INSERT INTO user (User_ID, First_Name, Last_Name, Email, Role, Password, Created_At, Is_Deleted)
+    VALUES (?, ?, ?, ?, ?, ?, NOW(), 0)`,
     [newUserID, First_Name, Last_Name, Email, Role, Password]
   );
 
