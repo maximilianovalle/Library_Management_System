@@ -18,6 +18,7 @@ const MaintenancePage = () => {
   const [maintenanceBooks, setMaintenanceBooks] = useState([]);
   const [maintenanceDevices, setMaintenanceDevices] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [toast, setToast] = useState({ message: "", type: "" });
 
   useEffect(() => {
     const fetchMaintenanceItems = async () => {
@@ -28,8 +29,8 @@ const MaintenancePage = () => {
           console.error("No token found. Redirecting to login...");
           window.location.href = "/login";
           return;
-      }
-      
+        }
+
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/maintenance-items`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -45,6 +46,11 @@ const MaintenancePage = () => {
     fetchMaintenanceItems();
   }, []);
 
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+    setTimeout(() => setToast({ message: "", type: "" }), 3000);
+  };
+
   const handleResolve = async (type, copyId, identifier) => {
     try {
       const token = localStorage.getItem("token");
@@ -58,8 +64,11 @@ const MaintenancePage = () => {
 
       setMaintenanceBooks((prev) => prev.filter(b => !(b.Copy_ID === copyId && b.ISBN === identifier)));
       setMaintenanceDevices((prev) => prev.filter(d => !(d.Copy_ID === copyId && d.Model === identifier)));
+
+      showToast(`${type === "book" ? "Book" : "Device"} marked as available!`, "success");
     } catch (err) {
       console.error("Error resolving maintenance:", err);
+      showToast("Failed to update item.", "error");
     }
   };
 
@@ -68,6 +77,8 @@ const MaintenancePage = () => {
       <Header />
       <div className="maintenance-container">
         <h1 className="title">Maintenance Center</h1>
+
+        {toast.message && <div className={`toast ${toast.type}`}>{toast.message}</div>}
 
         {loading ? (
           <div className="spinner"></div>
