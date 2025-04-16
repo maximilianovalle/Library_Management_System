@@ -148,21 +148,6 @@ const ManagerDashboard = () => {
 
             </div>
 
-            <div className="activity-log">
-
-              <h2>Recent Updates</h2>
-              {recentChanges.length > 0 ? (
-                <ul>
-                  {recentChanges.map((change, index) => (
-                    <li key={index}>{change}</li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No recent updates.</p>
-              )}
-
-            </div>
-
           </>
         )}
         </div>

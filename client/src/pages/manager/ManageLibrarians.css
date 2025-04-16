@@ -112,6 +112,19 @@
   background-color: #f9f9f9;
 }
 
+.styled-select {
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e0;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+
 .librarian-form button {
   background-color: #2563eb;
   color: white;
