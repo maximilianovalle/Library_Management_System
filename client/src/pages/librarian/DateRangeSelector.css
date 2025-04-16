@@ -1,0 +1,84 @@
+/* Date Range Selector Styles */
+.date-range-selector {
+    margin-top: 1.5rem;
+    background-color: #fff1f1;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #fecaca;
+    animation: slide-down 0.3s ease;
+}
+
+.date-range-display {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #b71c1c;
+    margin-bottom: 0.75rem;
+    text-align: center;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(183, 28, 28, 0.2);
+}
+
+.date-range-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.date-range-button {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    color: #4a5568;
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.date-range-button:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.date-range-button.active {
+    background-color: #b71c1c;
+    color: white;
+    border-color: #b71c1c;
+    box-shadow: 0 2px 5px rgba(183, 28, 28, 0.2);
+}
+
+/* Updated reports section layout for better spacing */
+.reports-selector {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2rem;
+}
+
+@keyframes slide-down {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .date-range-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .date-range-button {
+        width: 100%;
+        text-align: center;
+    }
+}

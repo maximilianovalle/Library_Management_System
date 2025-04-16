@@ -1,13 +1,54 @@
 const pool = require("../database.js");
 
+/**
+ * Calculate date range based on the specified filter
+ * @param {string} range - The date range filter (week, month, quarter, year, all)
+ * @returns {Object} - Object containing startDate and endDate
+ */
+function calculateDateRange(range) {
+  const today = new Date();
+  const endDate = new Date(today);
+  let startDate = new Date(today);
+
+  switch (range) {
+    case "week":
+      startDate.setDate(today.getDate() - 7);
+      break;
+    case "month":
+      startDate.setMonth(today.getMonth() - 1);
+      break;
+    case "quarter":
+      startDate.setMonth(today.getMonth() - 3);
+      break;
+    case "year":
+      startDate.setFullYear(today.getFullYear() - 1);
+      break;
+    case "all":
+      // Set to a very early date for "all time"
+      startDate = new Date(2000, 0, 1);
+      break;
+    default:
+      startDate.setDate(today.getDate() - 7); // Default to week
+  }
+
+  return {
+    startDate: startDate.toISOString().split("T")[0], // Format as YYYY-MM-DD
+    endDate: endDate.toISOString().split("T")[0],
+  };
+}
+
 module.exports = async function getReportsData(req, res) {
   try {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const reportType = url.searchParams.get("type") || "overview";
+    const dateRange = url.searchParams.get("dateRange") || "week";
+
+    const { startDate, endDate } = calculateDateRange(dateRange);
 
     console.log("=== Report Request ===");
     console.log(`Time: ${new Date().toISOString()}`);
     console.log(`Report Type: ${reportType}`);
+    console.log(`Date Range: ${dateRange} (${startDate} to ${endDate})`);
     console.log(`User ID: ${req.user?.id || "Not authenticated"}`);
 
     let data = {};
@@ -17,34 +58,42 @@ module.exports = async function getReportsData(req, res) {
 
       switch (reportType) {
         case "overview":
-          data = await getOverviewData();
+          data = await getOverviewData(startDate, endDate);
           break;
         case "overdue":
-          data = await getOverdueData();
+          data = await getOverdueData(startDate, endDate);
           break;
         case "fines":
-          data = await getFinesData();
+          data = await getFinesData(startDate, endDate);
           break;
         case "checkouts":
-          data = await getCheckoutsData();
+          data = await getCheckoutsData(startDate, endDate);
           break;
         case "popular":
-          data = await getPopularItemsData();
+          data = await getPopularItemsData(startDate, endDate);
           break;
         default:
-          data = await getOverviewData();
+          data = await getOverviewData(startDate, endDate);
       }
+
+      // Add date range information to the response
+      data.dateRange = {
+        type: dateRange,
+        startDate,
+        endDate,
+      };
 
       console.log(
         `Successfully generated ${reportType} report with ${
           Object.keys(data).length
-        } data points`
+        } data points for date range ${dateRange}`
       );
       res.writeHead(200, { "Content-Type": "application/json" });
       res.end(JSON.stringify(data));
     } catch (queryError) {
       console.error("=== Database Error ===");
       console.error(`Report Type: ${reportType}`);
+      console.error(`Date Range: ${dateRange}`);
       console.error(`Error Message: ${queryError.message}`);
       console.error(`Stack Trace: ${queryError.stack}`);
       console.error(`SQL State: ${queryError.sqlState || "N/A"}`);
@@ -56,6 +105,7 @@ module.exports = async function getReportsData(req, res) {
           message: "Database error: Failed to load report data",
           error: queryError.message,
           reportType: reportType,
+          dateRange: dateRange,
         })
       );
     }
@@ -75,7 +125,7 @@ module.exports = async function getReportsData(req, res) {
   }
 };
 
-async function getOverviewData() {
+async function getOverviewData(startDate, endDate) {
   // Create a default response with all zeroes in case any part fails
   const defaultData = {
     books: {
@@ -101,7 +151,7 @@ async function getOverviewData() {
   };
 
   try {
-    console.log("Starting getOverviewData...");
+    console.log(`Starting getOverviewData for ${startDate} to ${endDate}...`);
 
     // For Books - handle possible table/column name differences
     let bookStats;
@@ -137,17 +187,21 @@ async function getOverviewData() {
       deviceStats = defaultData.devices;
     }
 
-    // For Fines - handle possible table/column name differences
+    // For Fines - handle possible table/column name differences with date range filtering
     let fineStats;
     try {
-      const [rows] = await pool.query(`
+      const [rows] = await pool.query(
+        `
         SELECT 
           COUNT(*) as total_fines,
           IFNULL(SUM(Amount), 0) as total_amount,
           IFNULL(SUM(CASE WHEN Fine_Status = 1 THEN Amount ELSE 0 END), 0) as paid_amount,
           IFNULL(SUM(CASE WHEN Fine_Status = 2 THEN Amount ELSE 0 END), 0) as unpaid_amount
         FROM fines
-      `);
+        WHERE Created_at BETWEEN ? AND ?
+      `,
+        [startDate, endDate]
+      );
       fineStats = rows[0];
       console.log("Fine stats:", fineStats);
     } catch (err) {
@@ -155,26 +209,34 @@ async function getOverviewData() {
       fineStats = defaultData.fines;
     }
 
-    // For Overdue - try different approaches
+    // For Overdue items with date range filtering
     let overdueStats = { overdue_books: 0, overdue_devices: 0 };
 
     try {
-      const [bookResult] = await pool.query(`
+      const [bookResult] = await pool.query(
+        `
         SELECT COUNT(*) as count
         FROM borrow_record
         WHERE ISBN IS NOT NULL 
         AND Return_Date IS NULL 
         AND Due_Date < CURDATE()
-      `);
+        AND Checkout_Date BETWEEN ? AND ?
+      `,
+        [startDate, endDate]
+      );
       overdueStats.overdue_books = bookResult[0].count || 0;
 
-      const [deviceResult] = await pool.query(`
+      const [deviceResult] = await pool.query(
+        `
         SELECT COUNT(*) as count
         FROM borrow_record
         WHERE Category IS NOT NULL 
         AND Return_Date IS NULL 
         AND Due_Date < CURDATE()
-      `);
+        AND Checkout_Date BETWEEN ? AND ?
+      `,
+        [startDate, endDate]
+      );
       overdueStats.overdue_devices = deviceResult[0].count || 0;
 
       console.log("Overdue stats:", overdueStats);
@@ -219,45 +281,16 @@ async function getOverviewData() {
   }
 }
 
-// Count overdue books
-async function countOverdueBooks() {
+// Get overdue items data with date range filtering
+async function getOverdueData(startDate, endDate) {
   try {
-    const [result] = await pool.query(`
-            SELECT COUNT(*) as count
-            FROM borrow_record
-            WHERE ISBN IS NOT NULL 
-            AND Return_Date IS NULL 
-            AND Due_Date < CURDATE()
-        `);
-    return result[0].count;
-  } catch (error) {
-    console.error("Error counting overdue books:", error);
-    return 0;
-  }
-}
+    console.log(
+      `Getting overdue data for date range: ${startDate} to ${endDate}`
+    );
 
-// Count overdue devices
-async function countOverdueDevices() {
-  try {
-    const [result] = await pool.query(`
-            SELECT COUNT(*) as count
-            FROM borrow_record
-            WHERE Category IS NOT NULL 
-            AND Return_Date IS NULL 
-            AND Due_Date < CURDATE()
-        `);
-    return result[0].count;
-  } catch (error) {
-    console.error("Error counting overdue devices:", error);
-    return 0;
-  }
-}
-
-// Get overdue items data
-async function getOverdueData() {
-  try {
     // Get overdue books
-    const [overdueBooks] = await pool.query(`
+    const [overdueBooks] = await pool.query(
+      `
             SELECT br.Record_ID, br.User_ID, u.First_Name, u.Last_Name, 
                    b.ISBN, b.Title, a.Name as Author_Name, br.Book_Copy_ID as Copy_ID,
                    br.Checkout_Date, br.Due_Date,
@@ -273,11 +306,15 @@ async function getOverdueData() {
             JOIN author a ON b.Author_ID = a.Author_ID
             WHERE br.Return_Date IS NULL
             AND br.Due_Date < CURDATE()
+            AND br.Checkout_Date BETWEEN ? AND ?
             LIMIT 100
-        `);
+        `,
+      [startDate, endDate]
+    );
 
     // Get overdue devices
-    const [overdueDevices] = await pool.query(`
+    const [overdueDevices] = await pool.query(
+      `
             SELECT br.Record_ID, br.User_ID, u.First_Name, u.Last_Name, 
                    br.Category, br.Model, br.Device_Copy_ID as Copy_ID,
                    br.Checkout_Date, br.Due_Date,
@@ -292,8 +329,11 @@ async function getOverdueData() {
             WHERE br.Return_Date IS NULL
             AND br.Category IS NOT NULL
             AND br.Due_Date < CURDATE()
+            AND br.Checkout_Date BETWEEN ? AND ?
             LIMIT 100
-        `);
+        `,
+      [startDate, endDate]
+    );
 
     return {
       books: overdueBooks || [],
@@ -305,11 +345,16 @@ async function getOverdueData() {
   }
 }
 
-// Get fines data
-async function getFinesData() {
+// Get fines data with date range filtering
+async function getFinesData(startDate, endDate) {
   try {
+    console.log(
+      `Getting fines data for date range: ${startDate} to ${endDate}`
+    );
+
     // Get fines list
-    const [fines] = await pool.query(`
+    const [fines] = await pool.query(
+      `
             SELECT f.Fine_ID, f.User_ID, u.First_Name, u.Last_Name, 
                    f.Amount, f.Reason, f.Created_at as Date_Issued, f.Fine_Status,
                    CASE 
@@ -320,12 +365,16 @@ async function getFinesData() {
                    END as User_Role
             FROM fines f
             JOIN user u ON f.User_ID = u.User_ID
+            WHERE f.Created_at BETWEEN ? AND ?
             ORDER BY f.Created_at DESC
             LIMIT 100
-        `);
+        `,
+      [startDate, endDate]
+    );
 
     // Get stats by reason
-    const [reasonStats] = await pool.query(`
+    const [reasonStats] = await pool.query(
+      `
             SELECT 
                 Reason, 
                 COUNT(*) as count,
@@ -333,11 +382,15 @@ async function getFinesData() {
                 SUM(CASE WHEN Fine_Status = 1 THEN Amount ELSE 0 END) as paid_amount,
                 SUM(CASE WHEN Fine_Status = 2 THEN Amount ELSE 0 END) as unpaid_amount
             FROM fines
+            WHERE Created_at BETWEEN ? AND ?
             GROUP BY Reason
-        `);
+        `,
+      [startDate, endDate]
+    );
 
     // Get fines by user role
-    const [roleStats] = await pool.query(`
+    const [roleStats] = await pool.query(
+      `
             SELECT 
                 CASE 
                     WHEN u.Role = 1 THEN 'Student'
@@ -349,8 +402,11 @@ async function getFinesData() {
                 SUM(f.Amount) as total_amount
             FROM fines f
             JOIN user u ON f.User_ID = u.User_ID
+            WHERE f.Created_at BETWEEN ? AND ?
             GROUP BY u.Role
-        `);
+        `,
+      [startDate, endDate]
+    );
 
     return {
       fines: fines || [],
@@ -363,11 +419,16 @@ async function getFinesData() {
   }
 }
 
-// Get checkouts data
-async function getCheckoutsData() {
+// Get checkouts data with date range filtering
+async function getCheckoutsData(startDate, endDate) {
   try {
+    console.log(
+      `Getting checkouts data for date range: ${startDate} to ${endDate}`
+    );
+
     // Get checked out books
-    const [books] = await pool.query(`
+    const [books] = await pool.query(
+      `
             SELECT br.Record_ID, br.User_ID, u.First_Name, u.Last_Name, 
                    b.ISBN, b.Title, a.Name as Author_Name, br.Book_Copy_ID as Copy_ID,
                    br.Checkout_Date, br.Due_Date, 
@@ -384,11 +445,15 @@ async function getCheckoutsData() {
             JOIN author a ON b.Author_ID = a.Author_ID
             WHERE br.Return_Date IS NULL
             AND br.ISBN IS NOT NULL
+            AND br.Checkout_Date BETWEEN ? AND ?
             LIMIT 100
-        `);
+        `,
+      [startDate, endDate]
+    );
 
     // Get checked out devices
-    const [devices] = await pool.query(`
+    const [devices] = await pool.query(
+      `
             SELECT br.Record_ID, br.User_ID, u.First_Name, u.Last_Name, 
                    br.Category, br.Model, br.Device_Copy_ID as Copy_ID,
                    br.Checkout_Date, br.Due_Date, 
@@ -403,11 +468,15 @@ async function getCheckoutsData() {
             JOIN user u ON br.User_ID = u.User_ID
             WHERE br.Return_Date IS NULL
             AND br.Category IS NOT NULL
+            AND br.Checkout_Date BETWEEN ? AND ?
             LIMIT 100
-        `);
+        `,
+      [startDate, endDate]
+    );
 
     // Get stats by user role
-    const [userRoleStats] = await pool.query(`
+    const [userRoleStats] = await pool.query(
+      `
             SELECT 
                 CASE 
                     WHEN u.Role = 1 THEN 'Student'
@@ -419,8 +488,11 @@ async function getCheckoutsData() {
             FROM borrow_record br
             JOIN user u ON br.User_ID = u.User_ID
             WHERE br.Return_Date IS NULL
+            AND br.Checkout_Date BETWEEN ? AND ?
             GROUP BY u.Role
-        `);
+        `,
+      [startDate, endDate]
+    );
 
     return {
       books: books || [],
@@ -433,11 +505,16 @@ async function getCheckoutsData() {
   }
 }
 
-// Get popular items data
-async function getPopularItemsData() {
+// Get popular items data with date range filtering
+async function getPopularItemsData(startDate, endDate) {
   try {
+    console.log(
+      `Getting popular items data for date range: ${startDate} to ${endDate}`
+    );
+
     // Get popular books
-    const [popularBooks] = await pool.query(`
+    const [popularBooks] = await pool.query(
+      `
             SELECT 
                 b.ISBN, 
                 b.Title, 
@@ -448,35 +525,46 @@ async function getPopularItemsData() {
             JOIN book b ON br.ISBN = b.ISBN
             JOIN author a ON b.Author_ID = a.Author_ID
             WHERE br.ISBN IS NOT NULL
+            AND br.Checkout_Date BETWEEN ? AND ?
             GROUP BY b.ISBN
             ORDER BY checkout_count DESC
             LIMIT 10
-        `);
+        `,
+      [startDate, endDate]
+    );
 
     // Get popular devices
-    const [popularDevices] = await pool.query(`
+    const [popularDevices] = await pool.query(
+      `
             SELECT 
                 Category, 
                 Model, 
                 COUNT(*) as checkout_count
             FROM borrow_record
             WHERE Category IS NOT NULL
+            AND Checkout_Date BETWEEN ? AND ?
             GROUP BY Category, Model
             ORDER BY checkout_count DESC
             LIMIT 10
-        `);
+        `,
+      [startDate, endDate]
+    );
 
     // Get checkouts by genre
-    const [genreStats] = await pool.query(`
+    const [genreStats] = await pool.query(
+      `
             SELECT 
                 b.Genre, 
                 COUNT(*) as checkout_count
             FROM borrow_record br
             JOIN book b ON br.ISBN = b.ISBN
             WHERE br.ISBN IS NOT NULL AND b.Genre IS NOT NULL
+            AND br.Checkout_Date BETWEEN ? AND ?
             GROUP BY b.Genre
             ORDER BY checkout_count DESC
-        `);
+        `,
+      [startDate, endDate]
+    );
 
     return {
       popularBooks: popularBooks || [],

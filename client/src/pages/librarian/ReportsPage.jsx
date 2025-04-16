@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Header from "../../components/header/LibrarianHeader";
-import "./LibrarianPage.css";
-import "./ReportsPage.css";
+import Header from "../../components/header/ManagerHeader";
+import DateRangeSelector from "./DateRangeSelector";
+import "../librarian/ReportsPage.css";
+import "./DateRangeSelector.css";
 
 const ReportsPage = () => {
     const [activeReport, setActiveReport] = useState(null);
@@ -10,6 +11,7 @@ const ReportsPage = () => {
     const [reportData, setReportData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [dateRange, setDateRange] = useState("week"); // Default to week view
     
     const reportOptions = [
         { id: "overview", name: "Library Overview" },
@@ -19,6 +21,23 @@ const ReportsPage = () => {
         { id: "popular", name: "Popular Items" }
     ];
     
+    useEffect(() => {
+        const checkAuth = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    console.error("No token found. Redirecting to login...");
+                    window.location.href = "/login";
+                    return;
+                }
+            } catch (error) {
+                console.error("Error checking authentication:", error);
+            }
+        };
+        
+        checkAuth();
+    }, []);
+    
     const toggleDropdown = () => {
         setShowDropdown(!showDropdown);
     };
@@ -26,62 +45,71 @@ const ReportsPage = () => {
     const selectReport = (reportId) => {
         setActiveReport(reportId);
         setShowDropdown(false);
-        fetchReportData(reportId);
+        fetchReportData(reportId, dateRange);
     };
     
- const fetchReportData = async (reportType) => {
-    setLoading(true);
-    setError("");
-    localStorage.removeItem('reportError');
+    const handleDateRangeChange = (newRange) => {
+        setDateRange(newRange);
+        if (activeReport) {
+            fetchReportData(activeReport, newRange);
+        }
+    };
     
-    try {
-        const token = localStorage.getItem("token");
+    const fetchReportData = async (reportType, range) => {
+        setLoading(true);
+        setError("");
+        localStorage.removeItem('reportError');
         
-        if (!token) {
-            console.error("No token found");
-            localStorage.removeItem("token"); // Clear any invalid token
-            window.location.href = "/login";
-            return;
-        }
-        
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/reports?type=${reportType}`, {
-            headers: {
-                "Authorization": `Bearer ${token}`
-            }
-        });
-        
-        setReportData(response.data);
-        setLoading(false);
-    } catch (error) {
-        console.error("Error fetching report data:", error);
-        
-        // Handle 401 Unauthorized error specifically
-        if (error.response && error.response.status === 401) {
-            localStorage.removeItem("token"); // Clear the expired token
-            setError("Your session has expired. Please log in again.");
-            setTimeout(() => {
+        try {
+            const token = localStorage.getItem("token");
+            
+            if (!token) {
+                console.error("No token found");
+                localStorage.removeItem("token"); 
                 window.location.href = "/login";
-            }, 2000); // Redirect after 2 seconds
-        } else {
-            setError("Failed to load report data. Please try again.");
+                return;
+            }
+            
+            const response = await axios.get(`${process.env.REACT_APP_API_URL}/reports`, {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                },
+                params: {
+                    type: reportType,
+                    dateRange: range
+                }
+            });
+            
+            setReportData(response.data);
+            setLoading(false);
+        } catch (error) {
+            console.error("Error fetching report data:", error);
+            
+            if (error.response && error.response.status === 401) {
+                localStorage.removeItem("token"); 
+                setError("Your session has expired. Please log in again.");
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 2000);
+            } else {
+                setError("Failed to load report data. Please try again.");
+            }
+            setLoading(false);
+            
+            localStorage.setItem('reportError', error.response?.data?.message || "Failed to load report data");
         }
-        setLoading(false);
-        
-        // Store the error in localStorage
-        localStorage.setItem('reportError', error.response?.data?.message || "Failed to load report data");
-    }
-};
+    };
     
     const clearError = () => {
         setError("");
         localStorage.removeItem('reportError');
         
-        // If a report was previously selected, try fetching it again
         if (activeReport) {
-            fetchReportData(activeReport);
+            fetchReportData(activeReport, dateRange);
         }
     };
     
+    // Report rendering functions remain the same as in the original file
     const renderOverviewReport = () => {
         if (!reportData) return null;
         
@@ -549,7 +577,7 @@ const ReportsPage = () => {
             </div>
         );
     };
-
+    
     const renderReportContent = () => {
         if (error) {
             return (
@@ -591,44 +619,51 @@ const ReportsPage = () => {
         }
     };
 
-// Update the return statement in ReportsPage component
-return (
-    <div className="librarian-page reports-page">
-        <Header />
-        <div className="container">
-            <h1 className="page-title">Library Reports</h1>
-            <div className="report-content">
-                <div className="reports-selector">
-                    <div className="dropdown-container">
-                        <button 
-                            className="report-dropdown-button" 
-                            onClick={toggleDropdown}
-                        >
-                            {activeReport ? reportOptions.find(r => r.id === activeReport).name : "Select a Report"} ▼
-                        </button>
-                        
-                        {showDropdown && (
-                            <div className="report-dropdown-menu">
-                                {reportOptions.map((option) => (
-                                    <button
-                                        key={option.id}
-                                        className={`report-option ${activeReport === option.id ? 'active' : ''}`}
-                                        onClick={() => selectReport(option.id)}
-                                    >
-                                        {option.name}
-                                    </button>
-                                ))}
-                            </div>
+    return (
+        <div className="reports-page">
+            <Header />
+            <div className="container">
+                <h1 className="page-title">Library Reports</h1>
+                <div className="report-content">
+                    <div className="reports-selector">
+                        <div className="dropdown-container">
+                            <button 
+                                className="report-dropdown-button" 
+                                onClick={toggleDropdown}
+                            >
+                                {activeReport ? reportOptions.find(r => r.id === activeReport).name : "Select a Report"} ▼
+                            </button>
+                            
+                            {showDropdown && (
+                                <div className="report-dropdown-menu">
+                                    {reportOptions.map((option) => (
+                                        <button
+                                            key={option.id}
+                                            className={`report-option ${activeReport === option.id ? 'active' : ''}`}
+                                            onClick={() => selectReport(option.id)}
+                                        >
+                                            {option.name}
+                                        </button>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        {activeReport && (
+                            <DateRangeSelector 
+                                activeRange={dateRange}
+                                onRangeChange={handleDateRangeChange}
+                            />
                         )}
                     </div>
-                </div>
-                <div className="report-data-container">
-                    {renderReportContent()}
+                    
+                    <div className="report-data-container">
+                        {renderReportContent()}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-);
-}
+    );
+};
 
 export default ReportsPage;
