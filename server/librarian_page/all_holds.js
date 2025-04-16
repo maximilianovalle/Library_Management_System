@@ -6,10 +6,15 @@ module.exports = async function getHeldItems(req, res) {
             SELECT 
                 CONCAT(u.First_Name, ' ', u.Last_Name) AS Holder_Name,
                 h.Category,
-                h.Model
+                h.Model,
+                h.Hold_status,
+                h.Created_at,
+                h.Expiration_date,
+                h.Hold_ID
             FROM holds AS h
             JOIN user AS u ON h.User_ID = u.User_ID
             JOIN device_copies AS dc ON h.Category = dc.Category AND h.Model = dc.Model
+            GROUP BY h.Hold_ID;
         `);
 
         console.log(rows);
