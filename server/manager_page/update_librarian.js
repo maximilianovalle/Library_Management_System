@@ -1,4 +1,3 @@
-// update_librarian.js
 const pool = require('../database.js');
 
 module.exports = async function updateLibrarian(req, res) {
@@ -14,7 +13,7 @@ module.exports = async function updateLibrarian(req, res) {
                 `UPDATE librarian SET 
                     First_Name = ?, Last_Name = ?, Password = ?,
                     Department = ?, Position = ?, SSN = ?,
-                    Hire_Date = ?, End_Date = ?, Pay_Rate = ?
+                    Hire_Date = ?, End_Date = ?, Pay_Rate = ?, Is_Active = ?
                  WHERE Librarian_ID = ?`,
                 [
                     data.First_Name,
@@ -26,6 +25,7 @@ module.exports = async function updateLibrarian(req, res) {
                     data.Hire_Date,
                     data.End_Date || null,
                     data.Pay_Rate || null,
+                    data.Is_Active, 
                     id
                 ]
             );
