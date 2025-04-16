@@ -103,7 +103,7 @@ const BrowseBooks = () => {
         } catch (error) {
             console.error("Error borrowing book:", error);
 
-            if (error.response.data.message == "Cannot check out items. User has unpaid fines exceeding $25.") {
+            if (error.response.data.message === "Cannot check out items. User has unpaid fines exceeding $25.") {
                 setTriggerMessage(confirm_borrow);
             }
             

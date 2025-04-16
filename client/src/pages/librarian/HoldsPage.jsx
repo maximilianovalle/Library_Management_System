@@ -6,6 +6,7 @@ import "./HoldsPage.css";
 const HoldsPage = () => {
     const [usersWithHolds, setUsersWithHolds] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [filterStatus, setFilterStatus] = useState("all");
 
     useEffect(() => {
         const fetchHolds = async () => {
@@ -34,24 +35,64 @@ const HoldsPage = () => {
         fetchHolds();
     }, []);
 
+    const handleNotify = (item) => {
+        alert(`Notification sent to ${item.Holder_Name}`);
+    };
+
+    const formatDate = (isoString) => {
+        const date = new Date(isoString);
+        return date.toLocaleString(undefined, {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
+
+    const getHoldStatusText = (statusCode) => {
+        switch (statusCode) {
+            case 1: return "Active";
+            case 2: return "Pending";
+            case 3: return "Expired";
+            default: return "Unknown";
+        }
+    };
+
+    const filteredHolds = usersWithHolds.filter(item => {
+        if (filterStatus === "all") return true;
+        if (filterStatus === "active") return item.Hold_status === 1;
+        if (filterStatus === "pending") return item.Hold_status === 2;
+        if (filterStatus === "expired") return item.Hold_status === 3;
+        return true;
+    });
+
     if (loading) {
         return <div>Loading...</div>;
     }
-
-    const handleNotify = (item) => {
-        // Placeholder logic – you can add API integration here
-        alert(`Notification sent to ${item.Holder_Name}`);
-    };
 
     return (
         <div>
             <Header />
             <div className="holds-page">
                 <h1>Manage Holds</h1>
-                <h2>Users with Holds</h2>
-    
-                {usersWithHolds.length === 0 ? (
-                    <p>No users with holds at the moment.</p>
+                <div className="filter-section">
+                    <label htmlFor="filterSelect">Filter by Status:</label>
+                    <select
+                        id="filterSelect"
+                        value={filterStatus}
+                        onChange={(e) => setFilterStatus(e.target.value)}
+                    >
+                        <option value="all">All</option>
+                        <option value="active">Active</option>
+                        <option value="pending">Pending</option>
+                        <option value="expired">Expired</option>
+                    </select>
+                </div>
+
+                {filteredHolds.length === 0 ? (
+                    <p>No holds matching the selected filter.</p>
                 ) : (
                     <div className="table-container">
                         <table className="holds-table">
@@ -60,15 +101,23 @@ const HoldsPage = () => {
                                     <th>User Name</th>
                                     <th>Category</th>
                                     <th>Model</th>
+                                    <th>Status</th>
+                                    <th>Hold ID</th>
+                                    <th>Created At</th>
+                                    <th>Expiration Date</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {usersWithHolds.map((item, index) => (
+                                {filteredHolds.map((item, index) => (
                                     <tr key={index}>
                                         <td>{item.Holder_Name}</td>
                                         <td>{item.Category}</td>
                                         <td>{item.Model}</td>
+                                        <td>{getHoldStatusText(item.Hold_status)}</td>
+                                        <td>{item.Hold_ID}</td>
+                                        <td>{formatDate(item.Created_at)}</td>
+                                        <td>{formatDate(item.Expiration_date)}</td>
                                         <td>
                                             <button
                                                 className="notify-button"
@@ -86,7 +135,6 @@ const HoldsPage = () => {
             </div>
         </div>
     );
-    
 };
 
 export default HoldsPage;

@@ -11,7 +11,7 @@ module.exports = async function addUser(req, res) {
               const roleRanges = {
                 1: [7000000, 7999999],
                 2: [8000000, 8999999],
-                3: [9000000, 9999999],
+                3: [9000000, 9999998],
               };              
 
             const [minID, maxID] = roleRanges[Role];

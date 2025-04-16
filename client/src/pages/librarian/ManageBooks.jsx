@@ -131,7 +131,6 @@ const ManageBooks = () => {
   
             {activeTab === "view" && (
               <div>
-                {/* Search Bar */}
                 <div className="search-bar-container">
                   <input
                     type="text"
@@ -142,7 +141,6 @@ const ManageBooks = () => {
                   />
                 </div>
   
-                {/* Condition Filter Buttons */}
                 <div className="condition-filter">
                   <button onClick={() => setConditionFilter("")}>All Conditions</button>
                   <button onClick={() => setConditionFilter("good")}>Good</button>
@@ -150,7 +148,6 @@ const ManageBooks = () => {
                   <button onClick={() => setConditionFilter("worn")}>Worn Out</button>
                 </div>
   
-                {/* Book List */}
                 <div className="book-list">
                   {filteredBooks.length === 0 ? (
                     <p>No books found.</p>
@@ -172,10 +169,11 @@ const ManageBooks = () => {
                           <h3>{book.Title}</h3>
                           <p>{book.Name} (Author)</p>
                           <p>ISBN: {book.ISBN}</p>
+                          <p>Copy Number: {book.Copy_ID}</p>
                           <span
                             className={`condition-tag ${getConditionClass(book.Book_Condition)}`}
                           >
-                            {book.Book_Condition} {/* Display the book condition text here */}
+                            {book.Book_Condition} 
                           </span>
                         </div>
                         <br></br>

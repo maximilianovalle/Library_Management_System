@@ -1,10 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { IoIosSearch, IoIosAdd } from "react-icons/io";
-// import { useNavigate } from "react-router-dom";
-import { MdOutlineModeEdit, MdDelete } from "react-icons/md";
+import { MdOutlineModeEdit, MdDelete, MdVisibility, MdVisibilityOff } from "react-icons/md";
 import Header from "../../components/header/ManagerHeader";
 import "./ManageLibrarians.css";
+
+// Helper function to generate random passwords
+const generateRandomPassword = () => {
+  const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=";
+  return Array.from({ length: 12 }, () => chars[Math.floor(Math.random() * chars.length)]).join("");
+};
+
+const getTodayDate = () => {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = String(today.getMonth() + 1).padStart(2, '0');
+  const day = String(today.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 const LibrarianManager = () => {
   const [activeTab, setActiveTab] = useState("add");
@@ -15,9 +28,11 @@ const LibrarianManager = () => {
     Department: "",
     Position: "",
     SSN: "",
-    Hire_Date: "",
-    Pay_Rate: ""
+    Hire_Date: getTodayDate(),
+    Pay_Rate: "",
+    Is_Active: 1
   });
+  const [showPassword, setShowPassword] = useState(false);
   const [toast, setToast] = useState({ message: "", type: "" });
   const [loading, setLoading] = useState(false);
 
@@ -26,19 +41,14 @@ const LibrarianManager = () => {
   const [showModal, setShowModal] = useState(false);
   const [deleteId, setDeleteId] = useState(null);
 
-  // const navigate = useNavigate();
-
   useEffect(() => {
     try {
-      const token = localStorage.getItem("token");    // retrieve token from frontend localStorage
-
-      // if ( no token )
+      const token = localStorage.getItem("token");
       if (!token) {
           console.error("No token found. Redirecting to login...");
           window.location.href = "/login";
           return;
       }
-
     } catch (error) {
       console.error("Error fetching info: ", error);
     }
@@ -54,10 +64,47 @@ const LibrarianManager = () => {
   };
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+  
+    // If user updates End_Date
+    if (name === "End_Date") {
+      const today = new Date().toISOString().split("T")[0];
+      
+      if (value > today) {
+        showToast("End date cannot be in the future.", "error");
+        return;
+      }
+  
+      setFormData(prev => ({
+        ...prev,
+        End_Date: value,
+        Is_Active: 0 // Auto-mark as inactive
+      }));
+      return;
+    }
+  
+    // For all other fields
     setFormData(prev => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [name]: value
     }));
+  };
+  
+  const handleStatusChange = (isActive) => {
+    setFormData(prev => ({
+      ...prev,
+      Is_Active: isActive ? 1 : 0,
+      End_Date: isActive ? "" : getTodayDate()
+    }));
+  };
+
+  const handleGeneratePassword = () => {
+    const newPassword = generateRandomPassword();
+    setFormData(prev => ({
+      ...prev,
+      Password: newPassword
+    }));
+    showToast("Random password generated!", "info");
   };
 
   const handleAdd = async (e) => {
@@ -76,9 +123,11 @@ const LibrarianManager = () => {
         Department: "",
         Position: "",
         SSN: "",
-        Hire_Date: "",
-        Pay_Rate: ""
+        Hire_Date: getTodayDate(),
+        Pay_Rate: "",
+        Is_Active: 1
       });
+      setShowPassword(false);
     } catch (error) {
       console.error("Add librarian failed:", error);
       showToast("Failed to add librarian.", "error");
@@ -103,10 +152,13 @@ const LibrarianManager = () => {
     setEditingId(lib.Librarian_ID);
     setFormData({
       ...lib,
-      Hire_Date: lib.Hire_Date?.split("T")[0] || getToday(),
-      End_Date: lib.Is_Active === 1 ? "" : lib.End_Date?.split("T")[0] || getToday(),
+      Librarian_ID: lib.Librarian_ID,
+      Hire_Date: lib.Hire_Date?.split("T")[0] || getTodayDate(),
+      End_Date: lib.Is_Active === 1 ? "" : lib.End_Date?.split("T")[0] || getTodayDate(),
+      Is_Active: lib.Is_Active
     });
   };
+  
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -145,21 +197,18 @@ const LibrarianManager = () => {
     }
   };
 
-  const getToday = () => new Date().toISOString().split("T")[0];
-
   return (
     <div>
       <Header />
       <div className="manage-librarians-container mainManage">
-
-      <h2 id="dashboardTitle" class="dashboard-title manageLibrariansTitle">Manage Librarians</h2>
+        <h2 id="dashboardTitle" className="dashboard-title manageLibrariansTitle">Manage Librarians</h2>
 
         <div className="tab-buttons dashboard-header dashboard-title">
           <button
             className={`tab-button ${activeTab === "add" ? "active" : ""}`}
             onClick={() => {
               setActiveTab("add");
-              setEditingId(null); // Clear any edit state
+              setEditingId(null);
               setFormData({
                 First_Name: "",
                 Last_Name: "",
@@ -167,9 +216,11 @@ const LibrarianManager = () => {
                 Department: "",
                 Position: "",
                 SSN: "",
-                Hire_Date: "",
-                Pay_Rate: ""
-              }); // Reset form
+                Hire_Date: getTodayDate(),
+                Pay_Rate: "",
+                Is_Active: 1
+              });
+              setShowPassword(false);
             }}
           >
             <IoIosAdd /> Add Librarian
@@ -187,19 +238,64 @@ const LibrarianManager = () => {
 
         {activeTab === "add" && (
           <div className="form-section">
-
             <form onSubmit={handleAdd} className="librarian-form" autoComplete="off">
               {Object.entries(formData).map(([key, value]) => (
                 <div key={key} className="form-group">
                   <label htmlFor={key}>{key.replace(/_/g, " ")}</label>
-                  <input
-                    id={key}
-                    name={key}
-                    value={value}
-                    onChange={handleChange}
-                    type={key.toLowerCase().includes("date") ? "date" : "text"}
-                    required={key !== "Pay_Rate"}
-                  />
+                  {key === "Password" ? (
+                    <div className="password-input-container">
+                      <input
+                        id={key}
+                        name={key}
+                        value={value}
+                        onChange={handleChange}
+                        type={showPassword ? "text" : "password"}
+                        required
+                        autoComplete="new-password" 
+                      />
+                      <button 
+                        type="button" 
+                        className="toggle-password"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                      </button>
+                      <button
+                        type="button"
+                        className="generate-password"
+                        onClick={handleGeneratePassword}
+                      >
+                        Generate
+                      </button>
+                    </div>
+                  ) : key === "Is_Active" ? (
+                    <div className="status-buttons">
+                      <button
+                        type="button"
+                        className={`status-btn ${value === 1 ? "active" : ""}`}
+                        onClick={() => handleStatusChange(true)}
+                        disabled
+                      >
+                        Active
+                      </button>
+                      {/* <button
+                        type="button"
+                        className={`status-btn ${value === 0 ? "active" : ""}`}
+                        onClick={() => handleStatusChange(false)}
+                      >
+                        Inactive
+                      </button> */}
+                    </div>
+                  ) : (
+                    <input
+                      id={key}
+                      name={key}
+                      value={value}
+                      onChange={handleChange}
+                      type={key.toLowerCase().includes("date") ? "date" : "text"}
+                      required={key !== "Pay_Rate" && key !== "End_Date"}
+                    />
+                  )}
                 </div>
               ))}
               <button type="submit" disabled={loading}>
@@ -219,9 +315,7 @@ const LibrarianManager = () => {
               <div className="modal-overlay">
                 <div className="modal-box">
                   <span className="modal-close" onClick={() => setShowModal(null)}>&times;</span>
-
-                  <h2 class="modalHeader">Delete librarian?</h2>
-
+                  <h2 className="modalHeader">Delete librarian?</h2>
                   <p>This action cannot be undone.</p>
                   <button className="confirm-btn" onClick={handleDelete}>Yes, Delete</button>
                   <button className="cancel-btn" onClick={() => setShowModal(false)}>Cancel</button>
@@ -236,14 +330,53 @@ const LibrarianManager = () => {
                   {Object.entries(formData).map(([key, value]) => (
                     <div key={key} className="form-group">
                       <label htmlFor={key}>{key.replace(/_/g, " ")}</label>
-                      <input
-                        id={key}
-                        name={key}
-                        value={value || ""}
-                        onChange={handleChange}
-                        type={key.toLowerCase().includes("date") ? "date" : "text"}
-                        required={key !== "End_Date" && key !== "Pay_Rate"}
-                      />
+                      {key === "Password" ? (
+                        <div className="password-input-container">
+                          <input
+                            id={key}
+                            name={key}
+                            value={value}
+                            onChange={handleChange}
+                            type={showPassword ? "text" : "password"}
+                            required
+                            
+                          />
+                          <button 
+                            type="button" 
+                            className="toggle-password"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
+                          </button>
+                        </div>
+                      ) : key === "Is_Active" ? (
+                        <div className="status-buttons">
+                          <button
+                            type="button"
+                            className={`status-btn ${value === 1 ? "active" : ""}`}
+                            onClick={() => handleStatusChange(true)}
+                          >
+                            Active
+                          </button>
+                          <button
+                            type="button"
+                            className={`status-btn ${value === 0 ? "active" : ""}`}
+                            onClick={() => handleStatusChange(false)}
+                          >
+                            Inactive
+                          </button>
+                        </div>
+                      ) : (
+                        <input
+                          id={key}
+                          name={key}
+                          value={value || ""}
+                          onChange={handleChange}
+                          type={key.toLowerCase().includes("date") ? "date" : "text"}
+                          required={key !== "End_Date" && key !== "Pay_Rate"}
+                          disabled={key === "Librarian_ID"}
+                        />
+                      )}
                     </div>
                   ))}
                   <button type="submit">Update Librarian</button>
@@ -254,47 +387,36 @@ const LibrarianManager = () => {
                 {librarians.length > 0 ? (
                   librarians.map((lib, idx) => (
                     <div key={idx} className="librarian-row">
-
                       <div id="librarianRowSpacing">
-                      <div className="card-header">
-
-                        <h3 class="libName entryElement">{lib.First_Name} {lib.Last_Name}</h3>
-
-                        <span className="entryElement">
-                          {!lib.End_Date && (
-                            <span className="entryElement active-indicator" title="Current Employee">ACTIVE SINCE</span>
-                          )}
-                          {lib.End_Date && (
-                            <span className="entryElement active-indicator" title="Current Employee">NOT ACTIVE</span>
-                          )}
-                        </span>
-
-                      </div>
-
-                      <div class="card-header">
-
-                        <div>
-                          <span className="entryElement">{lib.Position}, {lib.Department}</span>
-
+                        <div className="card-header">
+                          <h3 className="libName entryElement">{lib.First_Name} {lib.Last_Name}</h3>
+                          <span className="entryElement">
+                            <span className={`status-indicator ${lib.Is_Active === 1 ? "active" : "inactive"}`}>
+                              {lib.Is_Active === 1 ? "ACTIVE" : "INACTIVE"}
+                            </span>
+                          </span>
                         </div>
 
-                      <span className="entryElement">
-                        
-                        {lib.Hire_Date &&
-                          new Date(lib.Hire_Date).toLocaleDateString("en-US", {
-                            year: "numeric", month: "long", day: "numeric"
-                          })}
-                        {lib.End_Date && (
-                          <span className="entryElement">
-                            {" "}–{" "}
-                            {new Date(lib.End_Date).toLocaleDateString("en-US", {
-                              year: "numeric", month: "long", day: "numeric"
-                            })}
-                          </span>
-                        )}
-                      </span>
+                        <div className="card-header">
+                          <div>
+                            <span className="entryElement">{lib.Position}, {lib.Department}</span>
+                          </div>
 
-                      </div>
+                          <span className="entryElement">
+                            {lib.Hire_Date &&
+                              new Date(lib.Hire_Date).toLocaleDateString("en-US", {
+                                year: "numeric", month: "long", day: "numeric"
+                              })}
+                            {lib.End_Date && (
+                              <span className="entryElement">
+                                {" "}–{" "}
+                                {new Date(lib.End_Date).toLocaleDateString("en-US", {
+                                  year: "numeric", month: "long", day: "numeric"
+                                })}
+                              </span>
+                            )}
+                          </span>
+                        </div>
                       </div>
 
                       <div className="actions">

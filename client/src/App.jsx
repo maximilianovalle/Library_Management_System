@@ -22,9 +22,8 @@ import LibrarianAccount from './pages/librarian/LibrarianAccount'
 
 import ManagerDashboard from './pages/manager/ManagerDashboard';
 import ManageLibrarians from './pages/manager/ManageLibrarians';
-import ViewLibrarians from './pages/manager/ViewLibrarians';
+import ViewLibrarians from './pages/manager/ViewLibrarians';   /* weird bug delete this route later */
 import ManageUsers from './pages/manager/ManageUsers';
-import ViewUsers from './pages/manager/ViewUsers';
 import ViewReports from './pages/manager/ReportsPage';
 import Maintenance from './pages/manager/Maintenance';
 import ManagerDeleteItems from './pages/manager/deleteItems';
