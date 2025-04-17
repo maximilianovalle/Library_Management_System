@@ -11,6 +11,7 @@ const LibrarianHeader = () => {
         { title: "Manage Devices", link: "/librarian/manage-devices" },
         { title: "Holds", link: "/librarian/holds" },
         { title: "Fines", link: "/librarian/fines" },
+        { title: "Reports", link: "/librarian/reports" },
         { title: "Account", link: "/librarian_account" }
     ];
 
