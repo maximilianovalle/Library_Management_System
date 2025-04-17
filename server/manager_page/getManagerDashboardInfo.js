@@ -5,14 +5,17 @@ module.exports = async function getManagerDashboardInfo(req, res, userID) {
         const [[managerInfo], [totalLibrarians], [booksInMaintenance], [devicesInMaintenance]] = await Promise.all([
             pool.query("SELECT * FROM manager WHERE Manager_ID = ?", [userID]),
 
-            pool.query("SELECT COUNT(*) FROM librarian WHERE End_Date IS NULL"),
+            pool.query(`
+              SELECT COUNT(*) FROM librarian 
+              WHERE End_Date IS NULL 
+              AND (Is_Deleted IS NULL OR Is_Deleted = 0)`),
 
             pool.query("SELECT COUNT(*) FROM book_copies WHERE Book_Status = 'Maintenance'"),
 
-            pool.query("SELECT COUNT(*) FROM device_copies WHERE Device_Status = 'Maintenance'"),
+            pool.query("SELECT COUNT(*) FROM device_copies WHERE Device_Status = 'Maintenance'")
         ]);
 
-        if (managerInfo.length === 0) {    // if no user found
+        if (managerInfo.length === 0) {
             console.log("User not found in database.");
             res.writeHead(400, { 'Content-Type': 'application/json' });
             res.end(JSON.stringify({ message: 'Missing User' }));
@@ -21,23 +24,21 @@ module.exports = async function getManagerDashboardInfo(req, res, userID) {
 
         let firstName = managerInfo[0].First_Name;
         let lastName = managerInfo[0].Last_Name;
-        // let activeLibrarians = totalLibrarians.length;
-        console.log("Active librarians: ", totalLibrarians[0]['COUNT(*)']);
 
         console.log("Manager Name: ", firstName, lastName);
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
-            firstName: firstName,
-            lastName: lastName,
+            firstName,
+            lastName,
             activeLibrarians: totalLibrarians[0]['COUNT(*)'],
             maintenanceBooks: booksInMaintenance[0]['COUNT(*)'],
             maintenanceDevices: devicesInMaintenance[0]['COUNT(*)'],
         }));
 
     } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'application/json' }); // HTTP 500: Internal Server Error
+        console.error("Error in getManagerDashboardInfo:", error);
+        res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: 'Internal Server Error' }));
-        return;
     }
-}
+};
