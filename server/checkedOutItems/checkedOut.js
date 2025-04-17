@@ -5,59 +5,92 @@ module.exports = async function getCheckedOutItems(req, res, userID) {
         const USER = userID;
 
         const [[checkedOutBooks], [checkedOutDevices], [onHoldDevices]] = await Promise.all([
-            pool.query("SELECT book.Title, book.Genre, author.Name, record.Checkout_Date, book.ISBN, record.Book_Copy_ID, record.Due_Date FROM borrow_record AS record, book, author WHERE record.User_ID = ? AND record.Return_Date IS NULL AND record.ISBN IS NOT NULL AND book.ISBN = record.ISBN AND author.Author_ID = book.Author_ID", [USER]),   // gets user checked out books
+            // Fetch checked out books
+            pool.query(`
+                SELECT book.Title, book.Genre, author.Name, record.Checkout_Date, 
+                       record.Due_Date, record.Book_Copy_ID, book.ISBN
+                FROM borrow_record AS record
+                JOIN book ON book.ISBN = record.ISBN
+                JOIN author ON author.Author_ID = book.Author_ID
+                WHERE record.User_ID = ?
+                  AND record.Return_Date IS NULL
+                  AND record.ISBN IS NOT NULL
+            `, [USER]),
 
-            pool.query("SELECT Category, Model, Checkout_Date, Due_Date FROM borrow_record WHERE User_ID = ? AND Return_Date IS NULL AND Category IS NOT NULL", [USER]),    // gets user checked out devices
+            // Fetch checked out devices (one per Device_Copy_ID)
+            pool.query(`
+                SELECT r.Category, r.Model, r.Checkout_Date, r.Due_Date, r.Device_Copy_ID
+                FROM borrow_record r
+                JOIN (
+                    SELECT MAX(Record_ID) AS latest_record
+                    FROM borrow_record
+                    WHERE User_ID = ?
+                      AND Return_Date IS NULL
+                      AND Category IS NOT NULL
+                    GROUP BY Device_Copy_ID
+                ) latest ON r.Record_ID = latest.latest_record
+            `, [USER]),
 
-            pool.query("SELECT Category, Model, Expiration_date FROM holds WHERE User_ID = ? AND Category IS NOT NULL AND Hold_Status = 1 AND Expiration_date < NOW()", [USER]), // gets user held devices
+            // Fetch devices on hold (but not expired yet)
+            pool.query(`
+                SELECT Category, Model, Expiration_date
+                FROM holds
+                WHERE User_ID = ?
+                  AND Category IS NOT NULL
+                  AND Hold_Status = 1
+                  AND Expiration_date > NOW()
+            `, [USER]),
         ]);
 
-        // format checkedOutBooks into array of objects
-        let checkedOutBooksArr = checkedOutBooks.map(row => ({
+        // Format checked out books
+        const checkedOutBooksArr = checkedOutBooks.map(row => ({
             title: row.Title,
             genre: row.Genre,
             author: row.Name,
             isbn: row.ISBN,
             copyID: row.Book_Copy_ID,
-
             checkedOut: row.Checkout_Date
-            ? new Date(row.Checkout_Date).toLocaleDateString("en-US", {
-                year: "numeric", month: "long", day: "numeric" })
+                ? new Date(row.Checkout_Date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
                 : "???",
-
-            due: row.Due_Date,
+            due: row.Due_Date
+                ? new Date(row.Due_Date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+                : "???",
         }));
 
-        // format checkedOutDevices into array of objects
-        let checkedOutDevicesArr = checkedOutDevices.map(row => ({
+        // Format checked out devices
+        const checkedOutDevicesArr = checkedOutDevices.map(row => ({
             category: row.Category,
             model: row.Model,
-
+            copyID: row.Device_Copy_ID,
             checkedOut: row.Checkout_Date
-            ? new Date(row.Checkout_Date).toLocaleDateString("en-US", {
-                year: "numeric", month: "long", day: "numeric" })
+                ? new Date(row.Checkout_Date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
                 : "???",
-
-            due: row.Due_Date,
+            due: row.Due_Date
+                ? new Date(row.Due_Date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+                : "???",
         }));
 
-        let heldDevicesArr = onHoldDevices.map(row => ({
+        // Format held devices
+        const heldDevicesArr = onHoldDevices.map(row => ({
             category: row.Category,
             model: row.Model,
-            expires: row.Expiration_date,
-        }))
+            expires: row.Expiration_date
+                ? new Date(row.Expiration_date).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
+                : "???",
+        }));
 
+        // Send response
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({
-            checkedOutBooksArr: checkedOutBooksArr,
-            checkedOutDevicesArr: checkedOutDevicesArr,
-            heldDevicesArr: heldDevicesArr,
+            checkedOutBooksArr,
+            checkedOutDevicesArr,
+            heldDevicesArr,
             message: 'Successfully retrieved borrowed items',
-        })) // send checked out books + devices as JSON to checkedOut.jsx
+        }));
 
     } catch (error) {
+        console.error(error);
         res.writeHead(500, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ message: 'Internal Server Error' }));
-        return;
     }
 };

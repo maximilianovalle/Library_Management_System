@@ -221,7 +221,7 @@ const CheckedOutPage = () => {
 
 
                 <h1 class="header">My Devices</h1>
-                <p class="description">All currently checked out and on hold devices.</p>
+                <p class="description">All currently checked out devices.</p>
 
                 <div class="container">
 
@@ -302,8 +302,8 @@ const CheckedOutPage = () => {
                             <p>Book will be removed from your checked out items.</p>
 
                             <div class="btnContainer">
-                                <button class="btn" onClick={() => {
-                                    returnBook();
+                                <button class="btn" onClick={async () => {
+                                    await returnBook();
                                     closeReturnModal();
                                     window.location.reload();
                                 }}>Return Book</button>
