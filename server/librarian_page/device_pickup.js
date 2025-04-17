@@ -11,6 +11,7 @@ module.exports = async function PickedUpDevice(req, res) {
         req.on("end", async () => {
             try {
                 const {hold_id, model, userID, category, copy_id} = JSON.parse(body);
+                console.log(hold_id, model, userID, category, copy_id)
                 const firstDigit = String(userID)[0];
                 let userRole;
     
@@ -18,20 +19,18 @@ module.exports = async function PickedUpDevice(req, res) {
                 else if (firstDigit === '8') userRole = 2;
                 else if (firstDigit === '9') userRole = 3;
                 else throw new Error("Invalid user ID format");
-                const updateQuery = `
+
+                await pool.query(`
                     UPDATE holds
                     SET Hold_status = 1
                     WHERE Hold_ID = ?
-                `;
-
-                await pool.query(updateQuery, [hold_id]);
+                `,[hold_id]);
 
                 await pool.query(`
                     UPDATE device_copies
-                    SET Device_Status = 'On Hold'
-                    WHERE Model = ? AND Device_Status = 'Available'
-                    LIMIT 1
-                `, [model]);
+                    SET Device_Status = 'Checked out'
+                    WHERE Copy_ID = ?
+                `, [copy_id]);
                     
                 const [policyRows] = await pool.query(
                     "SELECT Borrow_Duration FROM borrow_policy WHERE Role = ? AND Item_Type = 1",
@@ -49,6 +48,7 @@ module.exports = async function PickedUpDevice(req, res) {
     
                 const [lastRecord] = await pool.query("SELECT MAX(Record_ID) as last FROM borrow_record");
                 const recordId = (lastRecord[0].last || 3000000) + 1;
+                console.log("Inserting into DB borrow: ", recordId, userID, checkoutDate, dueDate, category, model, copy_id)
 
                 await pool.query(`INSERT INTO borrow_record 
                 (Record_ID, User_ID, Checkout_Date, Due_Date, Return_Date, ISBN, Book_Copy_ID, Category, Model, Device_Copy_ID) 

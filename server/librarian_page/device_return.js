@@ -37,7 +37,7 @@ module.exports = async function ReturnedDevice(req, res) {
                 await pool.query(`
                     UPDATE device_copies
                     SET Device_Status = 'Available'
-                    WHERE Model = ? AND Device_Status = 'On Hold'
+                    WHERE Model = ? AND Device_Status = 'Checked out'
                     LIMIT 1
                 `, [model]);
                 
