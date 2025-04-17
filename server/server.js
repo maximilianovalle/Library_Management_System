@@ -64,6 +64,7 @@ const bookUpdate = require('./manager_page/bookUpdate.js');
 const deviceUpdate = require('./manager_page/deviceUpdate.js');
 const markNotifAsRead = require("./account_info/markNotifAsRead.js");
 
+const getManagerReportsData = require("./reports/manager_reports.js"); // getReportsData()
 
 const app = http
   .createServer(async (req, res) => {
@@ -451,6 +452,11 @@ const app = http
     
     if (req.url === '/resolve-maintenance' && req.method === 'PUT' && role === 3) {
       resolveMaintenanceItem(req, res);
+      return;
+    }
+
+    if (req.url.startsWith("/manager_reports") && req.method === "GET" && role === 3) {
+      getManagerReportsData(req, res);
       return;
     }
 
