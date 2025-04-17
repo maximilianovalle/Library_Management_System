@@ -128,3 +128,34 @@
     font-size: 1.4rem;
   }
   
+  /* Date Range Filter Styles */
+.date-filter-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 0 2rem 0;
+    flex-wrap: wrap;
+}
+
+.date-filter-button {
+    padding: 0.6rem 1.2rem;
+    font-size: 0.875rem;
+    border: 1px solid #b71c1c;
+    border-radius: 20px;
+    background-color: white;
+    color: #b71c1c;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.date-filter-button:hover {
+    background-color: #b71c1c;
+    color: white;
+}
+
+.date-filter-button.active {
+    background-color: #b71c1c;
+    color: white;
+    box-shadow: 0 3px 8px rgba(183, 28, 28, 0.3);
+}

@@ -8,6 +8,7 @@ const ManagerReportsPage = () => {
   const [salaryData, setSalaryData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeReport, setActiveReport] = useState("maintenance");
+  const [dateRange, setDateRange] = useState("all");
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -15,6 +16,7 @@ const ManagerReportsPage = () => {
         const token = localStorage.getItem("token");
         const res = await axios.get(`${process.env.REACT_APP_API_URL}/manager_reports`, {
           headers: { Authorization: `Bearer ${token}` },
+          params: { dateRange },
         });
 
         setMaintenanceData(res.data.maintenance_report || []);
@@ -27,9 +29,11 @@ const ManagerReportsPage = () => {
     };
 
     fetchReports();
-  }, []);
+  }, [dateRange]);
 
   const totalSalary = salaryData.reduce((sum, lib) => sum + Number(lib.total_cost), 0);
+
+  const dateRanges = ["week", "month", "quarter", "year", "all"];
 
   return (
     <div>
@@ -44,6 +48,18 @@ const ManagerReportsPage = () => {
           <button onClick={() => setActiveReport("salary")} className={activeReport === "salary" ? "active" : ""}>
             Librarian Salary Report
           </button>
+        </div>
+
+        <div className="date-filter-container">
+          {dateRanges.map((range) => (
+            <button
+              key={range}
+              className={`date-filter-button ${dateRange === range ? "active" : ""}`}
+              onClick={() => setDateRange(range)}
+            >
+              {range.charAt(0).toUpperCase() + range.slice(1)}
+            </button>
+          ))}
         </div>
 
         {loading ? (
