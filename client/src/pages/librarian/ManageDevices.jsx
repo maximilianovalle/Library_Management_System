@@ -98,7 +98,7 @@ const ManageDevices = () => {
   console.log('Current Condition Filter:', conditionFilter);
 
   const filteredDevices = devices
-  .filter((device) => device.Device_Status?.toLowerCase() !== "deleted") // filter out deleted devices
+  .filter((device) => device.Device_Status?.toLowerCase() !== "deleted" || "Checked out") // filter out deleted devices
   .filter((device) => {
     const query = searchQuery.toLowerCase();
     const conditionMatch =

@@ -97,6 +97,9 @@ const ManageBooks = () => {
     if (book.Book_Status && book.Book_Status.toLowerCase() === "deleted") {
       return false;
     }
+    else if(book.Book_Status && book.Book_Status.toLowerCase() === "checked out"){
+      return false;
+    }
   
     const query = searchQuery.toLowerCase();
     const title = (book.Title || "").toLowerCase();
