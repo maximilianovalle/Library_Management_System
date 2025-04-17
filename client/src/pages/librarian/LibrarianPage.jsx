@@ -314,11 +314,11 @@ const LibrarianDashboard = () => {
                                 </div>
 
                                 <div className="quick-actions">
-                                    <Link to="/librarian/manage-books/add" className="action-button add-book">
+                                    <Link to="/librarian/manage-books" className="action-button add-book">
                                         <FaBook className="icon"/>
                                         <span>Add New Book</span>
                                     </Link>
-                                    <Link to="/librarian/manage-devices/add" className="action-button add-device">
+                                    <Link to="/librarian/manage-devices" className="action-button add-device">
                                         <FaTabletAlt className="icon"/>
                                         <span>Add New Device</span>
                                     </Link>
