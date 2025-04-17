@@ -75,7 +75,7 @@ const ManagerDashboard = () => {
           <>
 
             <div className="dashboard-header">
-              <h1 id="dashboardTitle" className="dashboard-title">Manager Dashboard</h1>
+              <h1 id="dashboardTitle" className="dashboard-title">Admin Dashboard</h1>
 
               <div className="dashboard-welcome">
                 <div className="welcome-message">

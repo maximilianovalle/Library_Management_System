@@ -39,7 +39,7 @@ const ManagerReportsPage = () => {
     <div>
       <Header />
       <div className="reports-container">
-        <h1 className="report-title">Manager Reports</h1>
+        <h1 className="report-title">Admin Reports</h1>
 
         <div className="report-filters">
           <button onClick={() => setActiveReport("maintenance")} className={activeReport === "maintenance" ? "active" : ""}>
