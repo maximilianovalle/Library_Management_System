@@ -153,3 +153,26 @@
     color: #5e5e5e;
     font-weight: 200;
   }
+
+  .blahblah {
+    display: flex;
+    flex-direction: column;
+    /* align-items: flex-end; */
+    /* justify-content: center; */
+    background-color: #2563eb;
+    /* max-height: 40px; */
+  }
+
+  .noSpacing {
+    margin: 0px;
+    padding: 0px;
+    margin-bottom: 0px;
+  }
+
+  #forUnread {
+    /* background-color: #2563eb; */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+  }

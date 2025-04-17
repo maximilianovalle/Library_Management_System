@@ -46,18 +46,30 @@ const ManageDevices = () => {
     }
   }, [activeTab]);
 
-  const handleDelete = async (copyId) => {
+  const handleDelete = async (deviceToDelete) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete the device: ${deviceToDelete.Category} - ${deviceToDelete.Model}?`
+    );
+    if (!confirmDelete) return;
+  
     try {
       const token = localStorage.getItem("token");
-      await axios.delete(`${process.env.REACT_APP_API_URL}/delete_device`, {
+  
+      await axios.delete(`${process.env.REACT_APP_API_URL}/delete_one_device`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         data: {
-          Copy_ID: copyId,
+          copyID: deviceToDelete.Copy_ID,
+          category: deviceToDelete.Category,
+          model: deviceToDelete.Model,
         },
       });
-      setDevices((prev) => prev.filter(device => device.Copy_ID !== copyId));
+  
+      setDevices((prevDevices) =>
+        prevDevices.filter((device) => device.Copy_ID !== deviceToDelete.Copy_ID)
+      );
+  
       showToast("Device deleted successfully");
     } catch (error) {
       console.error("Delete failed:", error);
@@ -152,7 +164,7 @@ const ManageDevices = () => {
                     </div>
                     <button
                       className="delete-btn"
-                      onClick={() => handleDelete(device.Copy_ID)}
+                      onClick={() => handleDelete(device)}
                     >
                       Delete
                     </button>
