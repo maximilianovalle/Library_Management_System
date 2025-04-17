@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import HeaderAfter from "../../components/header/HeaderAfter";
 import "./browsedevices.css";
-import DropDown from './components/drop_down';
 import cameraImg from "../checkedOutItems/camera.png";
 import calculatorImg from "../checkedOutItems/calculator.png";
 import laptopImg from "../checkedOutItems/laptop.png";
 
-const browse_by = ["Model", "Category", "Status"];
 const categoryChips = ["Laptop", "Camera", "Calculator"];
 
 const categoryImages = {
@@ -159,17 +157,13 @@ const BrowseDevices = () => {
                         ))}
                     </select> */}
 
-                    <div className="dropdown">
-                        <DropDown
-                            options={browse_by}
-                            value={searchBy}
-                            onSelect={(selectedOption) => {
-                                setSearchBy(selectedOption);
-                            }}
-                        />
-                    </div>
-
-                    <input className="search_bar" type="text" placeholder="Search Device..." value={searchValue} onChange={(e) => setSearchValue(e.target.value)}/>
+                    <input
+                    className="search_bar"
+                    type="text"
+                    placeholder="Search Device..."
+                    value={searchValue}
+                    onChange={(e) => setSearchValue(e.target.value)}
+                    />
 
                     <button className="search_button" type="submit">Enter</button>
 

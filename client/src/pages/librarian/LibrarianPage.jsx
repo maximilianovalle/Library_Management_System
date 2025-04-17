@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaBook, FaTabletAlt, FaUsers, FaChartBar } from 'react-icons/fa';
+import { FaBook, FaTabletAlt, FaChartBar } from 'react-icons/fa';
 import axios from "axios";
 import Header from "../../components/header/LibrarianHeader";
 import { Link } from "react-router-dom";
@@ -55,14 +55,14 @@ const MoneyIcon = () => (
   </svg>
 );
 
-const CalendarIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="dashboard-icon">
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-    <line x1="16" y1="2" x2="16" y2="6"></line>
-    <line x1="8" y1="2" x2="8" y2="6"></line>
-    <line x1="3" y1="10" x2="21" y2="10"></line>
-  </svg>
-);
+// const CalendarIcon = () => (
+//   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="dashboard-icon">
+//     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+//     <line x1="16" y1="2" x2="16" y2="6"></line>
+//     <line x1="8" y1="2" x2="8" y2="6"></line>
+//     <line x1="3" y1="10" x2="21" y2="10"></line>
+//   </svg>
+// );
 
 const LibrarianDashboard = () => {
     const [librarian_name_first, setLibrarian_Name_First] = useState()
@@ -76,7 +76,7 @@ const LibrarianDashboard = () => {
     const [activeHolds, setActiveHolds] = useState(0);
     const [finesDue, setFinesDue] = useState(0);
     
-    const [timeframe, setTimeframe] = useState("week");
+    // const [timeframe, setTimeframe] = useState("week");
     // const [recentActivity, setRecentActivity] = useState([]);
     
     // const [popularBooks, setPopularBooks] = useState([]);
@@ -157,44 +157,44 @@ const LibrarianDashboard = () => {
     }, []);
     
     // Format date for display
-    const formatTime = (timestamp) => {
-        // For today, just show the time
-        const now = new Date();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const itemDate = new Date(timestamp);
-        const itemDay = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate());
+    // const formatTime = (timestamp) => {
+    //     // For today, just show the time
+    //     const now = new Date();
+    //     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    //     const itemDate = new Date(timestamp);
+    //     const itemDay = new Date(itemDate.getFullYear(), itemDate.getMonth(), itemDate.getDate());
         
-        if (itemDay.getTime() === today.getTime()) {
-            return `Today at ${itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-        }
+    //     if (itemDay.getTime() === today.getTime()) {
+    //         return `Today at ${itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    //     }
         
-        // For yesterday
-        const yesterday = new Date(today);
-        yesterday.setDate(yesterday.getDate() - 1);
-        if (itemDay.getTime() === yesterday.getTime()) {
-            return `Yesterday at ${itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-        }
+    //     // For yesterday
+    //     const yesterday = new Date(today);
+    //     yesterday.setDate(yesterday.getDate() - 1);
+    //     if (itemDay.getTime() === yesterday.getTime()) {
+    //         return `Yesterday at ${itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    //     }
         
-        return `${itemDate.toLocaleDateString([], { month: 'short', day: 'numeric' })} at ${itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-    };
+    //     return `${itemDate.toLocaleDateString([], { month: 'short', day: 'numeric' })} at ${itemDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+    // };
     
-    const getActivityIcon = (type) => {
-        switch(type) {
-            case 'book':
-                return <BookIcon />;
-            case 'device':
-                return <DeviceIcon />;
-            case 'payment':
-                return <MoneyIcon />;
-            default:
-                return <CalendarIcon />;
-        }
-    };
+    // const getActivityIcon = (type) => {
+    //     switch(type) {
+    //         case 'book':
+    //             return <BookIcon />;
+    //         case 'device':
+    //             return <DeviceIcon />;
+    //         case 'payment':
+    //             return <MoneyIcon />;
+    //         default:
+    //             return <CalendarIcon />;
+    //     }
+    // };
     
-    const handleTimeframeChange = (newTimeframe) => {
-        setTimeframe(newTimeframe);
-        // In a real implementation, you would fetch new data here
-    };
+    // const handleTimeframeChange = (newTimeframe) => {
+    //     setTimeframe(newTimeframe);
+    //     // In a real implementation, you would fetch new data here
+    // };
 
     return (
         <div className="librarian-dashboard-page">

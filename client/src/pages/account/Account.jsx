@@ -3,8 +3,6 @@ import axios from "axios";  // used for making HTTP requests
 import './Account.css';
 import HeaderAfter from '../../components/header/HeaderAfter';
 import './CheckoutModal.css';
-import { FaRegCheckCircle } from "react-icons/fa";
-
 
 // The (React) frontend sends a GET, POST, DELETE, etc. request to the (NodeJS) backend. 
 // The backend server.js file processes the request and returns a response that is then displayed on the frontend.

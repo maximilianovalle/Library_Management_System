@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { IoIosNotifications } from "react-icons/io";
 import { MdNotificationsActive } from "react-icons/md";
-import { BsDot } from "react-icons/bs";
+import { BsDot, BsCheck2All } from "react-icons/bs";
 
 const HeaderAfter = () => {
     const location = useLocation();
@@ -24,7 +24,7 @@ const HeaderAfter = () => {
     };
 
     const [unreadNotifsAmnt, setUnreadNotifsAmnt] = useState(0);
-    const [notifUnread, setNotifUnread] = useState(false);
+    // const [notifUnread, setNotifUnread] = useState(false);
     const [notifications, setNotifications] = useState([]);
     const [notificationsModal, setNotificationsModal] = useState(false);
 
@@ -63,7 +63,7 @@ const HeaderAfter = () => {
 
         try {
 
-            const res = await axios.put(`${process.env.REACT_APP_API_URL}/markAsRead`, data, {
+            await axios.put(`${process.env.REACT_APP_API_URL}/markAsRead`, data, {
                 headers: {
                     "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
@@ -202,7 +202,10 @@ const HeaderAfter = () => {
                                 <div className="readNotifBox notifBox">
 
                                     <div className="notifHeader">
+                                        <div id="forUnread">
+                                        <span className="entryElement">read</span>
                                         <h3 class="entryElement">{notifType[notification.type] || "Other"}</h3>
+                                        </div>
 
                                         <p className="dateNotif">
                                         {new Date(notification.date).toLocaleString("en-CA", {
@@ -233,8 +236,6 @@ const HeaderAfter = () => {
                                     <p>No notifications found.</p>
                                 </div>
                             )}
-
-                            <p className="headerSubtextNotif">click a notification to mark it as read</p>
 
                         </div>
                         </div>
