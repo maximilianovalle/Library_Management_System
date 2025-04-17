@@ -17,6 +17,7 @@ module.exports = async function getUserHolds(req, res) {
       SELECT 
         h.model, 
         h.category,
+        h.hold_status,
         (
           SELECT dc.Copy_ID
           FROM device_copies dc
@@ -27,8 +28,8 @@ module.exports = async function getUserHolds(req, res) {
           LIMIT 1
         ) AS copy_id
       FROM holds h
-      WHERE h.user_id = ? AND h.hold_status = 1
-    `, [userID]);
+      WHERE h.user_id = ? AND h.hold_status IN (1, 2)
+    `, [userID]);  // <-- get active or pending holds
 
     res.writeHead(200, { "Content-Type": "application/json" });
     res.end(JSON.stringify({ holds }));
