@@ -302,8 +302,8 @@ const CheckedOutPage = () => {
                             <p>Book will be removed from your checked out items.</p>
 
                             <div class="btnContainer">
-                                <button class="btn" onClick={() => {
-                                    returnBook();
+                                <button class="btn" onClick={async () => {
+                                    await returnBook();
                                     closeReturnModal();
                                     window.location.reload();
                                 }}>Return Book</button>
