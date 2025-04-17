@@ -5,7 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 
 import { IoIosNotifications } from "react-icons/io";
 import { MdNotificationsActive } from "react-icons/md";
-import { BsDot, BsCheck2All } from "react-icons/bs";
+import { BsDot } from "react-icons/bs";
 
 const HeaderAfter = () => {
     const location = useLocation();
