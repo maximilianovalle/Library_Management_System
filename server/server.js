@@ -462,6 +462,8 @@ const app = http
     }
 
     if (req.url.startsWith("/manager_reports") && req.method === "GET" && role === 3) {
+      const urlObj = new URL(req.url, `http://${req.headers.host}`);
+      req.query = Object.fromEntries(urlObj.searchParams.entries()); // <-- parse & attach query params
       getManagerReportsData(req, res);
       return;
     }
