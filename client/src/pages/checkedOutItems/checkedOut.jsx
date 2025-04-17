@@ -221,7 +221,7 @@ const CheckedOutPage = () => {
 
 
                 <h1 class="header">My Devices</h1>
-                <p class="description">All currently checked out and on hold devices.</p>
+                <p class="description">All currently checked out devices.</p>
 
                 <div class="container">
 
