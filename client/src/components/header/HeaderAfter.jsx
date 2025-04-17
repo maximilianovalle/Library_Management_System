@@ -18,19 +18,25 @@ const HeaderAfter = () => {
     ];
 
     const notifType = {
-        general: "General",
-        restriction_lifted: "Restrictions removed",
-        payment_success: "Successful payment",
+        "general": "General",
+        "restriction_lifted": "Restrictions removed",
+        "payment_success": "Successful payment",
     };
 
     const [unreadNotifsAmnt, setUnreadNotifsAmnt] = useState(0);
+    // const [notifUnread, setNotifUnread] = useState(false);
     const [notifications, setNotifications] = useState([]);
     const [notificationsModal, setNotificationsModal] = useState(false);
 
     const fetchNotifications = async () => {
         try {
             const token = localStorage.getItem("token");
-            if (!token) return window.location.href = "/login";
+
+            if (!token) {
+                console.error("No token found. Redirecting to login...");
+                window.location.href = "/login";
+                return;
+            }
 
             const res = await axios.get(`${process.env.REACT_APP_API_URL}/getNotifications`, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -41,31 +47,35 @@ const HeaderAfter = () => {
         } catch (error) {
             console.error("Error fetching notifications: ", error);
         }
-    };
+    }
 
     const markAsRead = async (notification) => {
         const token = localStorage.getItem("token");
-        if (!token) return window.location.href = "/login";
+        if (!token) {
+            console.error("No token found. Redirecting to login...");
+            window.location.href = "/login";
+            return;
+        }
+        
+        const data = {
+            id: notification.id,
+        }
 
         try {
-            await axios.put(`${process.env.REACT_APP_API_URL}/markAsRead`, {
-                id: notification.id,
-            }, {
+
+            await axios.put(`${process.env.REACT_APP_API_URL}/markAsRead`, data, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    "Authorization": `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
             });
 
-            setNotifications((prev) =>
-                prev.map((notif) =>
-                    notif.id === notification.id ? { ...notif, isRead: 1 } : notif
-                )
-            );
         } catch (error) {
             console.log("Error marking notif as read: ", error);
         }
-    };
+
+        // await fetchNotifications();
+    }
 
     useEffect(() => {
         fetchNotifications();
@@ -104,9 +114,9 @@ const HeaderAfter = () => {
                     </div>
 
                     <div className="librarian-links">
-                        {navItems.map((item, index) => (
+                        {navItems.map((item) => (
                             <Link
-                                key={index}
+                                key={item.title}
                                 to={item.link}
                                 className={`librarian-link ${
                                     location.pathname.startsWith(item.link) ? "active" : ""
@@ -116,66 +126,118 @@ const HeaderAfter = () => {
                             </Link>
                         ))}
 
-                        <button onClick={async () => {
-                            await fetchNotifications();
-                            setNotificationsModal(true);
-                        }} className={unreadNotifsAmnt > 0 ? "redAlert noStyleBtn" : "noStyleBtn"}>
-                            {unreadNotifsAmnt > 0 ? <MdNotificationsActive /> : <IoIosNotifications />}
-                        </button>
+                        {unreadNotifsAmnt > 0 ? (
+                            <button onClick={async () => {
+                                await fetchNotifications();
+                                setNotificationsModal(true);
+                            }} class="redAlert noStyleBtn"><MdNotificationsActive /></button>
+                        ) : (
+                            <button onClick={async () => {
+                                await fetchNotifications();
+                                setNotificationsModal(true);
+                            }} class="noStyleBtn"><IoIosNotifications /></button>
+                        )}
 
                         <button onClick={handleLogout} className="logout-button">
                             Logout
                         </button>
                     </div>
 
-                    {/* Notifications modal */}
+                    {/* notifications modal */}
+
                     {notificationsModal && (
                         <div className="modal-overlay" onClick={() => setNotificationsModal(false)}>
-                            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-                                <span className="modal-close" onClick={() => setNotificationsModal(false)}>&times;</span>
-                                <h2 className="modalHeader">Notifications</h2>
+                        <div className="modal-box" onClick={(e) => e.stopPropagation()}>
 
-                                {notifications.length > 0 ? (
-                                    <div className="notificationScroll">
-                                        {notifications.map((notification) => {
-                                            const notifUnread = notification.isRead === 0;
-                                            return (
-                                                <div
-                                                    key={notification.id}
-                                                    onClick={notifUnread ? async () => await markAsRead(notification) : undefined}
-                                                    className={notifUnread ? "notifBox notifBoxUnread" : "readNotifBox notifBox"}
-                                                >
-                                                    <div className="notifHeader">
-                                                        <div>
-                                                            {notifUnread && <BsDot className="unreadNotifDot entryElement" />}
-                                                            <h3 className={notifUnread ? "unreadNotifTitle entryElement" : "entryElement"}>
-                                                                {notifType[notification.type] || "Other"}
-                                                            </h3>
-                                                        </div>
-                                                        <p className="dateNotif">
-                                                            {new Date(notification.date).toLocaleString("en-CA", {
-                                                                year: "numeric",
-                                                                month: "2-digit",
-                                                                day: "2-digit",
-                                                                hour: "2-digit",
-                                                                minute: "2-digit",
-                                                                hour12: false,
-                                                            }).replace(",", "")}
-                                                        </p>
-                                                    </div>
-                                                    <div className="notifBody">
-                                                        <p>{notification.text}</p>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
+                            <span className="modal-close" onClick={() => setNotificationsModal(false)}>&times;</span>
+
+                            <h2 className="modalHeader">Notifications</h2>
+
+                            {notifications.length > 0 ? (<div class="notificationScroll">
+
+                                {/* notification box */}
+
+                                {notifications.map((notification, index) => {
+
+                                const notifUnread = notification.isRead === 0;
+                                
+                                return notifUnread ? (
+                                
+                                <div onClick={async () => {
+                                    // mark notif as read + reflect change in modal
+                                    await markAsRead(notification);
+                                    setNotifications((prev) =>
+                                    prev.map((notif) =>
+                                        notif.id === notification.id ? { ...notif, isRead: 1 } : notif
+                                    )
+                                    );
+                                }} className="notifBox notifBoxUnread">
+
+                                    <div className="notifHeader">
+                                        <div>
+                                        <BsDot class="unreadNotifDot entryElement"/>
+                                        <h3 class="unreadNotifTitle entryElement">{notifType[notification.type] || "Other"}</h3>
+                                        </div>
+
+                                        <h3 className="dateNotif">
+                                        {new Date(notification.date).toLocaleString("en-CA", {
+                                            year: "numeric",
+                                            month: "2-digit",
+                                            day: "2-digit",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            hour12: false,
+                                        }).replace(",", "")}
+                                        </h3>
                                     </div>
-                                ) : (
-                                    <div className="nothingFoundMsg">
-                                        <p>No notifications found.</p>
+
+                                    <div className="notifBody">
+
+                                        <p>{notification.text}</p>
+
                                     </div>
-                                )}
-                            </div>
+
+                                </div>) : (
+
+                                <div className="readNotifBox notifBox">
+
+                                    <div className="notifHeader">
+                                        <div id="forUnread">
+                                        <span className="entryElement">read</span>
+                                        <h3 class="entryElement">{notifType[notification.type] || "Other"}</h3>
+                                        </div>
+
+                                        <p className="dateNotif">
+                                        {new Date(notification.date).toLocaleString("en-CA", {
+                                            year: "numeric",
+                                            month: "2-digit",
+                                            day: "2-digit",
+                                            hour: "2-digit",
+                                            minute: "2-digit",
+                                            hour12: false,
+                                        }).replace(",", "")}
+                                        </p>
+                                    </div>
+
+                                    <div className="notifBody">
+
+                                        <p>{notification.text}</p>
+
+                                    </div>
+
+                                </div>
+
+                                )
+                            
+                                })}
+
+                            </div>) : (
+                                <div class="nothingFoundMsg">
+                                    <p>No notifications found.</p>
+                                </div>
+                            )}
+
+                        </div>
                         </div>
                     )}
                 </nav>
