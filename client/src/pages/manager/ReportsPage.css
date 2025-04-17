@@ -1,0 +1,130 @@
+.reports-container {
+    padding: 2rem;
+    min-height: 100vh;
+  }
+  
+  .report-title {
+    font-size: 2.5rem;
+    text-align: center;
+    color: #b71c1c;
+    margin-bottom: 1rem;
+    border-bottom: 3px solid #b71c1c;
+    padding-bottom: 0.5rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  
+  .report-filters {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+  }
+  
+  .report-filters button {
+    background-color: #b71c1c;
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .report-filters button:hover {
+    background-color: #d32f2f;
+    transform: scale(1.05);
+  }
+  
+  .report-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .report-table th {
+    background-color: #fff;
+    color: #b71c1c;
+    font-weight: 700;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid #b71c1c;
+  }
+  
+  .report-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e0e0e0;
+    color: #424242;
+  }
+  
+  .report-table tbody tr:nth-child(even) {
+    background-color: #fff5f5;
+  }
+  
+  .report-table tbody tr:nth-child(odd) {
+    background-color: #ffffff;
+  }
+  
+  .report-table tbody tr:hover {
+    background-color: #ffe0e0;
+  }
+  
+  .spinner {
+    margin: 2rem auto;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #b71c1c;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+  
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .report-title {
+      font-size: 1.8rem;
+    }
+  
+    .report-filters {
+      flex-direction: column;
+      align-items: center;
+    }
+  
+    .report-table {
+      font-size: 0.9rem;
+      overflow-x: auto;
+    }
+  }
+  
+  .total-salary {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2e7d32;
+    margin: 1rem 0 2rem;
+    padding-right: 1rem;
+    border-top: 2px solid #b71c1c;
+    padding-top: 0.75rem;
+  }
+  
+  .salary-amount {
+    margin-left: 0.5rem;
+    color: #388e3c;
+    font-size: 1.4rem;
+  }
+  
