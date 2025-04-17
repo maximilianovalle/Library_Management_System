@@ -30,7 +30,7 @@ const add_device = require('./librarian_page/add_device.js')
 const get_books = require('./librarian_page/get_books.js')
 const deleteBookCopy = require('./librarian_page/delete_book.js')
 const all_devices = require('./librarian_page/get_devices.js')
-// const getRecentActivities = require('./librarian_page/get_recent.js')
+const delete_one_copy_device = require('./librarian_page/delete_device.js')
 const getHeldItems = require('./librarian_page/all_holds.js')
 const getFines = require('./librarian_page/all_fines.js')
 const updateFine = require('./librarian_page/update_fine.js')
@@ -333,6 +333,12 @@ const app = http
       ReturnedDevice(req, res)
       return;
     }
+    if(req.url === '/delete_one_device' && req.method === 'DELETE' && role === 1){
+      console.log("deleting device")
+      delete_one_copy_device(req, res)
+      return;
+    }
+
     // if(req.url === '/get_activity' && req.method === 'GET' && role === 1){
     //   console.log("Get recent activities")
     //   getRecentActivities(req, res)

@@ -49,7 +49,12 @@ const ManageBooks = () => {
     }
   }, [activeTab]);
 
-  const handleDelete = async (Copy_ID, ISBN) => {
+  const handleDelete = async (book) => {
+    const confirmDelete = window.confirm(
+      `Are you sure you want to delete the book:\n"${book.Title}" by ${book.Name}\nCopy Number: ${book.Copy_ID}`
+    );
+    if (!confirmDelete) return;
+  
     try {
       const token = localStorage.getItem("token");
       await axios.delete(`${process.env.REACT_APP_API_URL}/delete_book`, {
@@ -57,15 +62,16 @@ const ManageBooks = () => {
           Authorization: `Bearer ${token}`,
         },
         data: {
-          Copy_ID,
-          ISBN,
+          Copy_ID: book.Copy_ID,
+          ISBN: book.ISBN,
         },
       });
-      setBooks((prev) => prev.filter((book) => book.Copy_ID !== Copy_ID));
+      setBooks((prev) => prev.filter((b) => b.Copy_ID !== book.Copy_ID));
       showToast("Book deleted successfully!");
     } catch (error) {
       console.error("Delete failed:", error);
-      showToast("Failed to delete book.", "error");
+      const msg = error.response?.data?.message || "Failed to delete book.";
+      showToast(msg, "error");
     }
   };
 
@@ -184,7 +190,7 @@ const ManageBooks = () => {
                         <br></br>
                         <button
                           className="delete-btn"
-                          onClick={() => handleDelete(book.Copy_ID, book.ISBN)}
+                          onClick={() => handleDelete(book)}
                         >
                           Delete
                         </button>
