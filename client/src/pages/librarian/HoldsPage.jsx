@@ -196,7 +196,7 @@ const HoldsPage = () => {
             <div className="holds-page">
                 <h1>Manage Holds</h1>
                 {renderTable("Pending Holds", pendingHolds, "pickup")}
-                {renderTable("Active Holds", activeHolds, "return")}
+                {renderTable("Checked Out", activeHolds, "return")}
                 {renderTable("Expired Holds", expiredHolds, "delete")}
             </div>
         </div>
