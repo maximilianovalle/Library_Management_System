@@ -81,12 +81,13 @@ const generateRandomPassword = () => {
         await axios.post(`${process.env.REACT_APP_API_URL}/add_user`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
+
         showToast(`Added ${formData.First_Name} ${formData.Last_Name}`);
         setFormData({ First_Name: "", Last_Name: "", Email: "", Password: "", Role: "1" });
         setShowPassword(false);
       } catch (error) {
         console.error(error);
-        showToast("Failed to add user", "error");
+        showToast(error.response.data.message || "Failed to add user", "error");
       } finally {
         setLoading(false);
       }
