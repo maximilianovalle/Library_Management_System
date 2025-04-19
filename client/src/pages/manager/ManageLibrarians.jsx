@@ -28,6 +28,7 @@ const LibrarianManager = () => {
     Department: "",
     Position: "",
     SSN: "",
+    Email: "",
     Hire_Date: getTodayDate(),
     Pay_Rate: "",
     Is_Active: 1
@@ -141,6 +142,7 @@ const LibrarianManager = () => {
         Department: "",
         Position: "",
         SSN: "",
+        Email: "",
         Hire_Date: getTodayDate(),
         Pay_Rate: "",
         Is_Active: 1
@@ -148,7 +150,7 @@ const LibrarianManager = () => {
       setShowPassword(false);
     } catch (error) {
       console.error("Add librarian failed:", error);
-      showToast("Failed to add librarian.", "error");
+      showToast(error.response.data.message || "Failed to add librarian.", "error");
     } finally {
       setLoading(false);
     }
@@ -234,6 +236,7 @@ const LibrarianManager = () => {
                 Department: "",
                 Position: "",
                 SSN: "",
+                Email: "",
                 Hire_Date: getTodayDate(),
                 Pay_Rate: "",
                 Is_Active: 1
