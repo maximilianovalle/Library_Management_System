@@ -19,7 +19,7 @@ const LockIcon = () => (
 );
 
 const Login = () => {
-    const [userID, setUserID] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -31,14 +31,14 @@ const Login = () => {
         setMessage('');
 
         const data = {
-            userID,
+            email,
             password
         };
 
         console.log("Attempting login with:", data);
 
         try {
-            const res = await axios.post(`${process.env.REACT_APP_API_URL}/login`, data);  // This one says "Login Successful or Invalid Password/ UserID"
+            const res = await axios.post(`${process.env.REACT_APP_API_URL}/login`, data);  // This one says "Login Successful or Invalid Password/Email"
             console.log("Login response:", res.data);
 
             // if token received and USER role
@@ -122,22 +122,22 @@ const Login = () => {
                     )}
                     
                     <div className="login-form-group">
-                        <label htmlFor="userId" className="form-label">User ID</label>
+                        <label htmlFor="userId" className="form-label">Email</label>
                         <div className="input-with-icon">
                             <span className="input-icon"><UserIcon /></span>
                             <input 
                                 id="userId"
                                 type="text" 
                                 className="form-input"
-                                placeholder="Enter Your User ID"
-                                value={userID} 
+                                placeholder="Enter Your Email"
+                                value={email} 
                                 minLength={7}
-                                maxLength={7}
-                                onChange={(e) => setUserID(e.target.value)}
+                                maxLength={255}
+                                onChange={(e) => setEmail(e.target.value)}
                                 required
                             />
                         </div>
-                        <p className="input-hint">Enter your unique library user ID</p>
+                        {/* <p className="input-hint">Enter your unique library user ID</p> */}
                     </div>
                     
                     <div className="login-form-group">

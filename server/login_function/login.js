@@ -5,9 +5,9 @@ const pool = require('../database.js');  // database connection
 const currSessions = new Map();
 
 
-async function getUser(userID) {
+async function getUser(email) {
     try{
-        const [rows] = await pool.query('SELECT * FROM user WHERE User_ID = ?', [userID]);  // queries database for user w/ userID
+        const [rows] = await pool.query('SELECT * FROM user WHERE Email = ?', [email]);  // queries database for user w/ email
 
         if (rows.length === 0) {    // if no user found
             return null;    // return null
@@ -19,9 +19,9 @@ async function getUser(userID) {
     }
 }
 
-async function getAdmin(userID) {
+async function getAdmin(email) {
     try{
-        const [rows] = await pool.query('SELECT * FROM librarian WHERE Librarian_ID = ?', [userID]);  // queries database for user w/ userID
+        const [rows] = await pool.query('SELECT * FROM librarian WHERE Email = ?', [email]);  // queries database for user w/ email
 
         if (rows.length === 0) {    // if no user found
             return null;    // return null
@@ -33,9 +33,9 @@ async function getAdmin(userID) {
     }
 }
 
-async function getManager(userID) {
+async function getManager(email) {
     try {
-        const [rows] = await pool.query("SELECT * FROM manager WHERE Manager_ID = ? AND Is_Active = 1", [userID]);
+        const [rows] = await pool.query("SELECT * FROM manager WHERE Email = ? AND Is_Active = 1", [email]);
     
         if (rows.length === 0) {    // if no user found
             return null;    // return null
@@ -59,28 +59,28 @@ module.exports = async function login(req, res) {
         // triggered when all data is received
         req.on('end', async () => {
             try {
-                const { userID, password } = JSON.parse(body);  // request body is turned into javascript object, userID and password is extracted
-                console.log("\nUserID:", userID);
+                const { email, password } = JSON.parse(body);  // request body is turned into javascript object, email and password is extracted
+                console.log("\nEmail:",email);
                 console.log("Password:", password);
 
-                // if ( userID or password do not exist )
-                if (!userID || !password) {
+                // if ( email or password do not exist )
+                if (!email || !password) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ message: 'Missing User ID or Password' }));
+                    res.end(JSON.stringify({ message: 'Missing Email or Password' }));
                     return;
                 }
 
-                let user = await getUser(userID, body);   // calls above getUser() function to fetch user details
+                let user = await getUser(email, body);   // calls above getUser() function to fetch user details
                 let role = 2;   // USER ROLE = 2
                 
                 // if ( user does not exist )
                 if (!user) {
-                    user = await getAdmin(userID, body);    // check if admin
+                    user = await getAdmin(email, body);    // check if admin
                     role = 1;   // ADMIN ROLE = 1
                 }
 
                 if (!user) {
-                    user = await getManager(userID, body);  // check if manager
+                    user = await getManager(email, body);  // check if manager
                     role = 3;
                 }
 

@@ -99,7 +99,9 @@ const app = http
   }
 
   if (req.url === "/login" && req.method === "POST") {
+    console.log("Logging in...");
     login(req, res); // call login() function imported above
+    console.log("User logged in.");
     return;
   }
 
