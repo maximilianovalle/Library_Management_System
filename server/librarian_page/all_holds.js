@@ -23,7 +23,7 @@ module.exports = async function getHeldItems(req, res) {
 
         `);
 
-        console.log(rows);
+        // console.log(rows);
 
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ heldItems: rows }));

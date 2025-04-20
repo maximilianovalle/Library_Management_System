@@ -29,8 +29,8 @@ module.exports = async function PickedUpDevice(req, res) {
                 await pool.query(`
                     UPDATE device_copies
                     SET Device_Status = 'Checked out'
-                    WHERE Copy_ID = ?
-                `, [copy_id]);
+                    WHERE Copy_ID = ? AND Model = ? AND Category = ?
+                `, [copy_id, model, category]);
                     
                 const [policyRows] = await pool.query(
                     "SELECT Borrow_Duration FROM borrow_policy WHERE Role = ? AND Item_Type = 1",
