@@ -14,14 +14,8 @@ module.exports = async function deleteDeviceCopies(req, res) {
                 const { model } = JSON.parse(body);
                 console.log("model: ", model);
 
-                // set all copies of device as deleted
-                await pool.query("UPDATE device_copies SET Device_Status = 'Deleted' WHERE Model = ?", [model]);
-
-                // return all instances of device if checked out
-                await pool.query("UPDATE borrow_record SET Return_Date = NOW() WHERE Model = ?", [model]);
-
-                // remove all holds on instances of device
-                await pool.query("UPDATE holds SET Hold_status = 3 WHERE Model = ?", [model]);
+                // set all available copies of device as deleted
+                await pool.query("UPDATE device_copies SET Device_Status = 'Deleted' WHERE Model = ? AND Device_Status != 'Checked out' AND Device_Status != 'On hold'", [model]);
 
             } catch (error) {
                 console.log("Delete device error internal: ", error);

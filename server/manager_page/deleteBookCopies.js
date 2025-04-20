@@ -20,11 +20,8 @@ module.exports = async function deleteBookCopies(req, res) {
                     return;
                 }
 
-                // set all copies of book as deleted
-                await pool.query("UPDATE book_copies SET Book_Status = 'Deleted' WHERE ISBN = ?", [isbn]);
-
-                // return all instances of book if checked out
-                await pool.query("UPDATE borrow_record SET Return_Date = NOW() WHERE ISBN = ?", [isbn]);
+                // set all non-checked out copies of book as deleted
+                await pool.query("UPDATE book_copies SET Book_Status = 'Deleted' WHERE ISBN = ? AND Book_Status != 'Checked out'", [isbn]);
 
             } catch (error) {
                 console.log("Delete book error internal: ", error);

@@ -320,7 +320,7 @@ const ManagerDeleteItems = () => {
                             
                                 <h2 class="modalHeader">Delete all copies of <em>{bookDeleteModal.title}</em>?</h2>
 
-                                <p>Clicking 'confirm' will delete every copy of <em>{bookDeleteModal.title}</em> in your catalogue. This book will no longer be accessible to any user. This action cannot be undone.</p>
+                                <p>Clicking 'confirm' will delete every non-checked out copy of <em>{bookDeleteModal.title}</em> in your catalogue. Current available copies of this book will no longer be accessible to any user. This action cannot be undone.</p>
 
                                 <div className="modal-buttons">
                                     <button className="confirm-button" onClick={() => {
@@ -457,7 +457,7 @@ const ManagerDeleteItems = () => {
                         
                             <h2 class="modalHeader">Delete all <em>{deviceDeleteModal.model}</em> {deviceDeleteModal.category.toLowerCase()}s?</h2>
 
-                            <p>Clicking 'confirm' will delete every instance of a <em>{deviceDeleteModal.model}</em> {deviceDeleteModal.category.toLowerCase()} in your catalogue. This device will no longer be accessible to any user. This action cannot be undone.</p>
+                            <p>Clicking 'confirm' will delete every non-checked out instance of a <em>{deviceDeleteModal.model}</em> {deviceDeleteModal.category.toLowerCase()} in your catalogue. Current available copies of this device will no longer be accessible to any user. This action cannot be undone.</p>
 
                             <div className="modal-buttons">
                                 <button className="confirm-button" onClick={() => {
