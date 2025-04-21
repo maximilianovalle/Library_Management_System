@@ -5,7 +5,7 @@ Cougar Library is a library management application designed for both users and e
 Live Website: https://cougarlibraryy.netlify.app/<br /><br />
 
 
-##  ☆ Features
+##  🐾 Features
 
 ###  Role-Based Login
 Depending on your login credentials, our system can identfy whether you are a 'user', 'librarian', or 'admin' and take you to their respective pages.<br /><br />
