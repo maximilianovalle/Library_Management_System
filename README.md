@@ -111,4 +111,4 @@ Library_Management_System/<br />
 | Adiba Ahmed  | [@aadibaahmed](https://github.com/aadibaahmed)  |
 | Maximiliano Jesse Ovalle  | [@maximilianovalle](https://github.com/maximilianovalle)  |
 | Alan Tony-Itoyah  | [@atonyit](https://github.com/atonyit)  |
-| Josn Gulizia  | [@jguliz](https://github.com/jguliz)  |
+| Josh Gulizia  | [@jguliz](https://github.com/jguliz)  |
