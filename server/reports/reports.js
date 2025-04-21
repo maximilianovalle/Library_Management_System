@@ -505,6 +505,7 @@ async function getCheckoutsData(startDate, endDate) {
   }
 }
 
+
 // Get popular items data with date range filtering
 async function getPopularItemsData(startDate, endDate) {
   try {

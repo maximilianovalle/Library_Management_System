@@ -379,114 +379,118 @@ const ReportsPage = () => {
         );
     };
     
-    const renderCheckoutsReport = () => {
-        if (!reportData) return null;
-        
-        const { books, devices, userRoleStats } = reportData;
-        
-        return (
-            <div className="checkouts-report">
-                <div className="table-container">
-                    <h3 className="table-title">Checkouts by User Role</h3>
+const renderCheckoutsReport = () => {
+    if (!reportData) return null;
+    
+    const { books, devices, userRoleStats } = reportData;
+    
+    return (
+        <div className="checkouts-report">
+            <div className="table-container">
+                <h3 className="table-title">Checkouts by User Role</h3>
+                <table className="data-table">
+                    <thead>
+                        <tr>
+                            <th>User Role</th>
+                            <th>Checkouts</th>
+                            <th>Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {userRoleStats.map((stat) => {
+                            const totalCheckouts = userRoleStats.reduce((sum, item) => sum + item.count, 0);
+                            const percentage = (stat.count / totalCheckouts * 100).toFixed(1);
+                            
+                            return (
+                                <tr key={stat.User_Role}>
+                                    <td>{stat.User_Role}</td>
+                                    <td>{stat.count}</td>
+                                    <td>{percentage}%</td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div className="table-container">
+                <h3 className="table-title">Checked Out Books <span className="badge">{books.length}</span></h3>
+                {books.length > 0 ? (
                     <table className="data-table">
                         <thead>
                             <tr>
+                                <th>Title</th>
+                                <th>Author</th>
+                                <th>User</th>
                                 <th>User Role</th>
-                                <th>Checkouts</th>
-                                <th>Percentage</th>
+                                <th>Checkout Date</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {userRoleStats.map((stat) => {
-                                const totalCheckouts = userRoleStats.reduce((sum, item) => sum + item.count, 0);
-                                const percentage = (stat.count / totalCheckouts * 100).toFixed(1);
-                                
-                                return (
-                                    <tr key={stat.User_Role}>
-                                        <td>{stat.User_Role}</td>
-                                        <td>{stat.count}</td>
-                                        <td>{percentage}%</td>
-                                    </tr>
-                                );
-                            })}
+                            {books.map((book) => (
+                                <tr key={book.Record_ID}>
+                                    <td>{book.Title}</td>
+                                    <td>{book.Author_Name}</td>
+                                    <td>{book.First_Name} {book.Last_Name}</td>
+                                    <td>{book.User_Role}</td>
+                                    <td>{new Date(book.Checkout_Date).toLocaleDateString()}</td>
+                                    <td>{new Date(book.Due_Date).toLocaleDateString()}</td>
+                                    <td>
+                                        <span className={`status-badge ${book.Is_Overdue ? 'overdue' : 'active'}`}>
+                                            {book.Is_Overdue ? 'Overdue' : 'Active'}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
-                </div>
-                
-                <div className="table-container">
-                    <h3 className="table-title">Checked Out Books <span className="badge">{books.length}</span></h3>
-                    {books.length > 0 ? (
-                        <table className="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Author</th>
-                                    <th>User</th>
-                                    <th>Checkout Date</th>
-                                    <th>Due Date</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {books.map((book) => (
-                                    <tr key={book.Record_ID}>
-                                        <td>{book.Title}</td>
-                                        <td>{book.Author_Name}</td>
-                                        <td>{book.First_Name} {book.Last_Name}</td>
-                                        <td>{new Date(book.Checkout_Date).toLocaleDateString()}</td>
-                                        <td>{new Date(book.Due_Date).toLocaleDateString()}</td>
-                                        <td>
-                                            <span className={`status-badge ${book.Is_Overdue ? 'overdue' : 'active'}`}>
-                                                {book.Is_Overdue ? 'Overdue' : 'Active'}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p className="no-data-message">No checked out books found.</p>
-                    )}
-                </div>
-                
-                <div className="table-container">
-                    <h3 className="table-title">Checked Out Devices <span className="badge">{devices.length}</span></h3>
-                    {devices.length > 0 ? (
-                        <table className="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Model</th>
-                                    <th>User</th>
-                                    <th>Checkout Date</th>
-                                    <th>Due Date</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {devices.map((device) => (
-                                    <tr key={device.Record_ID}>
-                                        <td>{device.Category}</td>
-                                        <td>{device.Model}</td>
-                                        <td>{device.First_Name} {device.Last_Name}</td>
-                                        <td>{new Date(device.Checkout_Date).toLocaleDateString()}</td>
-                                        <td>{new Date(device.Due_Date).toLocaleDateString()}</td>
-                                        <td>
-                                            <span className={`status-badge ${device.Is_Overdue ? 'overdue' : 'active'}`}>
-                                                {device.Is_Overdue ? 'Overdue' : 'Active'}
-                                            </span>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    ) : (
-                        <p className="no-data-message">No checked out devices found.</p>
-                    )}
-                </div>
+                ) : (
+                    <p className="no-data-message">No checked out books found.</p>
+                )}
             </div>
-        );
-    };
+            
+            <div className="table-container">
+                <h3 className="table-title">Checked Out Devices <span className="badge">{devices.length}</span></h3>
+                {devices.length > 0 ? (
+                    <table className="data-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Model</th>
+                                <th>User</th>
+                                <th>User Role</th>
+                                <th>Checkout Date</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {devices.map((device) => (
+                                <tr key={device.Record_ID}>
+                                    <td>{device.Category}</td>
+                                    <td>{device.Model}</td>
+                                    <td>{device.First_Name} {device.Last_Name}</td>
+                                    <td>{device.User_Role}</td>
+                                    <td>{new Date(device.Checkout_Date).toLocaleDateString()}</td>
+                                    <td>{new Date(device.Due_Date).toLocaleDateString()}</td>
+                                    <td>
+                                        <span className={`status-badge ${device.Is_Overdue ? 'overdue' : 'active'}`}>
+                                            {device.Is_Overdue ? 'Overdue' : 'Active'}
+                                        </span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                ) : (
+                    <p className="no-data-message">No checked out devices found.</p>
+                )}
+            </div>
+        </div>
+    );
+};
     
     const renderPopularItemsReport = () => {
         if (!reportData) return null;
