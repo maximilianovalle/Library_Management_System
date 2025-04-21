@@ -44,7 +44,6 @@ cd  Library_Management_System
 ```
 cd server
 npm install
-
 ```
 
 3. Setup the frontend
