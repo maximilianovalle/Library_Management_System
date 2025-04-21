@@ -32,7 +32,7 @@ Admins can add and edit librarians and users, manage the library catalogue, and 
 <img src="./README_images/8.png" width="400px"> <img src="./README_images/9.png" width="400px"><br /><br />
 
 
-##  ☆ Installation & Setup
+##  🐾 Installation & Setup
 
 1. Clone the repository and navigate into the repo folder
 ```
@@ -61,7 +61,7 @@ npm start
 ```
 
 
-##  ☆ Folder Structure
+##  🐾 Folder Structure
 
 Library_Management_System/<br />
 ├── client/<br />
@@ -77,7 +77,7 @@ Library_Management_System/<br />
 └── README_images<br /><br />
 
 
-##  ☆ File Explanation
+##  🐾 File Explanation
 
 ### Root Directory
 
@@ -97,14 +97,14 @@ Library_Management_System/<br />
 - controllers (`add_librarian.js`, `cancel_hold.js`, `borrow_book.js`, etc.): receive input from routes, process data, and respond<br /><br />
 
 
-##  ☆ Technology Stack
+##  🐾 Technology Stack
 
 **Frontend:** React<br />
 **Backend:** NodeJS<br />
 **Database:** MySQL<br /><br />
 
 
-##  ☆ Contributors
+##  🐾 Contributors
 
 | Name  | Github |
 | ------------- | ------------- |
