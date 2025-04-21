@@ -6,27 +6,27 @@ Cougar Library is a library management application designed for both users and e
 ## Features
 
 ### Role-Based Login
-Depending on your login credentials, our system can identfy whether you are a 'user', 'librarian', or 'admin' and take you to their respective pages.
+Depending on your login credentials, our system can identfy whether you are a 'user', 'librarian', or 'admin' and take you to their respective pages.<br />
 <img src="./README_images/1.png" width="350px"> <img src="./README_images/2.png" width="350px"> <img src="./README_images/14.png" width="350px"> <img src="./README_images/15.png" width="350px">
 
 ### Return Items
-Users are able to not only check out books and place devices on hold, but also return their books and remove their holds on items in our system.
+Users are able to not only check out books and place devices on hold, but also return their books and remove their holds on items in our system.<br />
 <img src="./README_images/3.png" width="350px"> <img src="./README_images/11.png" width="350px">
 
 ### Notification System
-Users are able to receive notifications generated automatically by our system and mark them as read.
+Users are able to receive notifications generated automatically by our system and mark them as read.<br />
 <img src="./README_images/12.png" width="350px"> <img src="./README_images/13.png" width="350px">
 
 ### Catalogue Editing
-Users and employees alike are able to browse through our library's extensive catalogue of books and devices. Employees are also able to edit existing items and add or delete new items.
+Users and employees alike are able to browse through our library's extensive catalogue of books and devices. Employees are also able to edit existing items and add or delete new items. <br />
 <img src="./README_images/10.png" width="350px"> <img src="./README_images/5.png" width="350px">
 
 ### Librarian Functionalities
-Librarians can manage user holds, fines, and view reports regarding the data from their library.
+Librarians can manage user holds, fines, and view reports regarding the data from their library.<br />
 <img src="./README_images/6.png" width="350px"> <img src="./README_images/7.png" width="350px">
 
 ### Admin Functionalities
-Admins can add and edit librarians and users, manage the library catalogue, and edit the status of books currently in maintenance.
+Admins can add and edit librarians and users, manage the library catalogue, and edit the status of books currently in maintenance.<br />
 <img src="./README_images/8.png" width="350px"> <img src="./README_images/9.png" width="350px">
 
 
@@ -62,18 +62,18 @@ npm start
 
 ## Folder Structure
 
-Library_Management_System/
-├── client/
-│   ├── public/
-│   └── src/
-├── server/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── db.js
-│   └── server.js
-├── README.md
-└── README_images
+Library_Management_System/<br />
+├── client/<br />
+│   ├── public/<br />
+│   └── src/<br />
+├── server/<br />
+│   ├── controllers/<br />
+│   ├── models/<br />
+│   ├── routes/<br />
+│   ├── db.js<br />
+│   └── server.js<br />
+├── README.md<br />
+└── README_images<br />
 
 
 ## File Explanation
@@ -98,9 +98,9 @@ Library_Management_System/
 
 ## Technology Stack
 
-**Frontend:** React
-**Backend:** NodeJS
-**Database:** MySQL
+**Frontend:** React<br />
+**Backend:** NodeJS<br />
+**Database:** MySQL<br />
 
 
 ## Contributors
